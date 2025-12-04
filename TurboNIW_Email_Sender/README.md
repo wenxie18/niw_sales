@@ -197,8 +197,8 @@ python send_emails_smtp.py --csv recipients.csv
 5. Download credentials JSON file
 6. Save to `.secrets/gmail_credentials_accountX.json` (where X is your account number)
 7. Add account to `config.json`:
-   ```json
-   {
+```json
+{
      "id": "accountX_gmail_api",
      "email": "your-email@gmail.com",
      "name": "Your Name",
@@ -206,8 +206,8 @@ python send_emails_smtp.py --csv recipients.csv
      "credentials_file": ".secrets/gmail_credentials_accountX.json",
      "daily_limit": 50,
      "enabled": true
-   }
-   ```
+}
+```
 
 **Authenticate New Account:**
 After adding credentials and updating config, authenticate the account:

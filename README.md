@@ -99,6 +99,26 @@ This script:
 
 ### 4. Send Emails
 
+#### Option A: Web Interface (Recommended for Scaling)
+
+**Start the web app:**
+```bash
+cd TurboNIW_Email_Sender/web_app
+pip install -r requirements.txt
+python app.py
+```
+
+Then open `http://localhost:5000` in your browser. The web interface allows you to:
+- Add/manage email accounts through UI
+- Authenticate Gmail API accounts with one click
+- Adjust settings (delays, limits, whitelist/blacklist)
+- Upload CSV and send emails with real-time status
+- View statistics and account status
+
+See `TurboNIW_Email_Sender/web_app/README.md` for detailed web app documentation.
+
+#### Option B: Command Line
+
 See `TurboNIW_Email_Sender/README.md` for detailed email sending instructions.
 
 **Quick example:**

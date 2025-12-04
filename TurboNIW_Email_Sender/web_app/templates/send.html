@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>📤 Send Emails</h2>
+    
+    <div class="form-group">
+        <label>CSV File (Optional)</label>
+        <div style="margin-bottom: 0.5rem;">
+            <input type="file" id="csvFile" accept=".csv" onchange="handleFileSelect(event)">
+        </div>
+        {% if default_csv %}
+        <div style="background: #e8f4f8; padding: 0.75rem; border-radius: 4px; margin-top: 0.5rem;">
+            <strong>📁 Default File:</strong> <code>{{ default_csv }}</code>
+            <br><small style="color: #666;">If you don't upload a file, the default file will be used automatically.</small>
+        </div>
+        {% endif %}
+        <small style="color: #666; display: block; margin-top: 0.5rem;">CSV must have columns: Email, Author (or Name), Title (optional)</small>
+    </div>
+    
+    <div class="form-group" style="margin-top: 1rem;">
+        <label>Max Emails to Send (0 = no limit)</label>
+        <input type="number" id="maxEmails" value="0" min="0">
+        <small style="color: #666; display: block; margin-top: 0.5rem;">
+            Limits how many emails to send. Sending will also stop automatically when each account reaches its daily limit (set in Accounts page).
+            <br><strong>Note:</strong> Works exactly like the command-line version - processes CSV and sends directly, no queue needed!
+        </small>
+    </div>
+    
+    <div style="margin-top: 1.5rem;">
+        <button class="btn btn-success" onclick="startSending()" id="startBtn" style="font-size: 16px; padding: 0.75rem 2rem;">
+            🚀 Start Sending
+        </button>
+        <button class="btn btn-danger" onclick="stopSending()" id="stopBtn" style="display: none; font-size: 16px; padding: 0.75rem 2rem;">Stop Sending</button>
+    </div>
+    
+    <div id="status" style="margin-top: 1rem;"></div>
+</div>
+
+<div class="card">
+    <h2>📊 Sending Status</h2>
+    <div id="sendingStatus">
+        <p>No sending in progress</p>
+    </div>
+</div>
+
+<script>
+let csvData = null;
+let usingDefaultFile = false;
+const defaultCsvPath = {% if default_csv %}'{{ default_csv }}'{% else %}null{% endif %};
+
+function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    usingDefaultFile = false;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const text = e.target.result;
+        // Parse CSV (simple parser)
+        const lines = text.split('\n');
+        const headers = lines[0].split(',').map(h => h.trim());
+        csvData = lines.slice(1).map(line => {
+            const values = line.split(',').map(v => v.trim());
+            const obj = {};
+            headers.forEach((header, i) => {
+                obj[header] = values[i] || '';
+            });
+            return obj;
+        }).filter(row => row.Email);
+        
+        document.getElementById('status').innerHTML = 
+            `<div class="alert alert-success">Loaded ${csvData.length} recipients from uploaded CSV</div>`;
+    };
+    reader.readAsText(file);
+}
+
+async function loadDefaultFile() {
+    if (!defaultCsvPath) {
+        return false;
+    }
+    
+    usingDefaultFile = true;
+    const result = await apiCall(`/api/send/load-default-csv?path=${encodeURIComponent(defaultCsvPath)}`);
+    
+    if (result.success) {
+        csvData = result.data;
+        return true;
+    }
+    return false;
+}
+
+async function queueEmails() {
+    // Load default file if no CSV data
+    if (!csvData) {
+        if (defaultCsvPath) {
+            document.getElementById('status').innerHTML = 
+                `<div class="alert alert-success">⏳ Loading default file...</div>`;
+            const loaded = await loadDefaultFile();
+            if (!loaded) {
+                document.getElementById('status').innerHTML = 
+                    `<div class="alert alert-error">Error loading default file</div>`;
+                return false;
+            }
+        } else {
+            document.getElementById('status').innerHTML = 
+                `<div class="alert alert-error">Please upload a CSV file</div>`;
+            return false;
+        }
+    }
+    
+    const maxEmails = parseInt(document.getElementById('maxEmails').value) || 0;
+    
+    // Show progress
+    document.getElementById('status').innerHTML = 
+        `<div class="alert alert-success">⏳ Queuing ${csvData.length} emails... This may take a moment for large files.</div>`;
+    
+    // Convert CSV data to string
+    const headers = Object.keys(csvData[0]);
+    const csvContent = headers.join(',') + '\n' + 
+        csvData.map(row => headers.map(h => row[h] || '').join(',')).join('\n');
+    
+    try {
+        const result = await apiCall('/api/send/queue', {
+            method: 'POST',
+            body: JSON.stringify({
+                csv_content: csvContent,
+                csv_path: usingDefaultFile ? defaultCsvPath : null,
+                max_emails: maxEmails
+            })
+        });
+        
+        if (result.success) {
+            return result.queued;
+        } else {
+            document.getElementById('status').innerHTML = 
+                `<div class="alert alert-error">Error: ${result.error || 'Unknown error'}</div>`;
+            return false;
+        }
+    } catch (error) {
+        console.error('Queue error:', error);
+        document.getElementById('status').innerHTML = 
+            `<div class="alert alert-error">Error queueing emails: ${error.message}</div>`;
+        return false;
+    }
+}
+
+async function startSending() {
+    // Disable button while processing
+    const startBtn = document.getElementById('startBtn');
+    startBtn.disabled = true;
+    startBtn.textContent = '⏳ Starting...';
+    
+    try {
+        // Determine CSV path
+        let csvPath = null;
+        if (csvData && !usingDefaultFile) {
+            // User uploaded a file - we'd need to save it or use a different approach
+            // For now, if they uploaded, we'll use default
+            csvPath = defaultCsvPath;
+        } else {
+            csvPath = defaultCsvPath;
+        }
+        
+        if (!csvPath) {
+            alert('Please upload a CSV file or ensure default file exists');
+            startBtn.disabled = false;
+            startBtn.textContent = '🚀 Start Sending';
+            return;
+        }
+        
+        const maxEmails = parseInt(document.getElementById('maxEmails').value) || 0;
+        
+        document.getElementById('status').innerHTML = 
+            `<div class="alert alert-success">⏳ Starting to send emails... (same as command-line)</div>`;
+        
+        // Start sending directly (processes CSV and sends, just like command-line)
+        const result = await apiCall('/api/send/start', {
+            method: 'POST',
+            body: JSON.stringify({
+                csv_path: csvPath,
+                max_emails: maxEmails
+            })
+        });
+        
+        if (result.success) {
+            startBtn.style.display = 'none';
+            document.getElementById('stopBtn').style.display = 'inline-block';
+            document.getElementById('status').innerHTML = 
+                `<div class="alert alert-success">✅ Sending started! Processing CSV and sending emails...</div>`;
+            // Start status updates immediately
+            updateSendingStatus();
+        } else {
+            startBtn.disabled = false;
+            startBtn.textContent = '🚀 Start Sending';
+            alert('Error: ' + (result.error || 'Unknown error'));
+        }
+    } catch (error) {
+        startBtn.disabled = false;
+        startBtn.textContent = '🚀 Start Sending';
+        document.getElementById('status').innerHTML = 
+            `<div class="alert alert-error">Error: ${error.message}</div>`;
+    }
+}
+
+async function stopSending() {
+    const stopBtn = document.getElementById('stopBtn');
+    stopBtn.disabled = true;
+    stopBtn.textContent = '⏳ Stopping...';
+    
+    const result = await apiCall('/api/send/stop', {
+        method: 'POST'
+    });
+    
+    if (result.success) {
+        document.getElementById('status').innerHTML = 
+            `<div class="alert alert-warning">⏹️ Stopping sending... Please wait a moment.</div>`;
+        
+        // Poll status until it's actually stopped, then update UI
+        let attempts = 0;
+        const maxAttempts = 10; // Wait up to 10 seconds
+        
+        const checkStopped = async () => {
+            attempts++;
+            const statusResult = await apiCall('/api/send/status');
+            
+            if (!statusResult.active || attempts >= maxAttempts) {
+                // Stopped or timeout - update UI
+                document.getElementById('startBtn').style.display = 'inline-block';
+                document.getElementById('stopBtn').style.display = 'none';
+                document.getElementById('startBtn').disabled = false;
+                document.getElementById('startBtn').textContent = '🚀 Start Sending';
+                document.getElementById('status').innerHTML = 
+                    `<div class="alert alert-success">✅ Sending stopped</div>`;
+                updateSendingStatus(); // Update to show final status
+            } else {
+                // Still active, check again
+                setTimeout(checkStopped, 1000);
+            }
+        };
+        
+        // Start checking after a brief delay
+        setTimeout(checkStopped, 500);
+    } else {
+        stopBtn.disabled = false;
+        stopBtn.textContent = 'Stop Sending';
+        document.getElementById('status').innerHTML = 
+            `<div class="alert alert-error">Error stopping: ${result.error || 'Unknown error'}</div>`;
+    }
+}
+
+async function updateSendingStatus() {
+    const result = await apiCall('/api/send/status');
+    
+    if (result.active) {
+        const progress = result.progress || {};
+        const sent = progress.sent || 0;
+        const failed = progress.failed || 0;
+        const total = progress.total || 0;
+        const currentName = progress.current_name || '';
+        const currentEmail = progress.current_email || '';
+        
+        let statusHtml = `<p><strong>✅ Sending in progress...</strong></p>`;
+        
+        if (total > 0) {
+            const percentage = Math.min(100, Math.round((sent / total) * 100));
+            statusHtml += `
+                <div style="margin-top: 1rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span><strong>Sent:</strong> ${sent} / ${total}</span>
+                        <span><strong>${percentage}%</strong></span>
+                    </div>
+                    <div style="background: #e0e0e0; border-radius: 4px; height: 24px; overflow: hidden;">
+                        <div style="background: #4CAF50; height: 100%; width: ${percentage}%; transition: width 0.3s;"></div>
+                    </div>
+                </div>
+            `;
+        } else {
+            statusHtml += `<p style="margin-top: 0.5rem;">Processing CSV and sending emails...</p>`;
+        }
+        
+        document.getElementById('sendingStatus').innerHTML = statusHtml;
+        
+        // Update button state
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('stopBtn').style.display = 'inline-block';
+        
+        setTimeout(updateSendingStatus, 2000);
+    } else {
+        // Not active - show current count from history (like command-line)
+        const progress = result.progress || {};
+        const sent = progress.sent || 0;
+        
+        if (sent > 0) {
+            document.getElementById('sendingStatus').innerHTML = 
+                `<p>Sent today: <strong>${sent}</strong></p>`;
+        } else {
+            document.getElementById('sendingStatus').innerHTML = 
+                `<p>No sending in progress</p>`;
+        }
+        
+        // Re-enable start button if sending finished
+        document.getElementById('startBtn').style.display = 'inline-block';
+        document.getElementById('stopBtn').style.display = 'none';
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('startBtn').textContent = '🚀 Start Sending';
+    }
+}
+
+// Auto-update status every 5 seconds
+setInterval(updateSendingStatus, 5000);
+</script>
+{% endblock %}

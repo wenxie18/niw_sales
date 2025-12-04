@@ -24,9 +24,13 @@ from email_templates_variants import format_email
 class EmailSender:
     def __init__(self, config_file='config.json'):
         """Initialize email sender with configuration."""
+        # Store config file path for resolving relative paths
+        self.config_file = str(Path(config_file).resolve())
         self.config = self.load_config(config_file)
         self.history = self.load_history()
         self.today = str(date.today())
+        self.failed_accounts = set()  # Track accounts that fail authentication
+        self.stop_check = None  # Function to check if should stop
         
     def load_config(self, config_file):
         """Load configuration from JSON."""
@@ -65,14 +69,24 @@ class EmailSender:
         if not password_file:
             raise Exception(f"No password file specified for account {account['id']}")
         
+        # Resolve to absolute path if relative
+        if not Path(password_file).is_absolute():
+            # Assume relative to config file directory
+            config_dir = Path(self.config_file).parent if hasattr(self, 'config_file') else Path.cwd()
+            password_file = str(config_dir / password_file)
+        
         try:
             with open(password_file, 'r') as f:
                 return f.read().strip()
         except FileNotFoundError:
             raise Exception(f"Password file not found: {password_file}")
     
+    def set_stop_check(self, stop_check_func):
+        """Set a function to check if sending should stop."""
+        self.stop_check = stop_check_func
+    
     def get_available_account(self):
-        """Get an account that hasn't hit its daily limit."""
+        """Get an account that hasn't hit its daily limit. Skips accounts that have failed authentication."""
         if self.today not in self.history['daily_stats']:
             self.history['daily_stats'][self.today] = {}
         
@@ -86,6 +100,11 @@ class EmailSender:
                 continue
             
             account_id = account['id']
+            
+            # Skip accounts that have failed authentication
+            if account_id in self.failed_accounts:
+                continue
+            
             sent_today = daily_stats.get(account_id, 0)
             daily_limit = account.get('daily_limit', 10)
             
@@ -121,6 +140,8 @@ class EmailSender:
     
     def send_email(self, account, recipient_email, recipient_name, paper_title="", publication_venue="arXiv"):
         """Send a single email using the specified account."""
+        account_id = account['id']
+        
         try:
             # Get password
             password = self.get_account_password(account)
@@ -162,8 +183,19 @@ class EmailSender:
             
             return True
             
+        except FileNotFoundError as e:
+            # Password file not found - mark account as failed and stop
+            error_msg = f"Password file not found for account {account_id}: {e}"
+            print(f"  ✗ {error_msg}")
+            self.failed_accounts.add(account_id)
+            raise Exception(error_msg)  # Raise to stop processing
         except Exception as e:
-            print(f"  ✗ Error sending to {recipient_email}: {e}")
+            error_msg = f"Error sending email for account {account_id}: {e}"
+            print(f"  ✗ {error_msg}")
+            # If it's a path/credentials issue, mark as failed
+            if "password" in str(e).lower() or "file" in str(e).lower() or "credentials" in str(e).lower():
+                self.failed_accounts.add(account_id)
+                raise Exception(error_msg)  # Raise to stop processing
             return False
     
     def record_sent_email(self, email, name, paper_title, account):
@@ -257,6 +289,33 @@ class EmailSender:
             print(f"\n⚠️  TEST MODE: Will only send to first recipient")
             to_send = to_send[:1]
         
+        # Validate accounts before starting
+        print("\n🔍 Validating accounts...")
+        valid_accounts = []
+        for account in self.config['accounts']:
+            if not account.get('enabled', True):
+                continue
+            if account.get('auth_method') != 'app_password':
+                continue
+            
+            account_id = account['id']
+            try:
+                # Try to get password to validate the account
+                password = self.get_account_password(account)
+                valid_accounts.append(account_id)
+                print(f"  ✓ {account_id}: Valid")
+            except Exception as e:
+                error_msg = str(e)
+                print(f"  ✗ {account_id}: FAILED - {error_msg}")
+                self.failed_accounts.add(account_id)
+        
+        if not valid_accounts:
+            error_msg = "❌ No valid SMTP accounts available! Please check password files."
+            print(f"\n{error_msg}")
+            raise Exception(error_msg)
+        
+        print(f"✅ {len(valid_accounts)} account(s) ready\n")
+        
         # Send emails
         print(f"\n{'='*80}")
         print("SENDING EMAILS")
@@ -266,6 +325,11 @@ class EmailSender:
         failed_count = 0
         
         for i, recipient in enumerate(to_send, 1):
+            # Check if should stop
+            if self.stop_check and self.stop_check():
+                print(f"\n⚠️  Stop requested - stopping email sending")
+                break
+            
             email = recipient.get('Email', '').strip()
             name = recipient.get('Author', recipient.get('Name', 'Colleague'))
             paper_title = recipient.get('Title', '')
@@ -274,7 +338,9 @@ class EmailSender:
             account, sent_today = self.get_available_account()
             
             if not account:
-                print(f"\n⚠️  All accounts have reached their daily limit!")
+                print(f"\n⚠️  All accounts have reached their daily limit or failed!")
+                if self.failed_accounts:
+                    print(f"   Failed accounts: {', '.join(self.failed_accounts)}")
                 print(f"Sent {sent_count} emails before hitting limits")
                 break
             
@@ -282,24 +348,29 @@ class EmailSender:
             print(f"           Using account: {account['id']} (sent today: {sent_today}/{account['daily_limit']})")
             
             # Send email
-            success = self.send_email(account, email, name, paper_title)
-            
-            if success:
-                sent_count += 1
-                print(f"           ✓ Sent successfully via {account['email']}")
+            try:
+                success = self.send_email(account, email, name, paper_title)
                 
-                # Save history after each send
-                self.save_history()
-                
-                # Delay before next email (random to look more human)
-                if i < len(to_send):
-                    delay_min = self.config['sending'].get('delay_min_seconds', 3)
-                    delay_max = self.config['sending'].get('delay_max_seconds', 30)
-                    delay = random.randint(delay_min, delay_max)
-                    print(f"           ⏱️  Waiting {delay} seconds before next email...")
-                    time.sleep(delay)
-            else:
-                failed_count += 1
+                if success:
+                    sent_count += 1
+                    print(f"           ✓ Sent successfully via {account['email']}")
+                    self.save_history()
+                    
+                    # Delay before next email (random to look more human)
+                    if i < len(to_send):
+                        delay_min = self.config['sending'].get('delay_min_seconds', 3)
+                        delay_max = self.config['sending'].get('delay_max_seconds', 30)
+                        delay = random.randint(delay_min, delay_max)
+                        print(f"           ⏱️  Waiting {delay} seconds before next email...")
+                        time.sleep(delay)
+                else:
+                    failed_count += 1
+            except Exception as e:
+                # Critical error (e.g., password file not found) - stop processing
+                error_msg = f"❌ Critical error: {e}"
+                print(f"\n{error_msg}")
+                print(f"   Stopping email sending. Please fix the account configuration.")
+                raise  # Re-raise to stop the process
         
         # Final summary
         print(f"\n{'='*80}")

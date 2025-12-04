@@ -1,0 +1,318 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>📧 Email Accounts</h2>
+    <button class="btn" onclick="showAddAccountModal()" style="margin-bottom: 1rem;">+ Add Account</button>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Name</th>
+                <th>Method</th>
+                <th>Daily Limit</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="accountsTable">
+            {% for account in accounts %}
+            <tr data-account-id="{{ account.id }}">
+                <td>{{ account.id }}</td>
+                <td>{{ account.email }}</td>
+                <td>{{ account.name }}</td>
+                <td>
+                    <span class="badge {% if account.auth_method == 'gmail_api' %}badge-success{% else %}badge-warning{% endif %}">
+                        {{ account.auth_method }}
+                    </span>
+                </td>
+                <td>{{ account.daily_limit }}</td>
+                <td>
+                    <button class="btn {% if account.enabled %}btn-success{% else %}btn-danger{% endif %}" 
+                            onclick="toggleAccount('{{ account.id }}', {% if account.enabled %}true{% else %}false{% endif %})"
+                            style="min-width: 100px;">
+                        {% if account.enabled %}Enabled{% else %}Disabled{% endif %}
+                    </button>
+                </td>
+                <td>
+                    {% if account.auth_method == 'gmail_api' %}
+                        <button class="btn" onclick="authenticateAccount('{{ account.id }}')" title="Re-authenticate if needed">Authenticate</button>
+                    {% endif %}
+                    <button class="btn" onclick="editAccount('{{ account.id }}')">Edit</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Account Modal -->
+<div id="addAccountModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 8px; width: 90%; max-width: 500px;">
+        <h2>Add Account</h2>
+        <form id="addAccountForm" onsubmit="addAccount(event)" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Account ID</label>
+                <input type="text" name="id" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" name="name" value="Wen" required>
+            </div>
+            <div class="form-group">
+                <label>Authentication Method</label>
+                <select name="auth_method" id="authMethodSelect" onchange="togglePasswordField()" required>
+                    <option value="app_password">SMTP (App Password)</option>
+                    <option value="gmail_api">Gmail API</option>
+                </select>
+            </div>
+            <div class="form-group" id="passwordGroup">
+                <label>App Password (16 characters)</label>
+                <input type="text" name="password" placeholder="xxxx xxxx xxxx xxxx">
+            </div>
+            <div class="form-group" id="credentialsGroup" style="display: none;">
+                <label>Gmail API Credentials JSON File</label>
+                <input type="file" name="credentials_file" id="credentialsFile" accept=".json">
+                <small style="color: #666; display: block; margin-top: 0.5rem;">Upload the credentials JSON file downloaded from Google Cloud Console</small>
+            </div>
+            <div class="form-group">
+                <label>Daily Limit</label>
+                <input type="number" name="daily_limit" value="10" min="1" required>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button type="submit" class="btn">Add Account</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Account Modal -->
+<div id="editAccountModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 8px; width: 90%; max-width: 500px;">
+        <h2>Edit Account</h2>
+        <form id="editAccountForm" onsubmit="saveAccountEdit(event)">
+            <input type="hidden" id="editAccountId" name="id">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="editAccountEmail" name="email" required>
+            </div>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="editAccountName" name="name" required>
+            </div>
+            <div class="form-group">
+                <label>Daily Limit</label>
+                <input type="number" id="editAccountDailyLimit" name="daily_limit" min="1" required>
+            </div>
+            <div class="form-group" id="editPasswordGroup">
+                <label>App Password (leave blank to keep current)</label>
+                <input type="text" name="password" placeholder="xxxx xxxx xxxx xxxx">
+                <small style="color: #666; display: block; margin-top: 0.5rem;">Only fill this if you want to update the password</small>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 1rem; justify-content: space-between;">
+                <div>
+                    <button type="submit" class="btn">Save Changes</button>
+                    <button type="button" class="btn" onclick="closeEditModal()" style="margin-left: 0.5rem;">Cancel</button>
+                </div>
+                <button type="button" class="btn btn-danger" onclick="deleteAccountFromModal()">Delete Account</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function showAddAccountModal() {
+    document.getElementById('addAccountModal').style.display = 'block';
+}
+
+function closeModal() {
+    document.getElementById('addAccountModal').style.display = 'none';
+    document.getElementById('addAccountForm').reset();
+}
+
+function togglePasswordField() {
+    const method = document.getElementById('authMethodSelect').value;
+    const passwordGroup = document.getElementById('passwordGroup');
+    const credentialsGroup = document.getElementById('credentialsGroup');
+    if (method === 'app_password') {
+        passwordGroup.style.display = 'block';
+        credentialsGroup.style.display = 'none';
+    } else {
+        passwordGroup.style.display = 'none';
+        credentialsGroup.style.display = 'block';
+    }
+}
+
+async function addAccount(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    
+    // Check if credentials file is needed
+    const authMethod = formData.get('auth_method');
+    const credentialsFile = document.getElementById('credentialsFile').files[0];
+    
+    if (authMethod === 'gmail_api' && !credentialsFile) {
+        alert('Please upload the Gmail API credentials JSON file');
+        return;
+    }
+    
+    // Create FormData for file upload
+    const uploadFormData = new FormData();
+    uploadFormData.append('id', formData.get('id'));
+    uploadFormData.append('email', formData.get('email'));
+    uploadFormData.append('name', formData.get('name'));
+    uploadFormData.append('auth_method', authMethod);
+    uploadFormData.append('daily_limit', formData.get('daily_limit'));
+    
+    if (authMethod === 'app_password') {
+        uploadFormData.append('password', formData.get('password'));
+    } else if (authMethod === 'gmail_api' && credentialsFile) {
+        uploadFormData.append('credentials_file', credentialsFile);
+    }
+    
+    try {
+        const response = await fetch('/api/accounts', {
+            method: 'POST',
+            body: uploadFormData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Account added successfully!');
+            location.reload();
+        } else {
+            alert('Error: ' + (result.error || 'Unknown error'));
+        }
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
+}
+
+async function authenticateAccount(accountId) {
+    if (!confirm('This will open a browser window for authentication. Continue?')) {
+        return;
+    }
+    
+    const result = await apiCall(`/api/accounts/${accountId}/authenticate`, {
+        method: 'POST'
+    });
+    
+    if (result.success) {
+        alert('Authentication successful!');
+    } else {
+        alert('Error: ' + (result.error || 'Authentication failed'));
+    }
+}
+
+async function toggleAccount(accountId, currentStatus) {
+    const newStatus = !currentStatus;
+    const statusText = newStatus ? 'enable' : 'disable';
+    
+    if (!confirm(`Are you sure you want to ${statusText} this account?`)) {
+        return;
+    }
+    
+    const result = await apiCall(`/api/accounts/${accountId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ enabled: newStatus })
+    });
+    
+    if (result.success) {
+        location.reload();
+    } else {
+        alert('Error: ' + (result.error || 'Failed to update account'));
+    }
+}
+
+async function deleteAccountFromModal() {
+    const accountId = document.getElementById('editAccountId').value;
+    
+    if (!confirm(`Are you sure you want to delete account "${accountId}"? This action cannot be undone.`)) {
+        return;
+    }
+    
+    const result = await apiCall(`/api/accounts/${accountId}`, {
+        method: 'DELETE'
+    });
+    
+    if (result.success) {
+        alert('Account deleted successfully');
+        location.reload();
+    } else {
+        alert('Error deleting account');
+    }
+}
+
+async function editAccount(accountId) {
+    // Get account data
+    const accounts = await apiCall('/api/accounts');
+    const account = accounts.find(acc => acc.id === accountId);
+    
+    if (!account) {
+        alert('Account not found');
+        return;
+    }
+    
+    // Populate edit form
+    document.getElementById('editAccountId').value = account.id;
+    document.getElementById('editAccountEmail').value = account.email;
+    document.getElementById('editAccountName').value = account.name;
+    document.getElementById('editAccountDailyLimit').value = account.daily_limit;
+    
+    // Show/hide password field based on auth method
+    const passwordGroup = document.getElementById('editPasswordGroup');
+    if (account.auth_method === 'app_password') {
+        passwordGroup.style.display = 'block';
+    } else {
+        passwordGroup.style.display = 'none';
+    }
+    
+    // Show edit modal
+    document.getElementById('editAccountModal').style.display = 'block';
+}
+
+function closeEditModal() {
+    document.getElementById('editAccountModal').style.display = 'none';
+    document.getElementById('editAccountForm').reset();
+}
+
+async function saveAccountEdit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const accountId = formData.get('id');
+    
+    const data = {
+        email: formData.get('email'),
+        name: formData.get('name'),
+        daily_limit: parseInt(formData.get('daily_limit'))
+    };
+    
+    // If password is provided for app_password accounts, include it
+    const password = formData.get('password');
+    if (password && password.trim()) {
+        data.password = password;
+    }
+    
+    const result = await apiCall(`/api/accounts/${accountId}`, {
+        method: 'PUT',
+        body: JSON.stringify(data)
+    });
+    
+    if (result.success) {
+        alert('Account updated successfully!');
+        location.reload();
+    } else {
+        alert('Error: ' + (result.error || 'Failed to update account'));
+    }
+}
+</script>
+{% endblock %}
+

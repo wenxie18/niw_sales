@@ -57,7 +57,7 @@ I came across your recent work titled "{paper_title}", and it caught my attentio
 
 I'm Wen. I was an international PhD student myself, and after going through the NIW process firsthand, I understand how challenging it can be. Many people face a difficult choice: hiring an attorney can be very expensive, often beyond what's feasible for early career researchers, while the DIY route feels overwhelming because it's hard to know where to start, what forms to fill out, or what a strong application should look like.
 
-That's why a few of us (former international PhD students) created a tool to help make this easier. It's called TurboNIW: https://www.turboniw.com/
+That's why a few of us (former international PhD students) created a tool to help make this easier. It's called <strong>TurboNIW</strong>.
 
 It provides petition letter drafts and completed forms, designed for people who want to handle NIW themselves but need a clearer starting point and guidance on the process. We built this because we know how stressful and uncertain this journey can be, and we wanted to help others navigate it with more confidence.
 
@@ -71,8 +71,8 @@ Best,
 Wen
 
 --
-We've Been There. Now, We're Here for You.
-TurboNIW: https://www.turboniw.com/
+<strong>We've Been There. Now, We're Here for You.</strong>
+<strong>TurboNIW</strong>: https://www.turboniw.com/
 --
 Wen Xie, Faculty Postdoc Fellow at Experiential AI
 Northeastern University
@@ -92,7 +92,7 @@ I recently saw your work titled "{paper_title}" and found it quite interesting, 
 
 A bit about me: I'm Wen, a former international PhD student who went through the NIW process myself. One thing I remember clearly is how overwhelming it was. Many of us face a tough situation: attorney fees can be quite high, which makes it difficult for many researchers, while trying to do it yourself feels impossible without guidance on where to start or what the process should look like.
 
-After finishing my degree, I teamed up with a few others (former PhD students) to build something that could help. We created TurboNIW, a DIY tool that generates petition drafts and completes forms: https://www.turboniw.com/
+After finishing my degree, I teamed up with a few others (former PhD students) to build something that could help. We created <strong>TurboNIW</strong>, a DIY tool that generates petition drafts and completes forms.
 
 It's meant to reduce the stress and uncertainty for people who want to handle NIW on their own but don't know where to begin. We know how challenging this process can be, and we wanted to create something that could help others navigate it with more confidence and less anxiety.
 
@@ -106,8 +106,8 @@ Best regards,
 Wen
 
 --
-We've Been There. Now, We're Here for You.
-TurboNIW: https://www.turboniw.com/
+<strong>We've Been There. Now, We're Here for You.</strong>
+<strong>TurboNIW</strong>: https://www.turboniw.com/
 
 --
 Wen Xie, Faculty Postdoc Fellow at Experiential AI
@@ -128,7 +128,7 @@ I came across your recent work titled "{paper_title}". Given the areas you're re
 
 A little background: I'm Wen, and I used to be an international PhD student in the U.S. When I went through the NIW application process, I quickly realized how difficult the situation can be for many researchers. Attorney fees can be quite high, which makes it challenging for many of us, while the DIY path is confusing because there's no clear guide for beginners on where to start, what forms to fill out, or how to structure the application.
 
-To help address this, a few of us who went through the same experience built a straightforward tool called TurboNIW: https://www.turboniw.com/
+To help address this, a few of us who went through the same experience built a straightforward tool called <strong>TurboNIW</strong>.
 
 It helps generate petition drafts and completed forms, giving people a solid starting point if they want to handle NIW themselves. We created this because we understand how stressful and uncertain this process can be, and we wanted to help others navigate it with more confidence.
 
@@ -142,8 +142,8 @@ All the best,
 Wen
 
 --
-We've Been There. Now, We're Here for You.
-TurboNIW: https://www.turboniw.com/
+<strong>We've Been There. Now, We're Here for You.</strong>
+<strong>TurboNIW</strong>: https://www.turboniw.com/
 
 --
 Wen Xie, Faculty Postdoc Fellow at Experiential AI
@@ -164,7 +164,7 @@ I wanted to reach out because I recently came across your work titled "{paper_ti
 
 I'm Wen, a former international PhD student who went through the NIW process myself. One of the hardest parts for me was facing the reality that many of us encounter: attorney fees can be quite high, which isn't always feasible, while trying the DIY route feels overwhelming without proper guidance on where to start or what the process should look like.
 
-After finishing my PhD, I worked with a few others who had similar experiences, and we built a tool to help people navigate this more easily. It's called TurboNIW: https://www.turboniw.com/
+After finishing my PhD, I worked with a few others who had similar experiences, and we built a tool to help people navigate this more easily. It's called <strong>TurboNIW</strong>.
 
 The goal is to provide a petition draft and completed forms, designed for researchers who want to take control of their NIW application but need a clearer roadmap and guidance through the process. We know how challenging this journey can be, and we wanted to create something that could help reduce the stress and uncertainty.
 
@@ -178,8 +178,8 @@ Best,
 Wen
 
 --
-We've Been There. Now, We're Here for You.
-TurboNIW: https://www.turboniw.com/
+<strong>We've Been There. Now, We're Here for You.</strong>
+<strong>TurboNIW</strong>
 
 --
 Wen Xie, Faculty Postdoc Fellow at Experiential AI
@@ -200,7 +200,7 @@ I recently came across your work titled "{paper_title}", and it stood out to me,
 
 A bit about myself: I'm Wen, and I used to be an international PhD student. I went through the NIW application process on my own, and I remember how challenging it was. Many researchers face a difficult situation: attorney fees can be quite high, which makes it hard for many of us, while trying to DIY it felt like navigating a maze without a map, not knowing where to start or what the process should look like.
 
-After going through that experience, I teamed up with a few others (former PhD students) to create a tool that could make this process more accessible. We built TurboNIW: https://www.turboniw.com/
+After going through that experience, I teamed up with a few others (former PhD students) to create a tool that could make this process more accessible. We built <strong>TurboNIW</strong>.
 
 It's a straightforward DIY tool that generates petition drafts and completes forms. The idea is to give people a solid starting point and clear guidance, reducing the stress and uncertainty that comes with navigating the process alone. We built this because we understand how overwhelming this can feel, and we wanted to help others who might be in the same situation.
 
@@ -214,8 +214,8 @@ Best regards,
 Wen
 
 --
-We've Been There. Now, We're Here for You.
-TurboNIW: https://www.turboniw.com/
+<strong>We've Been There. Now, We're Here for You.</strong>
+<strong>TurboNIW</strong>
 
 --
 Wen Xie, Faculty Postdoc Fellow at Experiential AI

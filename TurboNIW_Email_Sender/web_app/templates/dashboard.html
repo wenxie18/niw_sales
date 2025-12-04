@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>📊 Dashboard Overview</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+        <div>
+            <div style="font-size: 2rem; font-weight: bold; color: #3498db;">{{ total_accounts }}</div>
+            <div style="color: #666;">Total Accounts</div>
+        </div>
+        <div>
+            <div style="font-size: 2rem; font-weight: bold; color: #27ae60;">{{ enabled_accounts }}</div>
+            <div style="color: #666;">Active Accounts</div>
+        </div>
+        <div>
+            <div style="font-size: 2rem; font-weight: bold; color: #e74c3c;">{{ total_sent_today }}</div>
+            <div style="color: #666;">Sent Today</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>📧 Account Status</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Method</th>
+                <th>Sent Today</th>
+                <th>Daily Limit</th>
+                <th>Remaining</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in account_stats %}
+            <tr>
+                <td>{{ stat.email }}</td>
+                <td>
+                    <span class="badge {% if stat.method == 'gmail_api' %}badge-success{% else %}badge-warning{% endif %}">
+                        {{ stat.method }}
+                    </span>
+                </td>
+                <td>{{ stat.sent_today }}</td>
+                <td>{{ stat.daily_limit }}</td>
+                <td>
+                    <span class="badge {% if stat.remaining > 0 %}badge-success{% else %}badge-danger{% endif %}">
+                        {{ stat.remaining }}
+                    </span>
+                </td>
+                <td>
+                    {% if stat.remaining > 0 %}
+                        <span class="badge badge-success">Ready</span>
+                    {% else %}
+                        <span class="badge badge-danger">Limit Reached</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h2>⚡ Quick Actions</h2>
+    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+        <a href="/accounts" class="btn">Manage Accounts</a>
+        <a href="/send" class="btn">Send Emails</a>
+        <a href="/settings" class="btn">Settings</a>
+    </div>
+</div>
+{% endblock %}
+

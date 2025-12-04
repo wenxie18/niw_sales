@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>⚙️ Settings</h2>
+    <form id="settingsForm" onsubmit="saveSettings(event)">
+        <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">Sending Parameters</h3>
+        
+        <div class="form-group">
+            <label>Minimum Delay (seconds)</label>
+            <input type="number" name="delay_min" value="{{ config.sending.delay_min_seconds }}" min="1" required>
+            <small style="color: #666;">Minimum wait time between emails</small>
+        </div>
+        
+        <div class="form-group">
+            <label>Maximum Delay (seconds)</label>
+            <input type="number" name="delay_max" value="{{ config.sending.delay_max_seconds }}" min="1" required>
+            <small style="color: #666;">Maximum wait time between emails (random between min and max)</small>
+        </div>
+        
+        <div class="form-group">
+            <label>Max Retries</label>
+            <input type="number" name="max_retries" value="{{ config.sending.max_retries }}" min="0" required>
+            <small style="color: #666;">Number of retry attempts for failed sends</small>
+        </div>
+        
+        <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Test Whitelist</h3>
+        <div class="form-group">
+            <label>Test Emails (one per line)</label>
+            <textarea name="whitelist" rows="5" placeholder="test@example.com&#10;another@test.com">{% for email in config.test_whitelist.emails %}{{ email }}
+{% endfor %}</textarea>
+            <small style="color: #666;">These emails can always be sent to, even if already sent before</small>
+        </div>
+        
+        <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Blacklist</h3>
+        <div class="form-group">
+            <label>Blocked Emails (one per line)</label>
+            <textarea name="blacklist" rows="5" placeholder="advisor@university.edu&#10;colleague@company.com">{% for email in config.blacklist.emails %}{{ email }}
+{% endfor %}</textarea>
+            <small style="color: #666;">These emails will NEVER receive emails, even if in CSV</small>
+        </div>
+        
+        <div style="margin-top: 2rem;">
+            <button type="submit" class="btn">Save Settings</button>
+        </div>
+    </form>
+</div>
+
+<script>
+async function saveSettings(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    
+    const data = {
+        sending: {
+            delay_min_seconds: parseInt(formData.get('delay_min')),
+            delay_max_seconds: parseInt(formData.get('delay_max')),
+            max_retries: parseInt(formData.get('max_retries'))
+        },
+        test_whitelist: {
+            emails: formData.get('whitelist').split('\n').filter(e => e.trim())
+        },
+        blacklist: {
+            emails: formData.get('blacklist').split('\n').filter(e => e.trim())
+        }
+    };
+    
+    const result = await apiCall('/api/settings', {
+        method: 'PUT',
+        body: JSON.stringify(data)
+    });
+    
+    if (result.success) {
+        alert('Settings saved successfully!');
+    } else {
+        alert('Error saving settings');
+    }
+}
+</script>
+{% endblock %}
+

@@ -44,10 +44,14 @@ class GmailAPISender:
                 "Install with: pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client"
             )
         
+        # Store config file path for resolving relative paths
+        self.config_file = str(Path(config_file).resolve())
         self.config = self.load_config(config_file)
         self.history = self.load_history()
         self.today = str(date.today())
         self.services = {}  # Cache for authenticated services
+        self.failed_accounts = set()  # Track accounts that fail authentication
+        self.stop_check = None  # Function to check if should stop
     
     def load_config(self, config_file):
         """Load configuration."""
@@ -83,7 +87,16 @@ class GmailAPISender:
         if not credentials_file:
             raise Exception(f"No credentials file for account {account_id}")
         
-        token_file = f".secrets/{account_id}_token.json"
+        # Resolve to absolute path if relative
+        if not Path(credentials_file).is_absolute():
+            # Assume relative to config file directory
+            config_dir = Path(self.config_file).parent if hasattr(self, 'config_file') else Path.cwd()
+            credentials_file = str(config_dir / credentials_file)
+        
+        # Resolve token file path similarly
+        config_dir = Path(self.config_file).parent if hasattr(self, 'config_file') else Path.cwd()
+        token_file = str(config_dir / '.secrets' / f"{account_id}_token.json")
+        
         creds = None
         
         # Load existing token
@@ -99,7 +112,7 @@ class GmailAPISender:
                 creds = flow.run_local_server(port=0)
             
             # Save token
-            Path(token_file).parent.mkdir(exist_ok=True)
+            Path(token_file).parent.mkdir(parents=True, exist_ok=True)
             with open(token_file, 'w') as token:
                 token.write(creds.to_json())
         
@@ -137,6 +150,8 @@ class GmailAPISender:
     
     def send_email(self, account, recipient_email, recipient_name, paper_title="", publication_venue="arXiv"):
         """Send email using Gmail API."""
+        account_id = account['id']
+        
         try:
             # Authenticate
             service = self.authenticate_account(account)
@@ -155,15 +170,35 @@ class GmailAPISender:
             
             return True
             
+        except FileNotFoundError as e:
+            # Credentials file not found - mark account as failed and stop
+            error_msg = f"Credentials file not found for account {account_id}: {e}"
+            print(f"  ✗ {error_msg}")
+            self.failed_accounts.add(account_id)
+            raise Exception(error_msg)  # Raise to stop processing
         except HttpError as error:
-            print(f"  ✗ Gmail API error: {error}")
+            error_msg = f"Gmail API error for account {account_id}: {error}"
+            print(f"  ✗ {error_msg}")
+            # For API errors, mark as failed if it's an auth/permission issue
+            if error.resp.status in [401, 403]:
+                self.failed_accounts.add(account_id)
+                raise Exception(error_msg)  # Raise to stop processing
             return False
         except Exception as e:
-            print(f"  ✗ Error: {e}")
+            error_msg = f"Error for account {account_id}: {e}"
+            print(f"  ✗ {error_msg}")
+            # If it's a path/credentials issue, mark as failed
+            if "credentials" in str(e).lower() or "file" in str(e).lower():
+                self.failed_accounts.add(account_id)
+                raise Exception(error_msg)  # Raise to stop processing
             return False
     
+    def set_stop_check(self, stop_check_func):
+        """Set a function to check if sending should stop."""
+        self.stop_check = stop_check_func
+    
     def get_available_account(self):
-        """Get account with capacity."""
+        """Get account with capacity. Skips accounts that have failed authentication."""
         if self.today not in self.history['daily_stats']:
             self.history['daily_stats'][self.today] = {}
         
@@ -176,6 +211,11 @@ class GmailAPISender:
                 continue
             
             account_id = account['id']
+            
+            # Skip accounts that have failed authentication
+            if account_id in self.failed_accounts:
+                continue
+            
             sent_today = daily_stats.get(account_id, 0)
             daily_limit = account.get('daily_limit', 2000)
             
@@ -284,11 +324,43 @@ class GmailAPISender:
         if test_mode:
             to_send = to_send[:1]
         
+        # Validate accounts before starting
+        print("\n🔍 Validating accounts...")
+        valid_accounts = []
+        for account in self.config['accounts']:
+            if not account.get('enabled', True):
+                continue
+            if account.get('auth_method') != 'gmail_api':
+                continue
+            
+            account_id = account['id']
+            try:
+                # Try to authenticate to validate the account
+                service = self.authenticate_account(account)
+                valid_accounts.append(account_id)
+                print(f"  ✓ {account_id}: Valid")
+            except Exception as e:
+                error_msg = str(e)
+                print(f"  ✗ {account_id}: FAILED - {error_msg}")
+                self.failed_accounts.add(account_id)
+        
+        if not valid_accounts:
+            error_msg = "❌ No valid Gmail API accounts available! Please check credentials files."
+            print(f"\n{error_msg}")
+            raise Exception(error_msg)
+        
+        print(f"✅ {len(valid_accounts)} account(s) ready\n")
+        
         # Send
         sent_count = 0
         failed_count = 0
         
         for i, recipient in enumerate(to_send, 1):
+            # Check if should stop
+            if self.stop_check and self.stop_check():
+                print(f"\n⚠️  Stop requested - stopping email sending")
+                break
+            
             email = recipient.get('Email', '').strip()
             name = recipient.get('Author', recipient.get('Name', 'Colleague'))
             paper_title = recipient.get('Title', '')
@@ -296,24 +368,33 @@ class GmailAPISender:
             account, sent_today = self.get_available_account()
             
             if not account:
-                print(f"\n⚠️  All accounts at limit!")
+                print(f"\n⚠️  All accounts at limit or failed!")
+                if self.failed_accounts:
+                    print(f"   Failed accounts: {', '.join(self.failed_accounts)}")
                 break
             
             print(f"[{i}/{len(to_send)}] {name} <{email}>")
             print(f"           Account: {account['id']} ({sent_today}/{account['daily_limit']})")
             
-            if self.send_email(account, email, name, paper_title):
-                sent_count += 1
-                print(f"           ✓ Sent")
-                self.save_history()
-                if i < len(to_send):
-                    delay_min = self.config['sending'].get('delay_min_seconds', 3)
-                    delay_max = self.config['sending'].get('delay_max_seconds', 30)
-                    delay = random.randint(delay_min, delay_max)
-                    print(f"           ⏱️  Waiting {delay} seconds before next email...")
-                    time.sleep(delay)
-            else:
-                failed_count += 1
+            try:
+                if self.send_email(account, email, name, paper_title):
+                    sent_count += 1
+                    print(f"           ✓ Sent")
+                    self.save_history()
+                    if i < len(to_send):
+                        delay_min = self.config['sending'].get('delay_min_seconds', 3)
+                        delay_max = self.config['sending'].get('delay_max_seconds', 30)
+                        delay = random.randint(delay_min, delay_max)
+                        print(f"           ⏱️  Waiting {delay} seconds before next email...")
+                        time.sleep(delay)
+                else:
+                    failed_count += 1
+            except Exception as e:
+                # Critical error (e.g., credentials not found) - stop processing
+                error_msg = f"❌ Critical error: {e}"
+                print(f"\n{error_msg}")
+                print(f"   Stopping email sending. Please fix the account configuration.")
+                raise  # Re-raise to stop the process
         
         # Summary
         print(f"\n{'='*80}")

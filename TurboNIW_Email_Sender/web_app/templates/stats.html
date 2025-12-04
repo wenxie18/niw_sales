@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>📊 Statistics</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+        <div>
+            <div style="font-size: 2rem; font-weight: bold; color: #3498db;">{{ total_recipients }}</div>
+            <div style="color: #666;">Total Recipients</div>
+        </div>
+        <div>
+            <div style="font-size: 2rem; font-weight: bold; color: #27ae60;">{{ total_emails_sent }}</div>
+            <div style="color: #666;">Total Emails Sent</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>📈 Daily Sending History (Last 30 Days)</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Emails Sent</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for date in dates %}
+            <tr>
+                <td>{{ date }}</td>
+                <td>{{ daily_stats[date].total if daily_stats[date].total else sum(daily_stats[date].values()) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
