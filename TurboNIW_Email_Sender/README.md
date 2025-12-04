@@ -53,24 +53,43 @@ Edit `config.json`:
       "id": "account2",
       "email": "your-email2@gmail.com",
       "name": "Your Name",
-      "auth_method": "app_password",
-      "app_password_file": ".secrets/account2_password.txt",
-      "daily_limit": 10,
+      "auth_method": "gmail_api",
+      "credentials_file": ".secrets/gmail_credentials_account2.json",
+      "daily_limit": 50,
       "enabled": true
     }
   ],
   "email": {
-    "subject": "Your email subject here"
+    "_note": "Subject lines are dynamically generated from email_templates_variants.py (5 variants)"
   },
   "sending": {
-    "delay_between_emails_seconds": 3,
-    "max_retries": 3
+    "delay_min_seconds": 10,
+    "delay_max_seconds": 60,
+    "max_retries": 2
   },
   "paths": {
     "sent_history": "sent_history.json"
+  },
+  "test_whitelist": {
+    "_note": "Emails in this list can always be sent to, even if already sent before (for testing)",
+    "emails": [
+      "test@example.com"
+    ]
+  },
+  "blacklist": {
+    "_note": "Emails in this list will NEVER receive emails, even if they appear in the CSV",
+    "emails": [
+      "advisor@university.edu"
+    ]
   }
 }
 ```
+
+**Key features:**
+- **Subject lines**: Automatically generated from 5 variants (no need to set manually)
+- **Random delays**: Between `delay_min_seconds` and `delay_max_seconds` (mimics human behavior)
+- **Whitelist**: Test emails that can always be sent (useful for testing)
+- **Blacklist**: Emails that will never receive emails (e.g., advisors, colleagues)
 
 ### 3. Setup Gmail App Passwords
 
@@ -312,11 +331,11 @@ Sending **identical emails** repeatedly triggers spam filters. Gmail/Outlook det
 ### Our Solution: Multi-Variant System
 
 **5 Subject Line Variants:**
-1. "A resource for NIW green card applications (from a fellow researcher)"
-2. "Quick NIW resource that might help your students/colleagues"
-3. "Thought this might be useful — NIW DIY tool for researchers"
-4. "Following up on your {venue} work — NIW resource to share"
-5. "NIW green card resource (in case it's helpful)"
+1. "Greetings from Wen, a resource you might find helpful"
+2. "Hi from Wen, sharing a helpful NIW resource"
+3. "Hello from Wen, a resource for NIW applications"
+4. "Quick hello and a resource to share"
+5. "Hi, Wen here, wanted to share something helpful"
 
 **5 Email Body Variants:**
 - Each has the **same core message** (TurboNIW resource)
@@ -372,35 +391,26 @@ subject, body = format_email(
 
 ---
 
-## 🔧 Customizing Email Template
+## 🔧 Customizing Email Templates
 
-Edit `email_template.py` to customize your email content:
+Edit `email_templates_variants.py` to customize email content:
 
-```python
-def format_email(recipient_name):
-    """
-    Customize this function to change email content.
-    
-    Returns:
-        tuple: (html_content, plain_text_content)
-    """
-    html = f"""
-    <html>
-    <body>
-        <p>Hi {recipient_name},</p>
-        <p>Your message here...</p>
-    </body>
-    </html>
-    """
-    
-    plain_text = f"""
-    Hi {recipient_name},
-    
-    Your message here...
-    """
-    
-    return html, plain_text
-```
+- **Subject lines**: Modify `SUBJECT_VARIANTS` list
+- **Email bodies**: Modify `EMAIL_BODY_VARIANT_1` through `EMAIL_BODY_VARIANT_5`
+- **Signature**: Modify `EMAIL_SIGNATURE`
+
+The system automatically:
+- Randomly selects one subject line and one body variant per email
+- Formats recipient name (uses first name)
+- Inserts paper title (if provided in CSV)
+- Adds signature to all emails
+
+**Key features:**
+- Empathetic tone emphasizing helping researchers
+- Mentions attorney fees being high (without explicit pricing)
+- Includes referral appreciation (subtle, no explicit amounts)
+- Best wishes for research at the end
+- No dashes (uses commas for natural flow)
 
 ---
 
@@ -410,15 +420,20 @@ def format_email(recipient_name):
 TurboNIW_Email_Sender/
 ├── send_emails_smtp.py          # SMTP sender (app passwords)
 ├── send_emails_gmail_api.py     # Gmail API sender
-├── email_template.py            # Email content template
-├── config.json                  # Your configuration
-├── config.json.example          # Example config
-├── sent_history.json            # Tracking data (auto-created)
+├── email_templates_variants.py  # Multi-variant email templates (5×5 combinations)
+├── email_template.py            # Legacy template (for reference)
+├── test_gmail_auth.py           # Gmail API authentication helper
+├── config.json                  # Your configuration (⚠️ NOT in git)
+├── sent_history.json            # Tracking data (auto-created, ⚠️ NOT in git)
 ├── requirements.txt             # Python dependencies
 ├── .secrets/                    # ⚠️ NEVER COMMIT THIS!
-│   ├── account1_password.txt    # App password for account 1
-│   └── account2_password.txt    # App password for account 2
-└── README.md                    # This file
+│   ├── account*_password.txt    # App passwords for SMTP accounts
+│   ├── gmail_credentials_account*.json  # OAuth credentials for Gmail API
+│   └── account*_gmail_api_token.json   # OAuth tokens (auto-generated)
+├── README.md                    # This file
+├── EMAIL_VARIANTS_STRATEGY.md   # Anti-spam strategy documentation
+├── ANTI_SPAM_IMPROVEMENTS.md    # Spam prevention improvements
+└── EMAIL_REVISIONS_MARKETING.md # Marketing-focused revisions
 ```
 
 ---

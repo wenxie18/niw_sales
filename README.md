@@ -1,171 +1,236 @@
-# ACL Paper Information Extractor
+# NIW Sales - Research Paper Collection & Email Outreach System
 
-Extract paper information (title, authors, emails, institutions) from ACL Anthology PDFs for email outreach campaigns.
+A comprehensive system for collecting research papers from ACL Anthology and arXiv, extracting author and email information, and conducting professional email outreach campaigns.
 
-## Features
+## 🎯 Overview
 
-- ✅ Downloads and parses ACL PDFs from URLs
-- ✅ Extracts paper titles (skips proceedings headers)
-- ✅ Extracts author names with order tracking (first/last author marking)
-- ✅ Extracts email addresses
-- ✅ Extracts institutions based on superscript symbols/numbers
-- ✅ Matches authors with their emails using intelligent heuristics
-- ✅ Provides confidence scores for email matches
-- ✅ Auto-detects paper range by trying papers until 404 error
-- ✅ Exports to CSV format for easy email campaigns
+This repository contains tools for:
+1. **Paper Collection**: Automated collection of papers from ACL Anthology and arXiv
+2. **Data Extraction**: Extracting titles, authors, emails, and institutions from PDFs
+3. **Email Matching**: Intelligent matching of authors with their email addresses
+4. **Email Outreach**: Professional email sending system with multi-account support and spam protection
 
-## Installation
+## 📁 Project Structure
 
-1. Install dependencies:
+```
+niw_sales/
+├── 1-acl_info.py                    # ACL paper extraction (single paper)
+├── 1.1-collect_years_acl.py         # Batch ACL collection by year
+├── 2.3-extract_emails.py            # arXiv email extraction (single paper)
+├── 2.4-batch_extract_emails.py      # Batch arXiv email extraction
+├── 2.7.2-collect_round2_monthly.py  # Monthly arXiv collection (bypasses API limits)
+├── 2.12-batch_extract_round2_emails.py  # Round 2 email extraction
+├── email_postprocess.py             # Universal post-processing (combine, filter, clean)
+├── remove_acl_duplicates_from_arxiv.py  # Remove ACL duplicates from arXiv data
+├── requirements_acl.txt            # Python dependencies for ACL/arXiv scripts
+│
+├── data/
+│   ├── acl/                        # ACL paper data
+│   │   ├── acl_YYYY_track.csv      # Collected papers by year/track
+│   │   ├── acl_high_confidence.csv # High-confidence email matches
+│   │   └── COLLECTION_STATUS.md     # Collection status tracking
+│   │
+│   └── arxiv/                      # arXiv paper data
+│       ├── round1/                  # First collection round
+│       │   ├── cs_XX_YYYY.csv      # Papers by category/year
+│       │   ├── cs_XX_YYYY_email.csv # Extracted emails
+│       │   └── arxiv_high_confidence.csv # Combined high-confidence results
+│       ├── round2/                 # Second collection round (completing round1)
+│       └── logs/                    # Processing logs
+│
+└── TurboNIW_Email_Sender/           # Email sending system
+    ├── send_emails_smtp.py          # SMTP email sender
+    ├── send_emails_gmail_api.py     # Gmail API sender
+    ├── email_templates_variants.py  # Multi-variant email templates
+    ├── config.json                  # Email account configuration
+    └── README.md                    # Detailed email sender documentation
+```
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+
 ```bash
 pip install -r requirements_acl.txt
 ```
 
-Or install manually:
+### 2. Collect Papers
+
+#### ACL Anthology
+
+**Single paper:**
 ```bash
-pip install PyPDF2 pdfplumber requests
+python 1-acl_info.py "https://aclanthology.org/2024.acl-long.1.pdf"
 ```
 
-## Quick Start
-
-### Single Paper:
+**Collect by year:**
 ```bash
-python extract_acl_info.py "https://aclanthology.org/2024.acl-long.1.pdf"
+python 1.1-collect_years_acl.py
+```
+Edit the script to specify which years/tracks to collect.
+
+#### arXiv
+
+**Collect papers by category and year:**
+```bash
+python 2.7.2-collect_round2_monthly.py
+```
+This script collects papers from arXiv API, organized by category (e.g., `cs.RO`, `cs.LG`) and year.
+
+**Extract emails from collected papers:**
+```bash
+python 2.4-batch_extract_emails.py
+```
+Processes all collected CSV files and extracts emails from PDFs.
+
+### 3. Post-Process Data
+
+Combine, filter, and clean the collected data:
+```bash
+python email_postprocess.py
 ```
 
-This will create `acl_papers_info.csv` with the extracted information.
+This script:
+- Combines multiple CSV files
+- Filters by confidence score
+- Removes duplicates
+- Excludes Chinese emails (optional)
+- Generates summary reports
 
-### Auto-Detect Paper Range:
+### 4. Send Emails
+
+See `TurboNIW_Email_Sender/README.md` for detailed email sending instructions.
+
+**Quick example:**
 ```bash
-# Auto-detect all papers for 2024 long papers
-python extract_acl_info.py --year 2024 --track long --auto-detect --output 2024-long.csv
-
-# For 2020 (uses 'main' track, starts from paper 100)
-python extract_acl_info.py --year 2020 --track main --auto-detect --output 2020-main.csv
-
-# For 2019 (uses P19- format, starts from paper 1001)
-python extract_acl_info.py --year 2019 --track long --auto-detect --output 2019-papers.csv
+cd TurboNIW_Email_Sender
+python send_emails_smtp.py --csv ../data/arxiv/round1/arxiv_high_confidence_non_chinese.csv --max 10
 ```
 
-The script will:
-- Automatically try papers until it encounters 3 consecutive 404 errors
-- Show progress: `[1/100] Processing: ...` for each paper
-- Save results in real-time after each paper (so you can see progress even if interrupted)
+## 📊 Data Collection Workflow
 
-**URL Format by Year:**
-- **2021-2024**: `{year}.acl-{track}.{num}.pdf` (e.g., `2024.acl-long.1.pdf`)
-- **2020**: `{year}.acl-main.{num}.pdf` (e.g., `2020.acl-main.100.pdf`) - starts from 100
-- **2019**: `P19-{num}.pdf` (e.g., `P19-1001.pdf`) - starts from 1001
+### ACL Anthology
 
-### Range of Papers:
-```bash
-# Papers 1 to 10
-python extract_acl_info.py --range 1 10
+1. **Collect papers** using `1.1-collect_years_acl.py`
+   - Supports years 2019-2025
+   - Handles different URL formats by year
+   - Auto-detects paper ranges
 
-# Specific papers
-python extract_acl_info.py --range 1 5 7 10
-```
+2. **Output**: CSV files with paper URLs, titles, authors, emails, confidence scores
 
-### Collect Multiple Years:
-```bash
-# Collect papers for specified years (edit collect_years.py to change years)
-python collect_years.py
-```
+### arXiv
 
-This will:
-- Create separate CSV files based on year format:
-  - 2021-2024: `YEAR-long.csv` (e.g., `2024-long.csv`)
-  - 2020: `2020-main.csv`
-  - 2019: `2019-papers.csv`
-- Show real-time progress for each paper as it's processed
-- Save results incrementally (so you can stop and resume if needed)
-- Update `collection_log.json` with collection status
+1. **Collect paper metadata** using `2.7.2-collect_round2_monthly.py`
+   - Queries arXiv API by category and year
+   - Uses monthly queries to bypass 10,000 offset limit
+   - Saves paper IDs, URLs, titles, authors
 
-**Note**: Edit `collect_years.py` to specify which years to collect.
+2. **Extract emails** using `2.4-batch_extract_emails.py`
+   - Downloads PDFs from arXiv
+   - Extracts emails from PDF text
+   - Matches emails to authors using intelligent heuristics
+   - Provides confidence scores
 
-## Output Format
+3. **Post-process** using `email_postprocess.py`
+   - Combines all CSV files
+   - Filters by confidence threshold
+   - Removes duplicates
+   - Generates final output
 
-The script generates a CSV file with the following columns:
+## 🔍 Key Features
 
-- **Paper URL**: The original PDF URL
-- **Paper Title**: Extracted paper title
-- **Author**: Author name
-- **Author Order**: Position in author list (1, 2, 3, etc.)
-- **First Author**: "Yes" if first author, empty otherwise
-- **Last Author**: "Yes" if last author, empty otherwise
-- **Email**: Author email (matched when possible)
-- **Confidence**: Confidence score for email match (percentage)
-- **Institution**: Author's institution(s) based on superscripts
+### Email-to-Author Matching
 
-Each author-email pair gets its own row, making it easy to:
-- Import into email tools
-- Personalize emails
-- Track which authors you've contacted
-- Filter by first/last authors
+The system uses sophisticated matching algorithms:
+- Exact name matching
+- Substring matching
+- Hyphenated name variations
+- Initial combinations
+- Letter-level anagram matching
+- Confidence scoring (0-100%)
 
-## Command Line Arguments
+### Multi-Variant Email System
 
-- `url` (positional): Single ACL PDF URL to process
-- `--urls-file`: File containing list of URLs (one per line)
-- `--range`: Range of paper numbers (e.g., `--range 1 10` or `--range 1 5 7 10`)
-- `--year`: Conference year (default: 2024). Supports 2019-2024 with different URL formats
-- `--track`: Paper track - `long`, `short`, or `main` (default: `long`)
-  - For 2021-2024: `long` or `short`
-  - For 2020, use `main` (no track differentiation)
-  - For 2019, track doesn't matter (uses P19- format)
-- `--auto-detect`: Auto-detect paper range by trying papers until 404 error
-- `--output`: Output CSV filename (default: `acl_papers_info.csv`)
-- `--append`: Append to existing CSV file
-- `--json`: Also save results as JSON file
+The email sender includes:
+- **5 subject line variants** (randomly selected)
+- **5 email body variants** (randomly selected)
+- **25 unique combinations** to avoid spam filters
+- Empathetic, resource-sharing tone
+- No explicit pricing (marketing-friendly)
 
-## How It Works
+### Rate Limiting & Safety
 
-1. **Downloads PDF**: Fetches the PDF from the ACL Anthology URL
-2. **Extracts Text**: Uses PyPDF2 or pdfplumber to extract text from first page only
-3. **Finds Author Section**: Uses pattern detection (names with commas, symbols, emails) to locate author section
-4. **Finds Title**: Identifies paper title (skips proceedings headers)
-5. **Finds Authors**: Extracts author names using patterns (affiliation symbols, name patterns)
-6. **Finds Institutions**: Maps superscript symbols/numbers to institutions
-7. **Finds Emails**: Extracts all email addresses from author section
-8. **Matches Authors-Emails**: Attempts to match authors with their emails using heuristics
-9. **Exports Data**: Saves to CSV format for easy use in email campaigns
+- **arXiv**: 3-second delay between requests (official policy)
+- **Gmail**: Daily limits per account (10-50 emails/day for SMTP, 50-2000/day for Gmail API)
+- **CAPTCHA detection**: Automatically stops on CAPTCHA blocks
+- **Resume capability**: Can resume from where it stopped
 
-## Collection Status
+## 📝 Scripts Overview
 
-See `COLLECTION_STATUS.md` for details on what papers have been collected.
+### Collection Scripts
 
-## Notes
+- **`1-acl_info.py`**: Extract info from single ACL PDF
+- **`1.1-collect_years_acl.py`**: Batch collect ACL papers by year/track
+- **`2.7.2-collect_round2_monthly.py`**: Collect arXiv papers (monthly strategy to bypass limits)
 
-- The script focuses on the first page where title/author info is typically found
-- Author-email matching is heuristic and may not always be perfect
-- Some papers may have incomplete information (missing emails, etc.)
-- The script handles common ACL formatting patterns (affiliation symbols, numbered affiliations, etc.)
-- Paper numbering varies by year:
-  - 2021-2024: starts from 1
-  - 2020: starts from 100
-  - 2019: starts from 1001
-- Auto-detection stops after 3 consecutive 404 errors
-- **Progress tracking**: The script shows `[X/Y] Processing: ...` for each paper and saves results in real-time
-- **Real-time saving**: Results are saved after each paper, so you can stop and resume if needed
+### Extraction Scripts
 
-## Troubleshooting
+- **`2.3-extract_emails.py`**: Extract emails from single arXiv PDF
+- **`2.4-batch_extract_emails.py`**: Batch extract emails from multiple papers
+- **`2.12-batch_extract_round2_emails.py`**: Extract emails for Round 2 papers
 
-1. **"Please install a PDF library"**: 
-   - Install PyPDF2: `pip install PyPDF2`
-   - Or pdfplumber: `pip install pdfplumber`
+### Post-Processing Scripts
 
-2. **Title extraction not working**:
-   - Some PDFs may have unusual formatting
-   - Check the PDF manually to verify structure
+- **`email_postprocess.py`**: Universal post-processing (combine, filter, clean)
+- **`remove_acl_duplicates_from_arxiv.py`**: Remove ACL papers from arXiv data
 
-3. **Authors not extracted correctly**:
-   - The script uses heuristics to identify authors
-   - You may need to manually verify/correct some entries
+## 🔒 Security & Privacy
 
-4. **Emails not found**:
-   - Some papers don't include emails in the PDF
-   - Check the ACL Anthology website for contact information
+**Never commit:**
+- `.secrets/` folder (passwords, tokens, credentials)
+- `config.json` (account information)
+- `sent_history.json` (email tracking)
+- `arxiv.org_cookies.txt` (session cookies)
+- Large CSV data files
 
-5. **Institutions not extracted**:
-   - Make sure superscripts are being detected correctly
-   - Check if paper uses numbered affiliations (1, 2, 3) vs symbols (‡, §, etc.)
+All sensitive files are excluded via `.gitignore`.
+
+## 📚 Documentation
+
+- **`TurboNIW_Email_Sender/README.md`**: Complete email sending guide
+- **`data/acl/COLLECTION_STATUS.md`**: ACL collection status
+- **`data/arxiv/COLLECTION_TRACKER.md`**: arXiv collection tracking
+- **`data/arxiv/ARXIV_CATEGORIES.md`**: List of all arXiv categories
+
+## 🛠️ Troubleshooting
+
+### arXiv API Limits
+
+If collection stops at 10,000 papers:
+- Use `2.7.2-collect_round2_monthly.py` (monthly query strategy)
+- Breaks year into 12 monthly queries to bypass offset limit
+
+### CAPTCHA Blocks
+
+If you encounter CAPTCHA:
+1. Export fresh cookies from browser
+2. Save to `arxiv.org_cookies.txt`
+3. Resume from last processed paper
+
+### Email Extraction Issues
+
+- Some PDFs have emails in footers (system handles this)
+- LaTeX artifacts in emails are cleaned automatically
+- Multi-name email formats (e.g., `{name1, name2}@domain.com`) are expanded
+
+## 📄 License
+
+For academic/research outreach use.
+
+## 🤝 Contributing
+
+This is a private project for research outreach. If you find issues or have suggestions, please open an issue.
+
+---
+
+**Note**: This system is designed for legitimate research outreach. Always respect email recipients and follow best practices for email communication.
