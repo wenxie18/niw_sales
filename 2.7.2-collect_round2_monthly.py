@@ -1,0 +1,312 @@
+#!/usr/bin/env python3
+"""
+Round 2 Collection: Complete collection using MONTHLY queries to bypass 10k offset limit.
+arXiv API has a hard 10,000 offset limit, so we query month-by-month instead of yearly.
+"""
+
+import requests
+import xml.etree.ElementTree as ET
+import csv
+import time
+import logging
+from pathlib import Path
+from typing import List, Dict
+from datetime import datetime
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+def get_month_days(year: int, month: int) -> int:
+    """Get the last day of a given month."""
+    if month == 2:
+        # Leap year check
+        return 29 if (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0) else 28
+    elif month in [4, 6, 9, 11]:
+        return 30
+    else:
+        return 31
+
+def query_month_papers(category: str, year: int, month: int, batch_size: int = 1000) -> List[Dict]:
+    """
+    Query arXiv API for all papers in a specific category/year/month.
+    
+    Args:
+        category: arXiv category (e.g., 'cs.LG')
+        year: Year to query
+        month: Month (1-12)
+        batch_size: Results per API call (max 2000, default 1000)
+    
+    Returns:
+        List of papers for that month
+    """
+    papers = []
+    start = 0
+    
+    # arXiv API namespace
+    ns = {
+        'atom': 'http://www.w3.org/2005/Atom',
+        'arxiv': 'http://arxiv.org/schemas/atom',
+        'opensearch': 'http://a9.com/-/spec/opensearch/1.1/'
+    }
+    
+    # Date range for the month
+    last_day = get_month_days(year, month)
+    date_start = f"{year}{month:02d}01"
+    date_end = f"{year}{month:02d}{last_day}"
+    
+    query = f"cat:{category}+AND+submittedDate:[{date_start}+TO+{date_end}]"
+    
+    # First call to get total count
+    url = f"http://export.arxiv.org/api/query?search_query={query}&start=0&max_results=1"
+    try:
+        response = requests.get(url, timeout=30)
+        response.raise_for_status()
+        root = ET.fromstring(response.content)
+        
+        total_elem = root.find('opensearch:totalResults', ns)
+        total_available = int(total_elem.text) if total_elem is not None else 0
+        
+        if total_available == 0:
+            return []
+        
+        logger.info(f"    Month {month:02d}/{year}: {total_available:,} papers to collect")
+        
+        # Warn if approaching limit
+        if total_available > 9000:
+            logger.warning(f"    ⚠️  Month has {total_available:,} papers (close to 10k limit!)")
+        
+    except Exception as e:
+        logger.error(f"    Error getting count for month {month}: {e}")
+        return []
+    
+    # Now collect all papers for this month
+    consecutive_empty = 0
+    max_consecutive_empty = 3
+    
+    while start < total_available:
+        url = f"http://export.arxiv.org/api/query?search_query={query}&start={start}&max_results={batch_size}&sortBy=submittedDate&sortOrder=descending"
+        
+        try:
+            response = requests.get(url, timeout=30)
+            response.raise_for_status()
+            root = ET.fromstring(response.content)
+            
+            entries = root.findall('atom:entry', ns)
+            
+            if not entries:
+                consecutive_empty += 1
+                if consecutive_empty >= max_consecutive_empty:
+                    break
+                start += batch_size
+                time.sleep(3)
+                continue
+            
+            consecutive_empty = 0
+            
+            for entry in entries:
+                # Get paper ID
+                paper_id_elem = entry.find('atom:id', ns)
+                if paper_id_elem is None:
+                    continue
+                
+                # Extract arXiv ID
+                paper_url = paper_id_elem.text
+                arxiv_id = paper_url.split('/')[-1]
+                arxiv_id_clean = arxiv_id.split('v')[0] if 'v' in arxiv_id else arxiv_id
+                
+                # Construct PDF URL
+                pdf_url = f"https://arxiv.org/pdf/{arxiv_id_clean}.pdf"
+                
+                # Get title
+                title_elem = entry.find('atom:title', ns)
+                title = title_elem.text.strip() if title_elem is not None else ""
+                title = ' '.join(title.split())
+                
+                # Get authors
+                author_elems = entry.findall('atom:author', ns)
+                authors = []
+                for author_elem in author_elems:
+                    name_elem = author_elem.find('atom:name', ns)
+                    if name_elem is not None:
+                        authors.append(name_elem.text.strip())
+                
+                authors_str = '; '.join(authors)
+                
+                # Get publication info
+                journal_ref_elem = entry.find('arxiv:journal_ref', ns)
+                journal_ref = journal_ref_elem.text.strip() if journal_ref_elem is not None else ""
+                
+                doi_elem = entry.find('arxiv:doi', ns)
+                doi = doi_elem.text.strip() if doi_elem is not None else ""
+                
+                comment_elem = entry.find('arxiv:comment', ns)
+                comment = comment_elem.text.strip() if comment_elem is not None else ""
+                
+                papers.append({
+                    'arxiv_id': arxiv_id_clean,
+                    'pdf_url': pdf_url,
+                    'title': title,
+                    'authors': authors_str,
+                    'journal_ref': journal_ref,
+                    'doi': doi,
+                    'comment': comment,
+                    'category': category,
+                    'year': year
+                })
+            
+            # Move to next batch
+            start += batch_size
+            
+            # Rate limiting (3 seconds per arXiv policy)
+            time.sleep(3)
+            
+        except Exception as e:
+            logger.error(f"    Error at offset {start} for month {month}: {e}")
+            consecutive_empty += 1
+            if consecutive_empty >= max_consecutive_empty:
+                break
+            time.sleep(10)
+            start += batch_size
+            continue
+    
+    logger.info(f"    ✓ Month {month:02d}/{year}: Collected {len(papers):,} papers")
+    return papers
+
+def query_year_by_months(category: str, year: int) -> List[Dict]:
+    """
+    Query all papers for a year by breaking into monthly queries.
+    
+    Args:
+        category: arXiv category (e.g., 'cs.LG')
+        year: Year to query
+    
+    Returns:
+        List of all papers for that year
+    """
+    logger.info(f"\n{'='*80}")
+    logger.info(f"Collecting {category} {year} (monthly queries)...")
+    logger.info(f"{'='*80}")
+    
+    all_papers = []
+    
+    # Query each month
+    for month in range(1, 13):
+        month_papers = query_month_papers(category, year, month)
+        all_papers.extend(month_papers)
+        logger.info(f"    Progress: {len(all_papers):,} papers collected so far")
+    
+    logger.info(f"\n✓ Year complete: {category} {year} - {len(all_papers):,} total papers")
+    return all_papers
+
+def deduplicate_papers(papers: List[Dict]) -> List[Dict]:
+    """Remove duplicate papers by arxiv_id, keeping the first occurrence."""
+    seen_ids = set()
+    unique_papers = []
+    duplicates = 0
+    
+    for paper in papers:
+        arxiv_id = paper['arxiv_id']
+        if arxiv_id not in seen_ids:
+            seen_ids.add(arxiv_id)
+            unique_papers.append(paper)
+        else:
+            duplicates += 1
+    
+    if duplicates > 0:
+        logger.info(f"  Removed {duplicates} duplicate papers")
+    
+    return unique_papers
+
+def save_papers_to_csv(papers: List[Dict], output_file: str):
+    """Save papers to CSV."""
+    if not papers:
+        logger.warning("No papers to save")
+        return
+    
+    # Create output directory
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
+    
+    # Deduplicate first
+    logger.info(f"Deduplicating papers...")
+    papers = deduplicate_papers(papers)
+    
+    # Write to CSV
+    fieldnames = ['arxiv_id', 'pdf_url', 'title', 'authors', 'num_authors', 'journal_ref', 'doi', 'comment', 'category', 'year']
+    
+    with open(output_file, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        
+        for paper in papers:
+            # Count authors
+            authors_str = paper.get('authors', '')
+            num_authors = len([a for a in authors_str.split(';') if a.strip()]) if authors_str else 0
+            paper['num_authors'] = num_authors
+            writer.writerow(paper)
+    
+    logger.info(f"✓ Saved {len(papers):,} unique papers to {output_file}")
+
+def collect_category_year(category: str, category_short: str, year: int, output_dir: str):
+    """Collect all papers for a category/year using monthly queries."""
+    output_file = f"{output_dir}/{category_short}_{year}.csv"
+    
+    # Query all papers month-by-month
+    papers = query_year_by_months(category, year)
+    
+    # Save to CSV (with deduplication)
+    if papers:
+        save_papers_to_csv(papers, output_file)
+    else:
+        logger.warning(f"No papers collected for {category} {year}")
+    
+    return len(papers)
+
+def main():
+    """Main function for Round 2 collection using monthly queries."""
+    
+    # Round 2: Complete cs.LG and cs.CV for 2024-2025
+    CATEGORIES = [
+        ('cs.LG', 'cs_lg', 2024),
+        ('cs.LG', 'cs_lg', 2025),
+        ('cs.CV', 'cs_cv', 2024),
+        ('cs.CV', 'cs_cv', 2025),
+    ]
+    
+    output_dir = 'data/arxiv/round2'
+    
+    logger.info("="*80)
+    logger.info("ROUND 2 PAPER COLLECTION (MONTHLY STRATEGY)")
+    logger.info("="*80)
+    logger.info(f"Categories: cs.LG, cs.CV")
+    logger.info(f"Years: 2024, 2025")
+    logger.info(f"Output directory: {output_dir}")
+    logger.info(f"Strategy: Query month-by-month to bypass 10k offset limit")
+    logger.info("="*80)
+    
+    # Create output directory
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    
+    total_papers = 0
+    
+    for category, category_short, year in CATEGORIES:
+        papers_collected = collect_category_year(category, category_short, year, output_dir)
+        total_papers += papers_collected
+        logger.info(f"\n{'='*80}")
+        logger.info(f"Completed: {category} {year} - {papers_collected:,} papers")
+        logger.info(f"{'='*80}\n")
+    
+    logger.info("\n" + "="*80)
+    logger.info("ROUND 2 COLLECTION COMPLETE!")
+    logger.info("="*80)
+    logger.info(f"Total papers collected: {total_papers:,}")
+    logger.info(f"Output location: {output_dir}/")
+    logger.info("")
+    logger.info("Next steps:")
+    logger.info("1. Review the CSV files for completeness")
+    logger.info("2. Extract emails (when ready)")
+    logger.info("3. Combine with Round 1 and deduplicate by email")
+    logger.info("="*80)
+
+if __name__ == "__main__":
+    main()
+

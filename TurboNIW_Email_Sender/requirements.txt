@@ -1,0 +1,9 @@
+# Core dependencies (required)
+# No external packages needed for SMTP method - uses standard library
+
+# Optional: For Gmail API method (higher sending limits)
+# Uncomment and install if using Gmail API:
+# google-auth>=2.25.0
+# google-auth-oauthlib>=1.2.0
+# google-auth-httplib2>=0.2.0
+# google-api-python-client>=2.110.0

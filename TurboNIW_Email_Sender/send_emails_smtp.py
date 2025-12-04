@@ -1,0 +1,360 @@
+#!/usr/bin/env python3
+"""
+Multi-Account Gmail SMTP Email Sender
+Sends personalized emails using app passwords with smart account rotation.
+Limits: 10 emails per account per day.
+"""
+
+import csv
+import smtplib
+import json
+import re
+import argparse
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.utils import formataddr
+from datetime import datetime, date
+from pathlib import Path
+import time
+import random
+
+from email_templates_variants import format_email
+
+
+class EmailSender:
+    def __init__(self, config_file='config.json'):
+        """Initialize email sender with configuration."""
+        self.config = self.load_config(config_file)
+        self.history = self.load_history()
+        self.today = str(date.today())
+        
+    def load_config(self, config_file):
+        """Load configuration from JSON."""
+        try:
+            with open(config_file, 'r') as f:
+                return json.load(f)
+        except FileNotFoundError:
+            raise Exception(f"Config file '{config_file}' not found!")
+        except json.JSONDecodeError as e:
+            raise Exception(f"Invalid JSON in config: {e}")
+    
+    def load_history(self):
+        """Load sent email history."""
+        history_file = self.config['paths']['sent_history']
+        if Path(history_file).exists():
+            try:
+                with open(history_file, 'r') as f:
+                    return json.load(f)
+            except:
+                pass
+        
+        return {
+            "recipients": {},
+            "daily_stats": {}
+        }
+    
+    def save_history(self):
+        """Save email history."""
+        history_file = self.config['paths']['sent_history']
+        with open(history_file, 'w') as f:
+            json.dump(self.history, f, indent=2)
+    
+    def get_account_password(self, account):
+        """Load account password from secure file."""
+        password_file = account.get('app_password_file')
+        if not password_file:
+            raise Exception(f"No password file specified for account {account['id']}")
+        
+        try:
+            with open(password_file, 'r') as f:
+                return f.read().strip()
+        except FileNotFoundError:
+            raise Exception(f"Password file not found: {password_file}")
+    
+    def get_available_account(self):
+        """Get an account that hasn't hit its daily limit."""
+        if self.today not in self.history['daily_stats']:
+            self.history['daily_stats'][self.today] = {}
+        
+        daily_stats = self.history['daily_stats'][self.today]
+        
+        for account in self.config['accounts']:
+            if not account.get('enabled', True):
+                continue
+            
+            if account.get('auth_method') != 'app_password':
+                continue
+            
+            account_id = account['id']
+            sent_today = daily_stats.get(account_id, 0)
+            daily_limit = account.get('daily_limit', 10)
+            
+            if sent_today < daily_limit:
+                return account, sent_today
+        
+        return None, None
+    
+    def validate_email(self, email):
+        """Validate email format."""
+        if not email or not isinstance(email, str):
+            return False
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return bool(re.match(pattern, email.strip()))
+    
+    def is_blacklisted(self, email):
+        """Check if email is in blacklist (should never receive emails)."""
+        email_lower = email.lower()
+        blacklist = self.config.get('blacklist', {}).get('emails', [])
+        return email_lower in [e.lower() for e in blacklist]
+    
+    def is_already_sent(self, email):
+        """Check if email was already sent. Returns False for whitelisted test emails."""
+        email_lower = email.lower()
+        
+        # Check whitelist first - test emails can always be sent
+        whitelist = self.config.get('test_whitelist', {}).get('emails', [])
+        if email_lower in [e.lower() for e in whitelist]:
+            return False  # Whitelisted emails can always be sent
+        
+        # Otherwise check normal history
+        return email_lower in self.history['recipients']
+    
+    def send_email(self, account, recipient_email, recipient_name, paper_title="", publication_venue="arXiv"):
+        """Send a single email using the specified account."""
+        try:
+            # Get password
+            password = self.get_account_password(account)
+            
+            # Format email content (randomly select variant)
+            subject, body = format_email(recipient_name, paper_title, publication_venue)
+            
+            # Create message
+            msg = MIMEMultipart('alternative')
+            msg['From'] = formataddr((account['name'], account['email']))
+            msg['To'] = recipient_email
+            msg['Subject'] = subject  # Use dynamic subject from variant
+            
+            # Convert plain text to HTML (preserve line breaks and formatting)
+            html_body = body.replace('\n', '<br>\n')
+            # Wrap in simple HTML structure - natural full-width like normal emails
+            html_content = f"""<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+<body style="font-family: Arial, Helvetica, sans-serif; font-size: 14px; line-height: 1.6; color: #000000;">
+{html_body}
+</body>
+</html>"""
+            
+            # Attach both plain text and HTML versions
+            msg.attach(MIMEText(body, 'plain'))
+            msg.attach(MIMEText(html_content, 'html'))
+            
+            # Send via SMTP
+            with smtplib.SMTP('smtp.gmail.com', 587) as server:
+                server.starttls()
+                server.login(account['email'], password)
+                server.send_message(msg)
+            
+            # Update history
+            self.record_sent_email(recipient_email, recipient_name, paper_title, account)
+            
+            return True
+            
+        except Exception as e:
+            print(f"  ✗ Error sending to {recipient_email}: {e}")
+            return False
+    
+    def record_sent_email(self, email, name, paper_title, account):
+        """Record successful email send in history."""
+        email_lower = email.lower()
+        timestamp = datetime.now().isoformat()
+        account_id = account['id']
+        account_email = account['email']
+        
+        # Update recipient record
+        if email_lower in self.history['recipients']:
+            recipient = self.history['recipients'][email_lower]
+            recipient['last_sent'] = self.today
+            recipient['send_count'] += 1
+            recipient['send_dates'].append(self.today)
+            recipient['accounts_used'].append(account_email)
+        else:
+            self.history['recipients'][email_lower] = {
+                'email': email,
+                'name': name,
+                'paper_title': paper_title,
+                'first_sent': self.today,
+                'last_sent': self.today,
+                'send_count': 1,
+                'send_dates': [self.today],
+                'accounts_used': [account_email],
+                'last_timestamp': timestamp
+            }
+        
+        # Update daily stats
+        if self.today not in self.history['daily_stats']:
+            self.history['daily_stats'][self.today] = {}
+        
+        if account_id not in self.history['daily_stats'][self.today]:
+            self.history['daily_stats'][self.today][account_id] = 0
+        
+        self.history['daily_stats'][self.today][account_id] += 1
+        
+        # Calculate total for today
+        self.history['daily_stats'][self.today]['total'] = sum(
+            count for key, count in self.history['daily_stats'][self.today].items()
+            if key != 'total'
+        )
+    
+    def process_csv(self, csv_file, test_mode=False, max_emails=None):
+        """Process CSV file and send emails."""
+        if not Path(csv_file).exists():
+            raise Exception(f"CSV file not found: {csv_file}")
+        
+        print(f"\n{'='*80}")
+        print(f"EMAIL SENDER - {'TEST MODE' if test_mode else 'LIVE MODE'}")
+        print(f"{'='*80}")
+        print(f"CSV File: {csv_file}")
+        print(f"Today: {self.today}")
+        print(f"{'='*80}\n")
+        
+        # Read CSV
+        recipients = []
+        with open(csv_file, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                recipients.append(row)
+        
+        print(f"Total recipients in CSV: {len(recipients)}")
+        
+        # Filter: skip already sent
+        to_send = []
+        skipped = 0
+        blacklisted = 0
+        for recipient in recipients:
+            email = recipient.get('Email', '').strip()
+            if not self.validate_email(email):
+                continue
+            if self.is_blacklisted(email):
+                blacklisted += 1
+                continue
+            if self.is_already_sent(email):
+                skipped += 1
+                continue
+            to_send.append(recipient)
+        
+        print(f"Blacklisted (skipped): {blacklisted}")
+        print(f"Already sent: {skipped}")
+        print(f"Ready to send: {len(to_send)}")
+        
+        if max_emails:
+            to_send = to_send[:max_emails]
+            print(f"Limited to: {max_emails}")
+        
+        if test_mode:
+            print(f"\n⚠️  TEST MODE: Will only send to first recipient")
+            to_send = to_send[:1]
+        
+        # Send emails
+        print(f"\n{'='*80}")
+        print("SENDING EMAILS")
+        print(f"{'='*80}\n")
+        
+        sent_count = 0
+        failed_count = 0
+        
+        for i, recipient in enumerate(to_send, 1):
+            email = recipient.get('Email', '').strip()
+            name = recipient.get('Author', recipient.get('Name', 'Colleague'))
+            paper_title = recipient.get('Title', '')
+            
+            # Get available account
+            account, sent_today = self.get_available_account()
+            
+            if not account:
+                print(f"\n⚠️  All accounts have reached their daily limit!")
+                print(f"Sent {sent_count} emails before hitting limits")
+                break
+            
+            print(f"[{i}/{len(to_send)}] Sending to {name} <{email}>")
+            print(f"           Using account: {account['id']} (sent today: {sent_today}/{account['daily_limit']})")
+            
+            # Send email
+            success = self.send_email(account, email, name, paper_title)
+            
+            if success:
+                sent_count += 1
+                print(f"           ✓ Sent successfully via {account['email']}")
+                
+                # Save history after each send
+                self.save_history()
+                
+                # Delay before next email (random to look more human)
+                if i < len(to_send):
+                    delay_min = self.config['sending'].get('delay_min_seconds', 3)
+                    delay_max = self.config['sending'].get('delay_max_seconds', 30)
+                    delay = random.randint(delay_min, delay_max)
+                    print(f"           ⏱️  Waiting {delay} seconds before next email...")
+                    time.sleep(delay)
+            else:
+                failed_count += 1
+        
+        # Final summary
+        print(f"\n{'='*80}")
+        print("SENDING COMPLETE")
+        print(f"{'='*80}")
+        print(f"Sent: {sent_count}")
+        print(f"Failed: {failed_count}")
+        
+        # Show daily stats
+        if self.today in self.history['daily_stats']:
+            print(f"\nToday's sending stats ({self.today}):")
+            for account_id, count in self.history['daily_stats'][self.today].items():
+                if account_id != 'total':
+                    account = next((a for a in self.config['accounts'] if a['id'] == account_id), None)
+                    if account:
+                        print(f"  {account_id}: {count}/{account['daily_limit']} emails")
+            print(f"  Total: {self.history['daily_stats'][self.today].get('total', 0)}")
+        
+        print(f"{'='*80}\n")
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Send personalized emails using Gmail SMTP (app passwords)',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Test mode (send to 1 recipient)
+  python send_emails_smtp.py --csv recipients.csv --test
+  
+  # Send 10 emails (will distribute across accounts)
+  python send_emails_smtp.py --csv recipients.csv --max 10
+  
+  # Send all (up to daily limits)
+  python send_emails_smtp.py --csv recipients.csv
+        """
+    )
+    
+    parser.add_argument('--csv', required=True, help='Path to CSV file with recipients')
+    parser.add_argument('--config', default='config.json', help='Config file (default: config.json)')
+    parser.add_argument('--test', action='store_true', help='Test mode (send to 1 recipient only)')
+    parser.add_argument('--max', type=int, help='Maximum number of emails to send')
+    
+    args = parser.parse_args()
+    
+    try:
+        sender = EmailSender(args.config)
+        sender.process_csv(args.csv, test_mode=args.test, max_emails=args.max)
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        return 1
+    
+    return 0
+
+
+if __name__ == "__main__":
+    exit(main())
+

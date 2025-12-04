@@ -1,0 +1,70 @@
+{
+  "2024": {
+    "short": {
+      "output_file": "2024-short.csv",
+      "papers_collected": 68,
+      "authors_collected": 281,
+      "collection_date": "2025-11-13T23:27:14.706471",
+      "status": "completed"
+    }
+  },
+  "2023": {
+    "short": {
+      "output_file": "2023-short.csv",
+      "papers_collected": 152,
+      "authors_collected": 640,
+      "collection_date": "2025-11-13T23:28:39.021550",
+      "status": "completed"
+    }
+  },
+  "2022": {
+    "short": {
+      "output_file": "2022-short.csv",
+      "papers_collected": 88,
+      "authors_collected": 329,
+      "collection_date": "2025-11-13T23:29:31.454725",
+      "status": "completed"
+    },
+    "long": {
+      "output_file": "2022-long.csv",
+      "papers_collected": 560,
+      "authors_collected": 2515,
+      "collection_date": "2025-11-13T23:36:12.572998",
+      "status": "completed"
+    }
+  },
+  "2021": {
+    "short": {
+      "output_file": "2021-short.csv",
+      "papers_collected": 135,
+      "authors_collected": 677,
+      "collection_date": "2025-11-13T23:30:39.818288",
+      "status": "completed"
+    },
+    "long": {
+      "output_file": "2021-long.csv",
+      "papers_collected": 550,
+      "authors_collected": 3084,
+      "collection_date": "2025-11-13T23:41:05.968127",
+      "status": "completed"
+    }
+  },
+  "2020": {
+    "main": {
+      "output_file": "2020-main.csv",
+      "papers_collected": 659,
+      "authors_collected": 2364,
+      "collection_date": "2025-11-14T08:58:28.649331",
+      "status": "completed"
+    }
+  },
+  "2019": {
+    "papers": {
+      "output_file": "2019-papers.csv",
+      "papers_collected": 623,
+      "authors_collected": 2187,
+      "collection_date": "2025-11-14T09:04:08.266488",
+      "status": "completed"
+    }
+  }
+}

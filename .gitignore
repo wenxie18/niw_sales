@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Sensitive files - NEVER commit these
+.secrets/
+**/.secrets/
+sent_history.json
+arxiv.org_cookies.txt
+*.token.json
+*_token.json
+*_credentials.json
+*_password.txt
+
+# Temporary files
+temp_pdfs/
+*.log
+*.tmp
+
+# Data files (large CSVs - can be regenerated)
+data/arxiv/round1/*.csv
+data/arxiv/round2/*.csv
+data/acl/*.csv
+
+# Keep logs folder structure but not log files
+data/arxiv/logs/*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db

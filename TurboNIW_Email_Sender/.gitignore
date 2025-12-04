@@ -1,0 +1,20 @@
+# Sensitive files - NEVER COMMIT THESE!
+.secrets/
+config.json
+sent_history.json
+*_token.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Backup files
+*.backup
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db

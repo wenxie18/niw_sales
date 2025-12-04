@@ -1,0 +1,82 @@
+================================================================================
+ROUND 1 EMAIL COLLECTION SUMMARY
+================================================================================
+
+## OVERALL STATISTICS
+--------------------------------------------------------------------------------
+Total Records:                   328,379
+Unique Emails:                    99,182
+Unique Papers:                    69,858
+Unique Authors:                  166,396
+Avg Records per Email:              3.31
+Avg Records per Paper:              4.70
+
+## CONFIDENCE SCORE STATISTICS
+--------------------------------------------------------------------------------
+Mean Confidence:                   26.7%
+Minimum:                            0.0%
+25th Percentile (P25):              0.0%
+50th Percentile (P50):              0.0%
+75th Percentile (P75):             82.0%
+90th Percentile (P90):             95.0%
+95th Percentile (P95):             95.0%
+99th Percentile (P99):             95.0%
+Maximum:                           98.0%
+
+## CONFIDENCE SCORE DISTRIBUTION
+--------------------------------------------------------------------------------
+Range                  Count   Percentage
+--------------------------------------------------------------------------------
+0-50%                228,108        69.5%
+50-60%                   372         0.1%
+60-70%                 2,413         0.7%
+70-80%                13,429         4.1%
+80-90%                34,057        10.4%
+90-100%               50,000        15.2%
+
+## HIGH CONFIDENCE RECORDS
+--------------------------------------------------------------------------------
+≥75% confidence:                  97,235 ( 29.6%)
+≥80% confidence:                  84,057 ( 25.6%)
+≥90% confidence:                  50,000 ( 15.2%)
+
+## YEAR DISTRIBUTION
+--------------------------------------------------------------------------------
+2024:                            147,408 ( 44.9%)
+2025:                            180,971 ( 55.1%)
+
+## TOP 20 EMAIL DOMAINS
+--------------------------------------------------------------------------------
+Rank   Domain                                          Count        %
+--------------------------------------------------------------------------------
+1      gmail.com                                       5,974     1.8%
+2      zju.edu.cn                                        905     0.3%
+3      sjtu.edu.cn                                       859     0.3%
+4      mit.edu                                           729     0.2%
+5      andrew.cmu.edu                                    715     0.2%
+6      tum.de                                            690     0.2%
+7      stanford.edu                                      682     0.2%
+8      163.com                                           669     0.2%
+9      gatech.edu                                        603     0.2%
+10     buaa.edu.cn                                       576     0.2%
+11     umich.edu                                         558     0.2%
+12     illinois.edu                                      536     0.2%
+13     berkeley.edu                                      534     0.2%
+14     seu.edu.cn                                        533     0.2%
+15     bupt.edu.cn                                       529     0.2%
+16     purdue.edu                                        529     0.2%
+17     google.com                                        528     0.2%
+18     kaist.ac.kr                                       507     0.2%
+19     mails.tsinghua.edu.cn                             503     0.2%
+20     ieee.org                                          501     0.2%
+
+================================================================================
+RECOMMENDED FOR EMAIL CAMPAIGN
+================================================================================
+Total unique emails:              99,182
+High quality (≥75%):              97,235
+Very high quality (≥90%):          50,000
+
+Note: Each email represents one contact for your campaign.
+      Deduplicate by email to avoid sending multiple times to same person.
+================================================================================

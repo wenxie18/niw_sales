@@ -1,0 +1,108 @@
+================================================================================
+QUICK USAGE GUIDE - Email Sender
+================================================================================
+
+SETUP (One-time):
+1. Create .secrets folder and add your passwords:
+   echo "your-16-char-password" > .secrets/account1_password.txt
+   echo "your-other-password" > .secrets/account2_password.txt
+
+2. Update config.json with your email addresses
+
+3. Update email_template.py with your message
+
+================================================================================
+
+DAILY SENDING WORKFLOW:
+
+Step 1: Test First (IMPORTANT!)
+---------------------------------
+python send_emails_smtp.py --csv ../data/arxiv/round1/arxiv_high_confidence_non_chinese.csv --test
+
+Review the test email carefully!
+
+Step 2: Send 10 Emails
+---------------------------------
+python send_emails_smtp.py --csv ../data/arxiv/round1/arxiv_high_confidence_non_chinese.csv --max 10
+
+This will:
+- Send 10 emails using account1 (if enabled)
+- Skip anyone already sent
+- Save to sent_history.json
+- Show progress
+
+Step 3: Check Status
+---------------------------------
+cat sent_history.json | grep "$(date +%Y-%m-%d)"
+
+Shows today's sending stats
+
+================================================================================
+
+MULTI-ACCOUNT ROTATION:
+
+With 2 accounts enabled (10 emails each):
+- Morning: python send_emails_smtp.py --csv recipients.csv --max 10
+  (Uses account1)
+  
+- Evening: python send_emails_smtp.py --csv recipients.csv --max 10
+  (Uses account2 after account1 limit reached)
+
+= 20 emails/day total
+
+================================================================================
+
+IMPORTANT LIMITS:
+
+Gmail Free Account (App Password):
+- Recommended: 10 emails/day per account
+- Maximum: ~100 emails/day (risky!)
+- Exceeding = 24-hour block
+
+With 2 accounts:
+- Safe daily total: 20 emails
+- Would take 77,041 ÷ 20 = 3,852 days for full campaign
+
+⚠️  RECOMMENDATION: Use Gmail API or professional service for bulk!
+
+================================================================================
+
+SWITCHING TO GMAIL API (For Higher Limits):
+
+Gmail API allows up to 500-2000 emails/day:
+
+1. Enable Gmail API in Google Cloud Console
+2. Download OAuth credentials
+3. Save as .secrets/account1_credentials.json
+4. Run: python send_emails_gmail_api.py --csv recipients.csv --test
+
+First run will open browser for authentication.
+
+================================================================================
+
+MONITORING:
+
+Check sent count:
+cat sent_history.json | grep -c '"send_count"'
+
+Check today's stats:
+cat sent_history.json | grep "$(date +%Y-%m-%d)"
+
+Backup history:
+cp sent_history.json sent_history_backup_$(date +%Y%m%d).json
+
+================================================================================
+
+TROUBLESHOOTING:
+
+"Authentication failed"
+→ Check .secrets/account1_password.txt has correct app password
+
+"Daily limit reached"
+→ Wait 24 hours or enable additional accounts
+
+"Already sent to all"
+→ Check sent_history.json - all recipients may be in history already
+
+================================================================================
+
