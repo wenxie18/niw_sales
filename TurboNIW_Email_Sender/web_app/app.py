@@ -617,6 +617,43 @@ def stats():
                          dates=dates)
 
 
+@app.route('/history')
+def history():
+    """Email history search page."""
+    return render_template('history.html')
+
+
+@app.route('/api/history/search', methods=['POST'])
+def search_history():
+    """Search email history by email address."""
+    data = request.json or {}
+    email = data.get('email', '').strip().lower()
+    
+    if not email:
+        return jsonify({"success": False, "error": "Email address is required"}), 400
+    
+    try:
+        history = load_history()
+        recipients = history.get('recipients', {})
+        
+        # Search for exact match (case-insensitive)
+        if email in recipients:
+            recipient_data = recipients[email]
+            return jsonify({
+                "success": True,
+                "found": True,
+                "data": recipient_data
+            })
+        else:
+            return jsonify({
+                "success": True,
+                "found": False,
+                "message": f"No history found for {email}"
+            })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
 if __name__ == '__main__':
     # Ensure secrets directory exists
     SECRETS_DIR.mkdir(exist_ok=True)

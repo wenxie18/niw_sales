@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <h2>📧 Email History Search</h2>
+    <p style="color: #666; margin-bottom: 1.5rem;">Search for email sending history by email address</p>
+    
+    <form id="searchForm" onsubmit="searchHistory(event)">
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" name="email" id="emailInput" placeholder="example@email.com" required>
+            <small style="color: #666;">Enter the email address to search for</small>
+        </div>
+        
+        <button type="submit" class="btn">🔍 Search History</button>
+    </form>
+</div>
+
+<div id="results" style="display: none;"></div>
+
+<script>
+async function searchHistory(event) {
+    event.preventDefault();
+    const email = document.getElementById('emailInput').value.trim();
+    
+    if (!email) {
+        alert('Please enter an email address');
+        return;
+    }
+    
+    const resultsDiv = document.getElementById('results');
+    resultsDiv.style.display = 'block';
+    resultsDiv.innerHTML = '<div class="card"><p>⏳ Searching...</p></div>';
+    
+    try {
+        const result = await apiCall('/api/history/search', {
+            method: 'POST',
+            body: JSON.stringify({ email: email })
+        });
+        
+        if (result.success) {
+            if (result.found) {
+                displayHistory(result.data, email);
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="card">
+                        <div class="alert alert-error">
+                            <strong>No history found</strong><br>
+                            ${result.message || 'This email address has not received any emails yet.'}
+                        </div>
+                    </div>
+                `;
+            }
+        } else {
+            resultsDiv.innerHTML = `
+                <div class="card">
+                    <div class="alert alert-error">
+                        <strong>Error:</strong> ${result.error || 'Unknown error occurred'}
+                    </div>
+                </div>
+            `;
+        }
+    } catch (error) {
+        resultsDiv.innerHTML = `
+            <div class="card">
+                <div class="alert alert-error">
+                    <strong>Error:</strong> ${error.message}
+                </div>
+            </div>
+        `;
+    }
+}
+
+function displayHistory(data, email) {
+    const resultsDiv = document.getElementById('results');
+    
+    // Format dates nicely
+    const formatDate = (dateStr) => {
+        if (!dateStr) return 'N/A';
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+    };
+    
+    const formatTimestamp = (timestamp) => {
+        if (!timestamp) return 'N/A';
+        const date = new Date(timestamp);
+        return date.toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+    
+    // Count unique accounts
+    const uniqueAccounts = [...new Set(data.accounts_used || [])];
+    
+    let html = `
+        <div class="card">
+            <h3>📋 History for: ${data.email || email}</h3>
+            
+            <div style="margin-top: 1.5rem;">
+                <table class="table">
+                    <tr>
+                        <th style="width: 200px;">Name</th>
+                        <td>${data.name || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                        <th>Paper Title</th>
+                        <td>${data.paper_title || 'N/A'}</td>
+                    </tr>
+                    <tr>
+                        <th>First Sent</th>
+                        <td>${formatDate(data.first_sent)}</td>
+                    </tr>
+                    <tr>
+                        <th>Last Sent</th>
+                        <td>${formatDate(data.last_sent)}</td>
+                    </tr>
+                    <tr>
+                        <th>Total Times Sent</th>
+                        <td><strong>${data.send_count || 0}</strong></td>
+                    </tr>
+                    <tr>
+                        <th>Last Timestamp</th>
+                        <td>${formatTimestamp(data.last_timestamp)}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <h4>📅 Send Dates (${(data.send_dates || []).length} total)</h4>
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-top: 0.5rem;">
+                    ${(data.send_dates || []).length > 0 
+                        ? (data.send_dates || []).map(date => `<span style="display: inline-block; margin: 0.25rem; padding: 0.25rem 0.5rem; background: white; border-radius: 4px;">${formatDate(date)}</span>`).join('')
+                        : '<p style="color: #666;">No send dates recorded</p>'}
+                </div>
+            </div>
+            
+            <div style="margin-top: 2rem;">
+                <h4>📧 Accounts Used (${uniqueAccounts.length} unique account${uniqueAccounts.length !== 1 ? 's' : ''})</h4>
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-top: 0.5rem;">
+                    ${uniqueAccounts.length > 0
+                        ? uniqueAccounts.map(account => `<div style="margin: 0.25rem 0; padding: 0.5rem; background: white; border-radius: 4px;">${account}</div>`).join('')
+                        : '<p style="color: #666;">No accounts recorded</p>'}
+                </div>
+            </div>
+            
+            ${(data.accounts_used || []).length > 0 ? `
+            <div style="margin-top: 2rem;">
+                <h4>📊 Send History by Account</h4>
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 4px; margin-top: 0.5rem;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Account Used</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${(data.send_dates || []).map((date, index) => `
+                                <tr>
+                                    <td>${formatDate(date)}</td>
+                                    <td>${(data.accounts_used || [])[index] || 'N/A'}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            ` : ''}
+        </div>
+    `;
+    
+    resultsDiv.innerHTML = html;
+}
+</script>
+{% endblock %}
+
