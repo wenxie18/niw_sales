@@ -19,13 +19,30 @@ def authenticate_account(account_id, credentials_file):
     print(f"Credentials file: {credentials_file}")
     print(f"{'='*80}")
     
-    token_file = f".secrets/{account_id}_token.json"
+    # Resolve paths to absolute
+    credentials_path = Path(credentials_file).resolve()
+    config_dir = credentials_path.parent
+    
+    # If credentials file is already in .secrets, use that directory
+    # Otherwise, use .secrets in the parent directory
+    if config_dir.name == '.secrets':
+        # Already in .secrets folder, use it directly
+        secrets_dir = config_dir
+    else:
+        # Not in .secrets, use .secrets in the same directory as credentials
+        secrets_dir = config_dir / '.secrets'
+    
+    token_file = secrets_dir / f"{account_id}_token.json"
+    
+    # Ensure .secrets directory exists
+    secrets_dir.mkdir(parents=True, exist_ok=True)
+    
     creds = None
     
     # Load existing token
-    if Path(token_file).exists():
+    if token_file.exists():
         print(f"✓ Found existing token: {token_file}")
-        creds = Credentials.from_authorized_user_file(token_file, SCOPES)
+        creds = Credentials.from_authorized_user_file(str(token_file), SCOPES)
     
     # If no valid credentials, authenticate
     if not creds or not creds.valid:
@@ -35,12 +52,12 @@ def authenticate_account(account_id, credentials_file):
         else:
             print("🌐 Opening browser for authentication...")
             print("   Please sign in and allow access.")
-            flow = InstalledAppFlow.from_client_secrets_file(credentials_file, SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(str(credentials_path), SCOPES)
             creds = flow.run_local_server(port=0)
         
         # Save token
         print(f"💾 Saving token to: {token_file}")
-        with open(token_file, 'w') as token:
+        with open(str(token_file), 'w') as token:
             token.write(creds.to_json())
     else:
         print("✓ Token is valid, no re-authentication needed")

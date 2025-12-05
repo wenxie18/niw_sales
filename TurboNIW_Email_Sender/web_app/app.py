@@ -276,19 +276,36 @@ def authenticate_account(account_id):
     sys.path.append(str(BASE_DIR))
     from test_gmail_auth import authenticate_account as auth_func
     
-    credentials_file = BASE_DIR / account['credentials_file']
+    # Resolve credentials file path (handle both relative and absolute)
+    cred_file_path = account['credentials_file']
+    if not Path(cred_file_path).is_absolute():
+        credentials_file = BASE_DIR / cred_file_path
+    else:
+        credentials_file = Path(cred_file_path)
+    
     if not credentials_file.exists():
-        return jsonify({"success": False, "error": "Credentials file not found"}), 400
+        return jsonify({"success": False, "error": f"Credentials file not found: {credentials_file}"}), 400
     
     try:
-        # Run authentication (this will open browser)
-        success = auth_func(account_id, str(credentials_file))
-        if success:
-            return jsonify({"success": True, "message": "Authentication successful"})
-        else:
-            return jsonify({"success": False, "error": "Authentication failed"}), 400
+        # Change to BASE_DIR to ensure consistent working directory
+        original_cwd = os.getcwd()
+        os.chdir(str(BASE_DIR))
+        
+        try:
+            # Run authentication (this will open browser)
+            success = auth_func(account_id, str(credentials_file.resolve()))
+            if success:
+                return jsonify({"success": True, "message": "Authentication successful"})
+            else:
+                return jsonify({"success": False, "error": "Authentication failed"}), 400
+        finally:
+            os.chdir(original_cwd)
     except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
+        import traceback
+        error_msg = str(e)
+        print(f"Authentication error: {error_msg}")
+        print(traceback.format_exc())
+        return jsonify({"success": False, "error": error_msg}), 500
 
 
 @app.route('/settings')
