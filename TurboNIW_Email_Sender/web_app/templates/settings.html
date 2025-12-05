@@ -24,6 +24,12 @@
             <small style="color: #666;">Number of retry attempts for failed sends</small>
         </div>
         
+        <div class="form-group">
+            <label>Max Parallel Accounts</label>
+            <input type="number" name="max_parallel_accounts" value="{{ config.sending.max_parallel_accounts|default(10) }}" min="1" max="100" required>
+            <small style="color: #666;">Maximum number of accounts sending emails simultaneously (prevents resource exhaustion)</small>
+        </div>
+        
         <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Test Whitelist</h3>
         <div class="form-group">
             <label>Test Emails (one per line)</label>
@@ -55,7 +61,8 @@ async function saveSettings(event) {
         sending: {
             delay_min_seconds: parseInt(formData.get('delay_min')),
             delay_max_seconds: parseInt(formData.get('delay_max')),
-            max_retries: parseInt(formData.get('max_retries'))
+            max_retries: parseInt(formData.get('max_retries')),
+            max_parallel_accounts: parseInt(formData.get('max_parallel_accounts'))
         },
         test_whitelist: {
             emails: formData.get('whitelist').split('\n').filter(e => e.trim())

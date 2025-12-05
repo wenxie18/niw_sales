@@ -287,17 +287,25 @@ async function updateSendingStatus() {
         
         setTimeout(updateSendingStatus, 2000);
     } else {
-        // Not active - show current count from history (like command-line)
+        // Not active - sending has completed or stopped
         const progress = result.progress || {};
         const sent = progress.sent || 0;
+        const total = progress.total || 0;
         
-        if (sent > 0) {
-            document.getElementById('sendingStatus').innerHTML = 
-                `<p>Sent today: <strong>${sent}</strong></p>`;
+        let statusHtml = '';
+        if (sent > 0 && total > 0) {
+            const percentage = Math.min(100, Math.round((sent / total) * 100));
+            statusHtml = `
+                <p><strong>✅ Sending completed!</strong></p>
+                <p style="margin-top: 0.5rem;">Sent: <strong>${sent}</strong> / ${total} (${percentage}%)</p>
+            `;
+        } else if (sent > 0) {
+            statusHtml = `<p>Sent today: <strong>${sent}</strong></p>`;
         } else {
-            document.getElementById('sendingStatus').innerHTML = 
-                `<p>No sending in progress</p>`;
+            statusHtml = `<p>No sending in progress</p>`;
         }
+        
+        document.getElementById('sendingStatus').innerHTML = statusHtml;
         
         // Re-enable start button if sending finished
         document.getElementById('startBtn').style.display = 'inline-block';

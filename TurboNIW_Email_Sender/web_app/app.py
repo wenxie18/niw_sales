@@ -52,7 +52,8 @@ def load_config():
         "sending": {
             "delay_min_seconds": 10,
             "delay_max_seconds": 60,
-            "max_retries": 2
+            "max_retries": 2,
+            "max_parallel_accounts": 10
         },
         "paths": {"sent_history": "sent_history.json"},
         "test_whitelist": {"emails": []},
@@ -440,7 +441,9 @@ def send_status():
     """Get sending status and progress."""
     # Check if sending is active by checking if thread is alive
     thread_alive = sending_thread and sending_thread.is_alive() if sending_thread else False
-    is_active = sending_active or thread_alive
+    # Sending is active if sending_active flag is True AND thread is still alive
+    # If sending_active is False, sending has completed (even if thread hasn't fully terminated)
+    is_active = sending_active and thread_alive
     
     # Always read from history file (source of truth) - like command-line
     try:

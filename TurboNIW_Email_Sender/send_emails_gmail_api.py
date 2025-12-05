@@ -17,6 +17,9 @@ from datetime import datetime, date
 from pathlib import Path
 import time
 import random
+import threading
+from queue import Queue
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Gmail API imports (install: pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client)
 try:
@@ -52,6 +55,7 @@ class GmailAPISender:
         self.services = {}  # Cache for authenticated services
         self.failed_accounts = set()  # Track accounts that fail authentication
         self.stop_check = None  # Function to check if should stop
+        self.history_lock = threading.Lock()  # Thread-safe history updates
     
     def load_config(self, config_file):
         """Load configuration."""
@@ -71,9 +75,10 @@ class GmailAPISender:
         return {"recipients": {}, "daily_stats": {}}
     
     def save_history(self):
-        """Save history."""
-        with open(self.config['paths']['sent_history'], 'w') as f:
-            json.dump(self.history, f, indent=2)
+        """Save history (thread-safe)."""
+        with self.history_lock:
+            with open(self.config['paths']['sent_history'], 'w') as f:
+                json.dump(self.history, f, indent=2)
     
     def authenticate_account(self, account):
         """Authenticate and get Gmail API service for an account."""
@@ -250,41 +255,42 @@ class GmailAPISender:
         return email_lower in self.history['recipients']
     
     def record_sent_email(self, email, name, paper_title, account):
-        """Record sent email."""
+        """Record sent email (thread-safe)."""
         email_lower = email.lower()
         timestamp = datetime.now().isoformat()
         account_id = account['id']
         account_email = account['email']
         
-        if email_lower in self.history['recipients']:
-            recipient = self.history['recipients'][email_lower]
-            recipient['last_sent'] = self.today
-            recipient['send_count'] += 1
-            recipient['send_dates'].append(self.today)
-            recipient['accounts_used'].append(account_email)
-        else:
-            self.history['recipients'][email_lower] = {
-                'email': email,
-                'name': name,
-                'paper_title': paper_title,
-                'first_sent': self.today,
-                'last_sent': self.today,
-                'send_count': 1,
-                'send_dates': [self.today],
-                'accounts_used': [account_email],
-                'last_timestamp': timestamp
-            }
-        
-        if self.today not in self.history['daily_stats']:
-            self.history['daily_stats'][self.today] = {}
-        
-        self.history['daily_stats'][self.today][account_id] = \
-            self.history['daily_stats'][self.today].get(account_id, 0) + 1
-        
-        self.history['daily_stats'][self.today]['total'] = sum(
-            count for key, count in self.history['daily_stats'][self.today].items()
-            if key != 'total'
-        )
+        with self.history_lock:
+            if email_lower in self.history['recipients']:
+                recipient = self.history['recipients'][email_lower]
+                recipient['last_sent'] = self.today
+                recipient['send_count'] += 1
+                recipient['send_dates'].append(self.today)
+                recipient['accounts_used'].append(account_email)
+            else:
+                self.history['recipients'][email_lower] = {
+                    'email': email,
+                    'name': name,
+                    'paper_title': paper_title,
+                    'first_sent': self.today,
+                    'last_sent': self.today,
+                    'send_count': 1,
+                    'send_dates': [self.today],
+                    'accounts_used': [account_email],
+                    'last_timestamp': timestamp
+                }
+            
+            if self.today not in self.history['daily_stats']:
+                self.history['daily_stats'][self.today] = {}
+            
+            self.history['daily_stats'][self.today][account_id] = \
+                self.history['daily_stats'][self.today].get(account_id, 0) + 1
+            
+            self.history['daily_stats'][self.today]['total'] = sum(
+                count for key, count in self.history['daily_stats'][self.today].items()
+                if key != 'total'
+            )
     
     def process_csv(self, csv_file, test_mode=False, max_emails=None):
         """Process CSV and send emails."""
@@ -351,54 +357,165 @@ class GmailAPISender:
         
         print(f"✅ {len(valid_accounts)} account(s) ready\n")
         
-        # Send
-        sent_count = 0
-        failed_count = 0
+        # Parallel sending: Create a thread for each account
+        recipient_queue = Queue()
+        for recipient in to_send:
+            recipient_queue.put(recipient)
         
-        for i, recipient in enumerate(to_send, 1):
-            # Check if should stop
-            if self.stop_check and self.stop_check():
-                print(f"\n⚠️  Stop requested - stopping email sending")
-                break
+        # Track stats across threads
+        stats = {
+            'sent': threading.Lock(),
+            'failed': threading.Lock(),
+            'sent_count': 0,
+            'failed_count': 0,
+            'account_stats': {}  # Per-account stats
+        }
+        
+        # Get active accounts
+        active_accounts = [acc for acc in self.config['accounts'] 
+                          if acc.get('enabled', True) and 
+                          acc.get('auth_method') == 'gmail_api' and
+                          acc['id'] in valid_accounts]
+        
+        # Get max parallel accounts limit (default: 10, or number of accounts if less)
+        max_parallel = self.config.get('sending', {}).get('max_parallel_accounts', 10)
+        max_parallel = min(max_parallel, len(active_accounts))  # Can't exceed available accounts
+        
+        print(f"📊 Total enabled accounts: {len(active_accounts)}")
+        print(f"🚀 Starting {max_parallel} parallel sending threads (limit: {max_parallel})...\n")
+        
+        def account_worker(account):
+            """Worker thread for a single account - sends emails until queue empty or limit reached."""
+            account_id = account['id']
+            account_stats = {'sent': 0, 'failed': 0}
+            stats['account_stats'][account_id] = account_stats
             
-            email = recipient.get('Email', '').strip()
-            name = recipient.get('Author', recipient.get('Name', 'Colleague'))
-            paper_title = recipient.get('Title', '')
-            
-            account, sent_today = self.get_available_account()
-            
-            if not account:
-                print(f"\n⚠️  All accounts at limit or failed!")
-                if self.failed_accounts:
-                    print(f"   Failed accounts: {', '.join(self.failed_accounts)}")
-                break
-            
-            print(f"[{i}/{len(to_send)}] {name} <{email}>")
-            print(f"           Account: {account['id']} ({sent_today}/{account['daily_limit']})")
-            
-            try:
-                if self.send_email(account, email, name, paper_title):
-                    sent_count += 1
-                    print(f"           ✓ Sent")
-                    self.save_history()
-                    if i < len(to_send):
+            recipient = None  # Track if we have a recipient in hand
+            while True:
+                # Check if should stop globally
+                if self.stop_check and self.stop_check():
+                    print(f"  [{account_id}] ⏹️  Stop requested")
+                    if recipient:
+                        recipient_queue.put(recipient)  # Put back recipient we were holding
+                    break
+                
+                # Check account limit
+                with self.history_lock:
+                    daily_stats = self.history['daily_stats'].get(self.today, {})
+                    sent_today = daily_stats.get(account_id, 0)
+                    daily_limit = account.get('daily_limit', 2000)
+                
+                if sent_today >= daily_limit:
+                    print(f"  [{account_id}] ⏸️  Reached daily limit ({sent_today}/{daily_limit})")
+                    if recipient:
+                        recipient_queue.put(recipient)  # Put back recipient we were holding
+                    break
+                
+                # Check if account failed
+                if account_id in self.failed_accounts:
+                    print(f"  [{account_id}] ❌ Account failed, stopping")
+                    if recipient:
+                        recipient_queue.put(recipient)  # Put back recipient we were holding
+                    break
+                
+                # Get next recipient (non-blocking)
+                try:
+                    recipient = recipient_queue.get(timeout=1)
+                except:
+                    # Queue empty or timeout - check if queue is actually empty
+                    if recipient_queue.empty():
+                        break  # No more recipients, exit thread
+                    continue
+                
+                email = recipient.get('Email', '').strip()
+                name = recipient.get('Author', recipient.get('Name', 'Colleague'))
+                paper_title = recipient.get('Title', '')
+                
+                # Double-check: Has this email already been sent? (thread-safe check)
+                # This prevents race conditions where multiple accounts might send to the same email
+                with self.history_lock:
+                    if self.is_already_sent(email):
+                        print(f"  [{account_id}] ⏭️  Skipping {name} <{email}> (already sent by another account)")
+                        recipient_queue.task_done()
+                        recipient = None  # Clear recipient after skipping
+                        continue
+                
+                print(f"  [{account_id}] Sending to {name} <{email}> ({sent_today}/{daily_limit})")
+                
+                try:
+                    if self.send_email(account, email, name, paper_title):
+                        account_stats['sent'] += 1
+                        with stats['sent']:
+                            stats['sent_count'] += 1
+                        print(f"  [{account_id}] ✓ Sent")
+                        self.save_history()
+                        
+                        # Delay before next email (per account)
                         delay_min = self.config['sending'].get('delay_min_seconds', 3)
                         delay_max = self.config['sending'].get('delay_max_seconds', 30)
                         delay = random.randint(delay_min, delay_max)
-                        print(f"           ⏱️  Waiting {delay} seconds before next email...")
                         time.sleep(delay)
-                else:
-                    failed_count += 1
-            except Exception as e:
-                # Critical error (e.g., credentials not found) - stop processing
-                error_msg = f"❌ Critical error: {e}"
-                print(f"\n{error_msg}")
-                print(f"   Stopping email sending. Please fix the account configuration.")
-                raise  # Re-raise to stop the process
+                    else:
+                        account_stats['failed'] += 1
+                        with stats['failed']:
+                            stats['failed_count'] += 1
+                        print(f"  [{account_id}] ✗ Failed to send")
+                except Exception as e:
+                    # Account-specific error - mark as failed but continue other accounts
+                    error_msg = str(e)
+                    print(f"  [{account_id}] ❌ Error: {error_msg}")
+                    self.failed_accounts.add(account_id)
+                    account_stats['failed'] += 1
+                    with stats['failed']:
+                        stats['failed_count'] += 1
+                    # Put recipient back in queue for other accounts to try (if not a critical account error)
+                    # Critical errors (credentials, file not found) shouldn't be retried by other accounts
+                    if "credentials" not in error_msg.lower() and "file" not in error_msg.lower():
+                        recipient_queue.put(recipient)
+                        # Don't call task_done() since we're putting it back
+                    else:
+                        # Critical error - we're done with this recipient, mark task as done
+                        recipient_queue.task_done()
+                    break  # Stop this account thread
+                
+                recipient_queue.task_done()
+                recipient = None  # Clear recipient after processing
+            
+            print(f"  [{account_id}] Thread finished (sent: {account_stats['sent']}, failed: {account_stats['failed']})")
+        
+        # Start account threads with ThreadPoolExecutor to limit concurrent threads
+        with ThreadPoolExecutor(max_workers=max_parallel) as executor:
+            # Submit all account workers
+            futures = {executor.submit(account_worker, account): account['id'] 
+                      for account in active_accounts}
+            
+            # Wait for all threads to complete
+            for future in as_completed(futures):
+                account_id = futures[future]
+                try:
+                    future.result()  # This will raise any exceptions that occurred
+                except Exception as e:
+                    print(f"  [{account_id}] ❌ Thread error: {e}")
+        
+        # Wait for all queue tasks to be processed
+        recipient_queue.join()  # Wait for all tasks to be processed
+        
+        # Give threads a moment to finish
+        time.sleep(1)
+        
+        sent_count = stats['sent_count']
+        failed_count = stats['failed_count']
         
         # Summary
         print(f"\n{'='*80}")
-        print(f"Sent: {sent_count} | Failed: {failed_count}")
+        print(f"PARALLEL SENDING COMPLETE")
+        print(f"{'='*80}")
+        print(f"Total Sent: {sent_count} | Total Failed: {failed_count}")
+        print(f"\nPer-Account Stats:")
+        for account_id, account_stats in stats['account_stats'].items():
+            print(f"  {account_id}: {account_stats['sent']} sent, {account_stats['failed']} failed")
+        if self.failed_accounts:
+            print(f"\n⚠️  Failed accounts (stopped): {', '.join(self.failed_accounts)}")
         print(f"{'='*80}\n")
 
 

@@ -36,13 +36,13 @@ SUBJECT_VARIANTS = [
 
 EMAIL_SIGNATURE = """
 --
-Wen Xie, Faculty Postdoc Fellow at Experiential AI
+<em>Wen Xie, Faculty Postdoc Fellow at Experiential AI
 Northeastern University
 Personal Website: https://wenxie18.github.io/
 LinkedIn: https://www.linkedin.com/in/vincexie/
 Ph.D., Electrical Engineering, University of Houston
 B.ENG. Electronic Information Engineering, UESTC
-B.A. Finance, UESTC
+B.A. Finance, UESTC</em>
 """
 
 # ============================================================================
@@ -53,7 +53,7 @@ EMAIL_BODY_VARIANT_1 = """Hi {name},
 
 I hope this email finds you well.
 
-I came across your recent work titled "{paper_title}", and it caught my attention, particularly given how it relates to areas on the White House's Critical and Emerging Technologies list. For researchers working in these fields, the NIW (National Interest Waiver) green card pathway can be a valuable option if they're considering opportunities in the U.S.
+I came across your recent work titled "<em>{paper_title}</em>", and it caught my attention, particularly given how it relates to areas on the White House's Critical and Emerging Technologies list. For researchers working in these fields, the NIW (National Interest Waiver) green card pathway can be a valuable option if they're considering opportunities in the U.S.
 
 I'm Wen. I was an international PhD student myself, and after going through the NIW process firsthand, I understand how challenging it can be. Many people face a difficult choice: hiring an attorney can be very expensive, often beyond what's feasible for early career researchers, while the DIY route feels overwhelming because it's hard to know where to start, what forms to fill out, or what a strong application should look like.
 
@@ -72,15 +72,13 @@ Wen
 
 --
 <strong>We've Been There. Now, We're Here for You.</strong>
-<strong>TurboNIW</strong>: https://www.turboniw.com/
+<strong>TurboNIW</strong>
 --
-Wen Xie, Faculty Postdoc Fellow at Experiential AI
+<em>Wen Xie, Faculty Postdoc Fellow at Experiential AI
 Northeastern University
-Personal Website: https://wenxie18.github.io/
-LinkedIn: https://www.linkedin.com/in/vincexie/
 Ph.D., Electrical Engineering, University of Houston
 B.ENG. Electronic Information Engineering, UESTC
-B.A. Finance, UESTC
+B.A. Finance, UESTC</em>
 """
 
 
@@ -88,7 +86,7 @@ EMAIL_BODY_VARIANT_2 = """Hi {name},
 
 I hope you're doing well!
 
-I recently saw your work titled "{paper_title}" and found it quite interesting, especially in the context of U.S. immigration pathways for researchers. As someone whose research aligns with critical technology areas, you might already know that the NIW green card can be an important option for academics and researchers.
+I recently saw your work titled "<em>{paper_title}</em>" and found it quite interesting, especially in the context of U.S. immigration pathways for researchers. As someone whose research aligns with critical technology areas, you might already know that the NIW green card can be an important option for academics and researchers.
 
 A bit about me: I'm Wen, a former international PhD student who went through the NIW process myself. One thing I remember clearly is how overwhelming it was. Many of us face a tough situation: attorney fees can be quite high, which makes it difficult for many researchers, while trying to do it yourself feels impossible without guidance on where to start or what the process should look like.
 
@@ -107,16 +105,14 @@ Wen
 
 --
 <strong>We've Been There. Now, We're Here for You.</strong>
-<strong>TurboNIW</strong>: https://www.turboniw.com/
+<strong>TurboNIW</strong>
 
 --
-Wen Xie, Faculty Postdoc Fellow at Experiential AI
+<em>Wen Xie, Faculty Postdoc Fellow at Experiential AI
 Northeastern University
-Personal Website: https://wenxie18.github.io/
-LinkedIn: https://www.linkedin.com/in/vincexie/
 Ph.D., Electrical Engineering, University of Houston
 B.ENG. Electronic Information Engineering, UESTC
-B.A. Finance, UESTC
+B.A. Finance, UESTC</em>
 """
 
 
@@ -124,7 +120,7 @@ EMAIL_BODY_VARIANT_3 = """Hi {name},
 
 I hope this note finds you well.
 
-I came across your recent work titled "{paper_title}". Given the areas you're researching, I thought it might be worth mentioning a resource related to NIW (National Interest Waiver) green cards, which can be relevant for researchers in emerging tech fields who are considering U.S. opportunities.
+I came across your recent work titled "<em>{paper_title}</em>". Given the areas you're researching, I thought it might be worth mentioning a resource related to NIW (National Interest Waiver) green cards, which can be relevant for researchers in emerging tech fields who are considering U.S. opportunities.
 
 A little background: I'm Wen, and I used to be an international PhD student in the U.S. When I went through the NIW application process, I quickly realized how difficult the situation can be for many researchers. Attorney fees can be quite high, which makes it challenging for many of us, while the DIY path is confusing because there's no clear guide for beginners on where to start, what forms to fill out, or how to structure the application.
 
@@ -143,16 +139,14 @@ Wen
 
 --
 <strong>We've Been There. Now, We're Here for You.</strong>
-<strong>TurboNIW</strong>: https://www.turboniw.com/
+<strong>TurboNIW</strong>
 
 --
-Wen Xie, Faculty Postdoc Fellow at Experiential AI
+<em>Wen Xie, Faculty Postdoc Fellow at Experiential AI
 Northeastern University
-Personal Website: https://wenxie18.github.io/
-LinkedIn: https://www.linkedin.com/in/vincexie/
 Ph.D., Electrical Engineering, University of Houston
 B.ENG. Electronic Information Engineering, UESTC
-B.A. Finance, UESTC
+B.A. Finance, UESTC</em>
 """
 
 
@@ -160,7 +154,7 @@ EMAIL_BODY_VARIANT_4 = """Hi {name},
 
 I hope you're having a good week.
 
-I wanted to reach out because I recently came across your work titled "{paper_title}". It's genuinely impressive, and it reminded me of how many international researchers are working on technologies that align with the U.S. government's Critical and Emerging Technologies list, which can make NIW (National Interest Waiver) green card pathways quite relevant.
+I wanted to reach out because I recently came across your work titled "<em>{paper_title}</em>". It's genuinely impressive, and it reminded me of how many international researchers are working on technologies that align with the U.S. government's Critical and Emerging Technologies list, which can make NIW (National Interest Waiver) green card pathways quite relevant.
 
 I'm Wen, a former international PhD student who went through the NIW process myself. One of the hardest parts for me was facing the reality that many of us encounter: attorney fees can be quite high, which isn't always feasible, while trying the DIY route feels overwhelming without proper guidance on where to start or what the process should look like.
 
@@ -182,13 +176,11 @@ Wen
 <strong>TurboNIW</strong>
 
 --
-Wen Xie, Faculty Postdoc Fellow at Experiential AI
+<em>Wen Xie, Faculty Postdoc Fellow at Experiential AI
 Northeastern University
-Personal Website: https://wenxie18.github.io/
-LinkedIn: https://www.linkedin.com/in/vincexie/
 Ph.D., Electrical Engineering, University of Houston
 B.ENG. Electronic Information Engineering, UESTC
-B.A. Finance, UESTC
+B.A. Finance, UESTC</em>
 """
 
 
@@ -196,7 +188,7 @@ EMAIL_BODY_VARIANT_5 = """Hi {name},
 
 I hope this message finds you well.
 
-I recently came across your work titled "{paper_title}", and it stood out to me, particularly because it touches on areas that fall under the U.S. Critical and Emerging Technologies framework. For researchers in these fields, the NIW green card can be a practical pathway worth considering.
+I recently came across your work titled "<em>{paper_title}</em>", and it stood out to me, particularly because it touches on areas that fall under the U.S. Critical and Emerging Technologies framework. For researchers in these fields, the NIW green card can be a practical pathway worth considering.
 
 A bit about myself: I'm Wen, and I used to be an international PhD student. I went through the NIW application process on my own, and I remember how challenging it was. Many researchers face a difficult situation: attorney fees can be quite high, which makes it hard for many of us, while trying to DIY it felt like navigating a maze without a map, not knowing where to start or what the process should look like.
 
@@ -218,13 +210,11 @@ Wen
 <strong>TurboNIW</strong>
 
 --
-Wen Xie, Faculty Postdoc Fellow at Experiential AI
+<em>Wen Xie, Faculty Postdoc Fellow at Experiential AI
 Northeastern University
-Personal Website: https://wenxie18.github.io/
-LinkedIn: https://www.linkedin.com/in/vincexie/
 Ph.D., Electrical Engineering, University of Houston
 B.ENG. Electronic Information Engineering, UESTC
-B.A. Finance, UESTC
+B.A. Finance, UESTC</em>
 """
 
 
