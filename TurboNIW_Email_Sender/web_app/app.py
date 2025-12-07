@@ -12,10 +12,11 @@ from datetime import datetime, date
 import threading
 import time
 import random
+import signal
+import sys
 from werkzeug.utils import secure_filename
 
 # Import existing email sender classes
-import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from send_emails_smtp import EmailSender
 from send_emails_gmail_api import GmailAPISender
@@ -29,16 +30,35 @@ CONFIG_FILE = BASE_DIR / 'config.json'
 HISTORY_FILE = BASE_DIR / 'sent_history.json'
 SECRETS_DIR = BASE_DIR / '.secrets'
 
-# Global state
+# Global state - Industry standard: in-memory state for real-time UI updates
 sending_active = False
 sending_thread = None
 sending_progress = {
-    "sent": 0,
-    "failed": 0,
-    "total": 0,
-    "current_name": "",
-    "current_email": ""
+    "sent": 0,              # Total sent today (updated in real-time via callback)
+    "failed": 0,            # Total failed
+    "total": 0,             # Total capacity (sum of enabled accounts' daily limits)
+    "current_name": "",     # Current recipient being processed
+    "current_email": "",    # Current recipient email
+    "account_stats": {}      # Per-account stats: {account_id: {"sent": count, "limit": limit}}
 }
+progress_lock = threading.Lock()  # Thread-safe updates
+
+
+def graceful_shutdown(signum, frame):
+    """Handle graceful shutdown on SIGINT/SIGTERM to clean up threads."""
+    global sending_active, sending_thread
+    print("\n\n🛑 Shutting down gracefully...")
+    
+    # Stop sending if active
+    if sending_active:
+        print("⏹️  Stopping email sending...")
+        sending_active = False
+        # Wait a bit for threads to finish (but not too long)
+        if sending_thread and sending_thread.is_alive():
+            sending_thread.join(timeout=2.0)
+    
+    print("✅ Shutdown complete")
+    sys.exit(0)
 
 
 def load_config():
@@ -390,6 +410,11 @@ def start_sending():
     """Start sending emails - processes CSV and sends directly like command-line."""
     global sending_active, sending_thread
     
+    # Check if thread is actually alive (clean up stale references)
+    if sending_thread and not sending_thread.is_alive():
+        sending_thread = None
+        sending_active = False
+    
     if sending_active:
         return jsonify({"success": False, "error": "Sending already in progress"}), 400
     
@@ -413,6 +438,11 @@ def start_sending():
     if not csv_path:
         return jsonify({"success": False, "error": "No CSV file specified and no default file found"}), 400
     
+    # Clear current recipient info - progress (sent/total) is always calculated from source of truth
+    sending_progress["current_name"] = ""
+    sending_progress["current_email"] = ""
+    sending_progress["failed"] = 0
+    
     sending_active = True
     sending_thread = threading.Thread(target=send_emails_worker_direct, args=(csv_path, max_emails), daemon=True)
     sending_thread.start()
@@ -425,74 +455,138 @@ def stop_sending():
     """Stop sending emails."""
     global sending_active, sending_progress
     sending_active = False
-    sending_progress = {
-        "sent": sending_progress.get("sent", 0),
-        "failed": sending_progress.get("failed", 0),
-        "total": sending_progress.get("total", 0),
-        "current_name": "",
-        "current_email": "",
-        "stopped": True
-    }
+    # Just clear current recipient info - don't reset sent/total
+    # Status endpoint will recalculate total based on current daily limits
+    sending_progress["current_name"] = ""
+    sending_progress["current_email"] = ""
     return jsonify({"success": True})
 
 
 @app.route('/api/send/status', methods=['GET'])
 def send_status():
-    """Get sending status and progress."""
-    # Check if sending is active by checking if thread is alive
+    """Get sending status and progress - Industry standard: read from in-memory state."""
+    global sending_thread
+    
+    # Check if sending is active
     thread_alive = sending_thread and sending_thread.is_alive() if sending_thread else False
-    # Sending is active if sending_active flag is True AND thread is still alive
-    # If sending_active is False, sending has completed (even if thread hasn't fully terminated)
+    if sending_thread and not thread_alive:
+        sending_thread = None
     is_active = sending_active and thread_alive
     
-    # Always read from history file (source of truth) - like command-line
-    try:
-        history = load_history()
-        today = str(date.today())
-        if today in history.get('daily_stats', {}):
-            daily_stats = history['daily_stats'][today]
-            # Sum up sent emails today (excluding 'total' key)
-            total_sent_today = sum(
-                count for key, count in daily_stats.items() 
-                if key != 'total'
-            )
-            # Always update from history (source of truth)
-            sending_progress["sent"] = total_sent_today
-    except:
-        pass
+    # Industry standard: Read from in-memory state (fast, no file I/O, no race conditions)
+    # If not active or state not initialized, fallback to calculating from files
+    with progress_lock:
+        sent_count = sending_progress.get("sent", 0)
+        total_limit = sending_progress.get("total", 0)
+        
+        # If state not initialized (e.g., after restart), calculate from files
+        if total_limit == 0 and not is_active:
+            try:
+                config = load_config()
+                for account in config.get('accounts', []):
+                    if account.get('enabled', True):
+                        if account.get('auth_method') in ['gmail_api', 'app_password']:
+                            total_limit += account.get('daily_limit', 0)
+                sending_progress["total"] = total_limit
+            except:
+                pass
+            
+            # Also sync sent count from history file
+            try:
+                history = load_history()
+                today = str(date.today())
+                if today in history.get('daily_stats', {}):
+                    daily_stats = history['daily_stats'][today]
+                    sent_count = sum(
+                        count for key, count in daily_stats.items() 
+                        if key != 'total'
+                    )
+                    sending_progress["sent"] = sent_count
+            except:
+                pass
     
     return jsonify({
         "active": is_active,
-        "progress": sending_progress.copy()
+        "progress": {
+            "sent": sent_count,
+            "total": total_limit,
+            "failed": sending_progress.get("failed", 0),
+            "current_name": sending_progress.get("current_name", ""),
+            "current_email": sending_progress.get("current_email", "")
+        }
     })
+
+
+def on_email_sent_callback(account_id, account_email, account_limit):
+    """Callback function called by sender classes when an email is sent.
+    Industry standard: Update in-memory state immediately for real-time UI updates."""
+    global sending_progress
+    with progress_lock:
+        # Initialize account stats if needed
+        if "account_stats" not in sending_progress:
+            sending_progress["account_stats"] = {}
+        if account_id not in sending_progress["account_stats"]:
+            sending_progress["account_stats"][account_id] = {"sent": 0, "limit": account_limit}
+        
+        # Increment sent count for this account
+        sending_progress["account_stats"][account_id]["sent"] += 1
+        
+        # Update total sent (sum across all accounts)
+        sending_progress["sent"] = sum(
+            stats["sent"] for stats in sending_progress["account_stats"].values()
+        )
 
 
 def send_emails_worker_direct(csv_path, max_emails=0):
     """Background worker that processes CSV and sends directly (exactly like command-line)."""
     global sending_active, sending_progress
     
-    # Initialize progress - start from current sent count in history (like command-line)
-    initial_sent = 0
-    try:
-        history = load_history()
-        today = str(date.today())
-        if today in history.get('daily_stats', {}):
-            daily_stats = history['daily_stats'][today]
-            # Sum up sent emails today (excluding 'total' key)
-            initial_sent = sum(
-                count for key, count in daily_stats.items() 
-                if key != 'total'
-            )
-    except:
-        pass
-    
-    sending_progress = {
-        "sent": initial_sent,  # Start from current count in history
-        "failed": 0,
-        "total": 0,
-        "current_name": "",
-        "current_email": ""
-    }
+    # Industry standard: Initialize progress state at start
+    # 1. Load initial sent count from history file (for resume after restart)
+    # 2. Calculate total capacity from config
+    # 3. Initialize per-account stats
+    today = str(date.today())
+    with progress_lock:
+        # Load initial state from history file
+        initial_sent = 0
+        account_stats = {}
+        try:
+            history = load_history()
+            if today in history.get('daily_stats', {}):
+                daily_stats = history['daily_stats'][today]
+                for account_id, count in daily_stats.items():
+                    if account_id != 'total':
+                        account_stats[account_id] = {"sent": count, "limit": 0}
+                        initial_sent += count
+        except:
+            pass
+        
+        # Calculate total capacity and initialize account stats
+        total_capacity = 0
+        try:
+            config = load_config()
+            for account in config.get('accounts', []):
+                if account.get('enabled', True):
+                    if account.get('auth_method') in ['gmail_api', 'app_password']:
+                        account_id = account['id']
+                        account_limit = account.get('daily_limit', 0)
+                        total_capacity += account_limit
+                        
+                        # Initialize or update account stats
+                        if account_id not in account_stats:
+                            account_stats[account_id] = {"sent": 0, "limit": account_limit}
+                        else:
+                            account_stats[account_id]["limit"] = account_limit
+        except:
+            pass
+        
+        # Set initialized state
+        sending_progress["sent"] = initial_sent
+        sending_progress["total"] = total_capacity
+        sending_progress["account_stats"] = account_stats
+        sending_progress["current_name"] = ""
+        sending_progress["current_email"] = ""
+        sending_progress["failed"] = 0
     
     try:
         # Change to BASE_DIR to ensure relative paths work correctly
@@ -530,13 +624,12 @@ def send_emails_worker_direct(csv_path, max_emails=0):
             if not full_path.exists():
                 raise Exception(f"❌ CSV file not found: {csv_path}")
             
-            # Calculate total daily limit from all enabled accounts (this is the real limit)
+            # Calculate total daily limit for logging (status endpoint will calculate for UI)
             total_daily_limit = 0
             for account in config.get('accounts', []):
                 if account.get('enabled', True):
-                    if account.get('auth_method') == 'gmail_api' or account.get('auth_method') == 'app_password':
-                        daily_limit = account.get('daily_limit', 0)
-                        total_daily_limit += daily_limit
+                    if account.get('auth_method') in ['gmail_api', 'app_password']:
+                        total_daily_limit += account.get('daily_limit', 0)
             
             # Count total recipients in CSV (for reference)
             import csv as csv_module
@@ -544,33 +637,24 @@ def send_emails_worker_direct(csv_path, max_emails=0):
                 reader = csv_module.DictReader(f)
                 total_recipients = sum(1 for _ in reader)
             
-            # Total progress is based on daily limit, not CSV rows
-            # We can't send more than our daily limit anyway
-            if max_emails > 0:
-                # If max_emails is set, use the minimum of max_emails and daily limit
-                sending_progress["total"] = min(max_emails, total_daily_limit)
-            else:
-                # Otherwise, use daily limit (we can't send more than this)
-                sending_progress["total"] = total_daily_limit
-            
             print(f"📊 Total daily limit: {total_daily_limit}")
             print(f"📊 CSV recipients: {total_recipients}")
-            print(f"📊 Progress total (based on daily limit): {sending_progress['total']}")
+            print(f"📊 Max emails: {max_emails if max_emails > 0 else 'No limit'}")
             
             print(f"🚀 Starting email sending (same as command-line)...")
             print(f"📁 CSV: {csv_path}")
-            print(f"📊 Total recipients: {total_recipients}")
-            print(f"📊 Max emails: {max_emails if max_emails > 0 else 'No limit'}")
             
-            # Add a stop check function to the sender if it supports it
-            # For now, we'll check sending_active in the worker loop
             # Add stop check function to sender
             def should_stop():
                 return not sending_active
             
-            # Store stop check in sender if it supports it
             if hasattr(sender, 'set_stop_check'):
                 sender.set_stop_check(should_stop)
+            
+            # Industry standard: Set progress callback for real-time updates
+            # This updates in-memory state immediately when emails are sent
+            if hasattr(sender, 'set_progress_callback'):
+                sender.set_progress_callback(on_email_sent_callback)
             
             # This is the same method the command-line uses - processes CSV and sends directly
             sender.process_csv(str(full_path), test_mode=False, max_emails=max_emails if max_emails > 0 else None)
@@ -594,6 +678,7 @@ def send_emails_worker_direct(csv_path, max_emails=0):
         sending_active = False
         sending_progress["current_name"] = ""
         sending_progress["current_email"] = ""
+        # Don't reset total - status endpoint always calculates it fresh from config
 
 
 @app.route('/stats')
@@ -655,6 +740,10 @@ def search_history():
 
 
 if __name__ == '__main__':
+    # Register signal handlers for graceful shutdown
+    signal.signal(signal.SIGINT, graceful_shutdown)
+    signal.signal(signal.SIGTERM, graceful_shutdown)
+    
     # Ensure secrets directory exists
     SECRETS_DIR.mkdir(exist_ok=True)
     
@@ -667,5 +756,8 @@ if __name__ == '__main__':
     print(f"\nPress Ctrl+C to stop the server\n")
     
     # Run app
-    app.run(debug=True, host='0.0.0.0', port=port)
+    try:
+        app.run(debug=True, host='0.0.0.0', port=port)
+    except KeyboardInterrupt:
+        graceful_shutdown(None, None)
 

@@ -55,6 +55,7 @@ class GmailAPISender:
         self.services = {}  # Cache for authenticated services
         self.failed_accounts = set()  # Track accounts that fail authentication
         self.stop_check = None  # Function to check if should stop
+        self.progress_callback = None  # Callback for real-time progress updates
         self.history_lock = threading.Lock()  # Thread-safe history updates
     
     def load_config(self, config_file):
@@ -254,12 +255,17 @@ class GmailAPISender:
         # Otherwise check normal history
         return email_lower in self.history['recipients']
     
+    def set_progress_callback(self, callback):
+        """Set callback function for real-time progress updates (industry standard)."""
+        self.progress_callback = callback
+    
     def record_sent_email(self, email, name, paper_title, account):
         """Record sent email (thread-safe)."""
         email_lower = email.lower()
         timestamp = datetime.now().isoformat()
         account_id = account['id']
         account_email = account['email']
+        account_limit = account.get('daily_limit', 2000)
         
         with self.history_lock:
             if email_lower in self.history['recipients']:
@@ -291,6 +297,15 @@ class GmailAPISender:
                 count for key, count in self.history['daily_stats'][self.today].items()
                 if key != 'total'
             )
+        
+        # Industry standard: Call progress callback immediately after updating history
+        # This updates in-memory state for real-time UI updates (no file I/O in status endpoint)
+        if self.progress_callback:
+            try:
+                self.progress_callback(account_id, account_email, account_limit)
+            except Exception as e:
+                # Don't let callback errors break email sending
+                print(f"⚠️  Progress callback error: {e}")
     
     def process_csv(self, csv_file, test_mode=False, max_emails=None):
         """Process CSV and send emails."""
