@@ -1,0 +1,37 @@
+{
+  "_comment": "Configuration file for arXiv paper collection and email extraction",
+  "_note": "Edit this file to change collection parameters without modifying Python scripts",
+  
+  "collection": {
+    "round": 2,
+    "output_dir": "data/arxiv/round2",
+    "categories": [
+      {
+        "arxiv_category": "cs.LG",
+        "short_name": "cs_lg",
+        "years": [2024, 2025]
+      },
+      {
+        "arxiv_category": "cs.CV",
+        "short_name": "cs_cv",
+        "years": [2024, 2025]
+      }
+    ],
+    "batch_size": 1000,
+    "rate_limit_delay_seconds": 3
+  },
+  
+  "email_extraction": {
+    "cookie_file": "arxiv.org_cookies.txt",
+    "temp_dir": "temp_pdfs",
+    "max_retries": 3,
+    "rate_limit_delay_seconds": 3
+  },
+  
+  "post_processing": {
+    "min_confidence": 0.75,
+    "remove_chinese": true,
+    "deduplicate": true
+  }
+}
+

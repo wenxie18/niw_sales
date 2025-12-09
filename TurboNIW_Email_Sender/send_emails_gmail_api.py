@@ -35,7 +35,9 @@ except ImportError:
 from email_templates_variants import format_email
 
 # Gmail API scopes
-SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+# gmail.readonly: Read emails to check for bounce/rate limit messages
+# gmail.send: Send emails
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send']
 
 
 class GmailAPISender:
@@ -57,6 +59,11 @@ class GmailAPISender:
         self.stop_check = None  # Function to check if should stop
         self.progress_callback = None  # Callback for real-time progress updates
         self.history_lock = threading.Lock()  # Thread-safe history updates
+        self.account_targets = {}  # Optional: per-account target counts (for auto-send)
+        self.check_bounce_emails = True  # Check inbox for rate limit bounce messages
+        self.last_bounce_check = {}  # Track last bounce check time per account
+        self.emails_sent_since_check = {}  # Track emails sent since last bounce check per account
+        self.emails_sent_since_check = {}  # Track emails sent since last bounce check per account
     
     def load_config(self, config_file):
         """Load configuration."""
@@ -104,16 +111,49 @@ class GmailAPISender:
         token_file = str(config_dir / '.secrets' / f"{account_id}_token.json")
         
         creds = None
+        needs_reauth = False
         
         # Load existing token
         if Path(token_file).exists():
-            creds = Credentials.from_authorized_user_file(token_file, SCOPES)
+            try:
+                # Try loading with old scopes first (backward compatibility)
+                old_scopes = ['https://www.googleapis.com/auth/gmail.send']
+                creds = Credentials.from_authorized_user_file(token_file, old_scopes)
+                
+                # Check if token has all required scopes
+                if creds and creds.valid:
+                    token_scopes = set(creds.scopes or [])
+                    required_scopes = set(SCOPES)
+                    if not required_scopes.issubset(token_scopes):
+                        # Token missing required scopes - delete and re-authenticate
+                        print(f"  ⚠️  [{account_id}] Token missing gmail.readonly scope, deleting old token")
+                        Path(token_file).unlink()
+                        creds = None
+                        needs_reauth = True
+                    else:
+                        # Token has correct scopes, reload with new scopes
+                        creds = Credentials.from_authorized_user_file(token_file, SCOPES)
+            except Exception as e:
+                # Token file corrupted or invalid - will re-authenticate
+                print(f"  ⚠️  [{account_id}] Error loading token: {e}")
+                creds = None
+                needs_reauth = True
         
         # If no valid credentials, authenticate
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
+        if not creds or not creds.valid or needs_reauth:
+            if creds and creds.expired and creds.refresh_token and not needs_reauth:
+                try:
+                    creds.refresh(Request())
+                except Exception as e:
+                    # Refresh failed - need to re-authenticate
+                    print(f"  ⚠️  [{account_id}] Token refresh failed: {e}")
+                    creds = None
+                    needs_reauth = True
+            
+            if not creds or needs_reauth:
+                # Need to re-authenticate (this will open browser)
+                print(f"  🔐 [{account_id}] Re-authentication required (new scope: gmail.readonly)")
+                print(f"     Opening browser... Please grant both gmail.send and gmail.readonly permissions")
                 flow = InstalledAppFlow.from_client_secrets_file(credentials_file, SCOPES)
                 creds = flow.run_local_server(port=0)
             
@@ -154,6 +194,98 @@ class GmailAPISender:
         
         return {'raw': base64.urlsafe_b64encode(msg.as_bytes()).decode()}
     
+    def check_rate_limit_bounce(self, account, service, force_check=False):
+        """Check inbox for rate limit bounce messages from mailer-daemon@googlemail.com.
+        
+        Args:
+            account: Account dictionary
+            service: Gmail API service
+            force_check: If True, check immediately regardless of timing
+        """
+        if not self.check_bounce_emails:
+            return False
+        
+        account_id = account['id']
+        current_time = time.time()
+        
+        # Check if we should check now:
+        # - Every 2 minutes (time-based) - reasonable given 5-30s delays between emails
+        # - Every 50 emails (count-based) - batch check
+        # - Or if forced (e.g., at end of sending session)
+        should_check = force_check
+        if not should_check:
+            if account_id not in self.last_bounce_check:
+                should_check = True
+            else:
+                time_since_check = current_time - self.last_bounce_check[account_id]
+                emails_since_check = self.emails_sent_since_check.get(account_id, 0)
+                
+                # Check if 2 minutes passed OR 50 emails sent
+                if time_since_check >= 120 or emails_since_check >= 50:
+                    should_check = True
+        
+        if not should_check:
+            return False
+        
+        # Update check time and reset counter
+        self.last_bounce_check[account_id] = current_time
+        self.emails_sent_since_check[account_id] = 0
+        
+        try:
+            # Search for messages from mailer-daemon@googlemail.com from TODAY only
+            # Use "newer_than:1d" to get today's messages (more reliable than specific time)
+            query = 'from:mailer-daemon@googlemail.com newer_than:1d'
+            results = service.users().messages().list(userId='me', q=query, maxResults=20).execute()
+            messages = results.get('messages', [])
+            
+            if not messages:
+                return False
+            
+            # Check each message for rate limit content
+            for msg in messages:
+                try:
+                    message = service.users().messages().get(userId='me', id=msg['id'], format='full').execute()
+                    
+                    # Get subject and snippet
+                    headers = message['payload'].get('headers', [])
+                    subject = next((h['value'] for h in headers if h['name'].lower() == 'subject'), '')
+                    snippet = message.get('snippet', '')
+                    body_text = ''
+                    
+                    # Try to get body text
+                    payload = message.get('payload', {})
+                    parts = payload.get('parts', [])
+                    for part in parts:
+                        if part.get('mimeType') == 'text/plain':
+                            data = part.get('body', {}).get('data', '')
+                            if data:
+                                body_text = base64.urlsafe_b64decode(data).decode('utf-8', errors='ignore')
+                                break
+                    
+                    # Check for rate limit indicators
+                    combined_text = f"{subject} {snippet} {body_text}".lower()
+                    if any(phrase in combined_text for phrase in [
+                        'reached a limit for sending mail',
+                        'limit for sending mail',
+                        'sending limit',
+                        'daily sending quota',
+                        'quota exceeded',
+                        'you have reached a limit'
+                    ]):
+                        print(f"  🚨 RATE LIMIT BOUNCE DETECTED for account {account_id}")
+                        print(f"  ⚠️  Found bounce message: {subject[:100]}")
+                        self.failed_accounts.add(account_id)
+                        return True
+                except Exception as e:
+                    # Skip if we can't read this message
+                    continue
+            
+            return False
+        except Exception as e:
+            # If we can't check bounces, continue (don't block sending)
+            # This might happen if gmail.readonly scope isn't granted
+            return False
+    
     def send_email(self, account, recipient_email, recipient_name, paper_title="", publication_venue="arXiv"):
         """Send email using Gmail API."""
         account_id = account['id']
@@ -161,6 +293,9 @@ class GmailAPISender:
         try:
             # Authenticate
             service = self.authenticate_account(account)
+            
+            # Periodic bounce check happens in account_worker loop (every 2 min or 50 emails)
+            # No need to check before every single email send
             
             # Format content (randomly select variant)
             subject, body = format_email(recipient_name, paper_title, publication_venue)
@@ -171,8 +306,20 @@ class GmailAPISender:
             # Send
             service.users().messages().send(userId='me', body=message).execute()
             
-            # Record
+            # Record immediately
             self.record_sent_email(recipient_email, recipient_name, paper_title, account)
+            
+            # Increment counter for bounce check
+            if account_id not in self.emails_sent_since_check:
+                self.emails_sent_since_check[account_id] = 0
+            self.emails_sent_since_check[account_id] += 1
+            
+            # Check for bounce messages periodically (every 2 minutes or every 50 emails)
+            # No need to check after every email since we have 5-30s delays between emails
+            # The periodic check will catch bounces within 1-2 minutes
+            if self.check_rate_limit_bounce(account, service, force_check=False):
+                # Email was sent but bounce detected - mark as failed
+                raise Exception(f"Rate limit bounce detected after sending for {account_id}")
             
             return True
             
@@ -183,10 +330,34 @@ class GmailAPISender:
             self.failed_accounts.add(account_id)
             raise Exception(error_msg)  # Raise to stop processing
         except HttpError as error:
-            error_msg = f"Gmail API error for account {account_id}: {error}"
-            print(f"  ✗ {error_msg}")
-            # For API errors, mark as failed if it's an auth/permission issue
-            if error.resp.status in [401, 403]:
+            error_status = error.resp.status
+            error_details = error.error_details[0] if error.error_details else {}
+            error_reason = error_details.get('reason', '')
+            error_message = str(error)
+            
+            # Check for rate limit or sending limit errors
+            is_rate_limit = (
+                error_status == 429 or  # Too Many Requests
+                (error_status == 403 and 'limit' in error_message.lower()) or
+                (error_status == 403 and 'quota' in error_message.lower()) or
+                (error_status == 403 and 'rateLimitExceeded' in error_reason) or
+                'reached a limit for sending mail' in error_message.lower() or
+                'mail delivery subsystem' in error_message.lower() or
+                'daily sending quota' in error_message.lower()
+            )
+            
+            if is_rate_limit:
+                error_msg = f"🚨 RATE LIMIT HIT for account {account_id}: {error_message}"
+                print(f"  ✗ {error_msg}")
+                print(f"  ⚠️  Account {account_id} has reached its sending limit. Stopping this account immediately.")
+                self.failed_accounts.add(account_id)
+                # Raise to stop processing from this account
+                raise Exception(f"Rate limit reached for {account_id}: {error_message}")
+            
+            # For other API errors, mark as failed if it's an auth/permission issue
+            if error_status in [401, 403]:
+                error_msg = f"Gmail API error for account {account_id}: {error_message}"
+                print(f"  ✗ {error_msg}")
                 self.failed_accounts.add(account_id)
                 raise Exception(error_msg)  # Raise to stop processing
             return False
@@ -420,11 +591,21 @@ class GmailAPISender:
                     sent_today = daily_stats.get(account_id, 0)
                     daily_limit = account.get('daily_limit', 2000)
                 
+                # Check if we've reached daily limit
                 if sent_today >= daily_limit:
                     print(f"  [{account_id}] ⏸️  Reached daily limit ({sent_today}/{daily_limit})")
                     if recipient:
                         recipient_queue.put(recipient)  # Put back recipient we were holding
                     break
+                
+                # Check if we've reached account-specific target (for auto-send)
+                if account_id in self.account_targets:
+                    target = self.account_targets[account_id]
+                    if sent_today >= target:
+                        print(f"  [{account_id}] ⏸️  Reached target ({sent_today}/{target})")
+                        if recipient:
+                            recipient_queue.put(recipient)  # Put back recipient we were holding
+                        break
                 
                 # Check if account failed
                 if account_id in self.failed_accounts:
@@ -432,6 +613,20 @@ class GmailAPISender:
                     if recipient:
                         recipient_queue.put(recipient)  # Put back recipient we were holding
                     break
+                
+                # Periodic bounce check (every 2 minutes or 50 emails)
+                # Only checks if enough time/emails have passed
+                try:
+                    service = self.authenticate_account(account)
+                    if self.check_rate_limit_bounce(account, service, force_check=False):
+                        print(f"  [{account_id}] 🚨 Rate limit bounce detected, stopping account")
+                        self.failed_accounts.add(account_id)
+                        if recipient:
+                            recipient_queue.put(recipient)  # Put back recipient we were holding
+                        break
+                except:
+                    # If bounce check fails, continue (don't block sending)
+                    pass
                 
                 # Get next recipient (non-blocking)
                 try:
@@ -478,19 +673,26 @@ class GmailAPISender:
                 except Exception as e:
                     # Account-specific error - mark as failed but continue other accounts
                     error_msg = str(e)
+                    
+                    # Check if this is a rate limit error
+                    is_rate_limit = 'rate limit reached' in error_msg.lower()
+                    
                     print(f"  [{account_id}] ❌ Error: {error_msg}")
                     self.failed_accounts.add(account_id)
                     account_stats['failed'] += 1
                     with stats['failed']:
                         stats['failed_count'] += 1
-                    # Put recipient back in queue for other accounts to try (if not a critical account error)
-                    # Critical errors (credentials, file not found) shouldn't be retried by other accounts
-                    if "credentials" not in error_msg.lower() and "file" not in error_msg.lower():
+                    
+                    # For rate limit errors, don't put recipient back (account is done for today)
+                    # For other critical errors (credentials, file not found), don't retry
+                    # For non-critical errors, put recipient back for other accounts to try
+                    if is_rate_limit or "credentials" in error_msg.lower() or "file" in error_msg.lower():
+                        # Critical/rate limit error - we're done with this recipient, mark task as done
+                        recipient_queue.task_done()
+                    else:
+                        # Non-critical error - put back for other accounts to try
                         recipient_queue.put(recipient)
                         # Don't call task_done() since we're putting it back
-                    else:
-                        # Critical error - we're done with this recipient, mark task as done
-                        recipient_queue.task_done()
                     break  # Stop this account thread
                 
                 recipient_queue.task_done()

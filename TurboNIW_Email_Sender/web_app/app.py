@@ -8,13 +8,16 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, s
 import json
 import os
 from pathlib import Path
-from datetime import datetime, date
+from datetime import datetime, date, time as dt_time
 import threading
 import time
 import random
 import signal
 import sys
 from werkzeug.utils import secure_filename
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
+import pytz
 
 # Import existing email sender classes
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -39,14 +42,15 @@ sending_progress = {
     "total": 0,             # Total capacity (sum of enabled accounts' daily limits)
     "current_name": "",     # Current recipient being processed
     "current_email": "",    # Current recipient email
-    "account_stats": {}      # Per-account stats: {account_id: {"sent": count, "limit": limit}}
+    "account_stats": {},    # Per-account stats: {account_id: {"sent": count, "limit": limit}}
+    "date": None            # Date this state is for (reset when date changes)
 }
 progress_lock = threading.Lock()  # Thread-safe updates
 
 
 def graceful_shutdown(signum, frame):
     """Handle graceful shutdown on SIGINT/SIGTERM to clean up threads."""
-    global sending_active, sending_thread
+    global sending_active, sending_thread, scheduler
     print("\n\n🛑 Shutting down gracefully...")
     
     # Stop sending if active
@@ -56,6 +60,11 @@ def graceful_shutdown(signum, frame):
         # Wait a bit for threads to finish (but not too long)
         if sending_thread and sending_thread.is_alive():
             sending_thread.join(timeout=2.0)
+    
+    # Shutdown scheduler
+    if scheduler and scheduler.running:
+        print("⏹️  Stopping scheduler...")
+        scheduler.shutdown()
     
     print("✅ Shutdown complete")
     sys.exit(0)
@@ -453,60 +462,88 @@ def start_sending():
 @app.route('/api/send/stop', methods=['POST'])
 def stop_sending():
     """Stop sending emails."""
-    global sending_active, sending_progress
+    global sending_active, sending_progress, sending_thread
     sending_active = False
-    # Just clear current recipient info - don't reset sent/total
+    # Clear current recipient info - don't reset sent/total
     # Status endpoint will recalculate total based on current daily limits
-    sending_progress["current_name"] = ""
-    sending_progress["current_email"] = ""
+    with progress_lock:
+        sending_progress["current_name"] = ""
+        sending_progress["current_email"] = ""
+    # Note: sending_thread will be cleaned up by status endpoint when it detects thread is dead
     return jsonify({"success": True})
 
 
 @app.route('/api/send/status', methods=['GET'])
 def send_status():
     """Get sending status and progress - Industry standard: read from in-memory state."""
-    global sending_thread
+    global sending_thread, sending_active
     
     # Check if sending is active
     thread_alive = sending_thread and sending_thread.is_alive() if sending_thread else False
     if sending_thread and not thread_alive:
+        # Thread finished - clean up
         sending_thread = None
-    is_active = sending_active and thread_alive
+        sending_active = False  # Ensure flag is cleared when thread dies
     
-    # Industry standard: Read from in-memory state (fast, no file I/O, no race conditions)
-    # If not active or state not initialized, fallback to calculating from files
+    # Sending is active only if both flag is True AND thread is alive
+    # If sending_active is False but thread is still alive, we're in "stopping" state
+    is_active = sending_active and thread_alive
+    is_stopping = not sending_active and thread_alive  # Stop requested but thread still running
+    
+    # CRITICAL: Check if it's a new day - reset progress if date changed
+    today = str(date.today())
     with progress_lock:
+        progress_date = sending_progress.get("date")
+        
+        # If date changed, reset progress for new day
+        if progress_date != today:
+            sending_progress["sent"] = 0
+            sending_progress["failed"] = 0
+            sending_progress["account_stats"] = {}
+            sending_progress["date"] = today
+            # Don't reset total - will be recalculated below
+        
         sent_count = sending_progress.get("sent", 0)
         total_limit = sending_progress.get("total", 0)
         
-        # If state not initialized (e.g., after restart), calculate from files
-        if total_limit == 0 and not is_active:
-            try:
-                config = load_config()
-                for account in config.get('accounts', []):
-                    if account.get('enabled', True):
-                        if account.get('auth_method') in ['gmail_api', 'app_password']:
-                            total_limit += account.get('daily_limit', 0)
-                sending_progress["total"] = total_limit
-            except:
-                pass
+        # Always recalculate total from current config (accounts/limits may have changed)
+        # This ensures we show today's capacity, not yesterday's
+        try:
+            config = load_config()
+            new_total = 0
+            for account in config.get('accounts', []):
+                if account.get('enabled', True):
+                    if account.get('auth_method') in ['gmail_api', 'app_password']:
+                        new_total += account.get('daily_limit', 0)
             
-            # Also sync sent count from history file
+            # Update total if it changed (user may have updated limits)
+            if new_total != total_limit:
+                sending_progress["total"] = new_total
+                total_limit = new_total
+        except:
+            pass
+        
+        # If not active, sync sent count from history file (source of truth)
+        # This ensures we show accurate count even after stopping or thread finishing
+        if not is_active:
             try:
                 history = load_history()
-                today = str(date.today())
                 if today in history.get('daily_stats', {}):
                     daily_stats = history['daily_stats'][today]
-                    sent_count = sum(
+                    actual_sent = sum(
                         count for key, count in daily_stats.items() 
                         if key != 'total'
                     )
-                    sending_progress["sent"] = sent_count
+                    # Update progress with actual sent count from history
+                    if actual_sent != sent_count:
+                        sending_progress["sent"] = actual_sent
+                        sent_count = actual_sent
             except:
                 pass
     
     return jsonify({
         "active": is_active,
+        "stopping": is_stopping,  # True when stop requested but thread still cleaning up
         "progress": {
             "sent": sent_count,
             "total": total_limit,
@@ -587,6 +624,7 @@ def send_emails_worker_direct(csv_path, max_emails=0):
         sending_progress["current_name"] = ""
         sending_progress["current_email"] = ""
         sending_progress["failed"] = 0
+        sending_progress["date"] = today  # Track which date this state is for
     
     try:
         # Change to BASE_DIR to ensure relative paths work correctly
@@ -675,9 +713,11 @@ def send_emails_worker_direct(csv_path, max_emails=0):
         sending_progress["current_name"] = f"Error: {str(e)[:50]}"
         # The error will be visible in the terminal/logs
     finally:
+        # Ensure state is cleaned up when thread finishes
         sending_active = False
-        sending_progress["current_name"] = ""
-        sending_progress["current_email"] = ""
+        with progress_lock:
+            sending_progress["current_name"] = ""
+            sending_progress["current_email"] = ""
         # Don't reset total - status endpoint always calculates it fresh from config
 
 
@@ -739,6 +779,265 @@ def search_history():
         return jsonify({"success": False, "error": str(e)}), 500
 
 
+def auto_send_emails():
+    """Auto-send emails based on configured schedule and per-account random targets."""
+    global sending_active
+    
+    # Don't run if manual sending is active
+    if sending_active:
+        print("⏸️  Auto-send skipped: Manual sending in progress")
+        return
+    
+    try:
+        config = load_config()
+        auto_send_config = config.get('auto_send', {})
+        
+        if not auto_send_config.get('enabled', False):
+            print("⏸️  Auto-send is disabled")
+            return
+        
+        min_emails = auto_send_config.get('min_emails_per_account', 50)
+        max_emails = auto_send_config.get('max_emails_per_account', 150)
+        
+        print(f"\n{'='*80}")
+        print(f"🤖 AUTO-SEND TRIGGERED")
+        print(f"{'='*80}")
+        print(f"Time: {datetime.now()}")
+        print(f"Range per account: {min_emails} - {max_emails} emails")
+        print(f"{'='*80}\n")
+        
+        # Get default CSV
+        csv_path = None
+        possible_paths = [
+            BASE_DIR.parent / 'data' / 'arxiv' / 'round1' / 'arxiv_high_confidence_non_chinese_no_acl.csv',
+            BASE_DIR.parent / 'data' / 'arxiv' / 'round1' / 'arxiv_high_confidence_non_chinese.csv',
+        ]
+        for path in possible_paths:
+            if path.exists():
+                csv_path = str(path.relative_to(BASE_DIR.parent))
+                break
+        
+        if not csv_path:
+            print("❌ Auto-send failed: No default CSV file found")
+            return
+        
+        # Load history to check daily limits
+        history = load_history()
+        today = str(date.today())
+        daily_stats = history.get('daily_stats', {}).get(today, {})
+        
+        # Calculate targets for each enabled account
+        account_targets = {}
+        total_target = 0
+        
+        for account in config.get('accounts', []):
+            if not account.get('enabled', True):
+                continue
+            if account.get('auth_method') not in ['gmail_api', 'app_password']:
+                continue
+            
+            account_id = account['id']
+            daily_limit = account.get('daily_limit', 0)
+            sent_today = daily_stats.get(account_id, 0)
+            remaining = max(0, daily_limit - sent_today)
+            
+            if remaining > 0:
+                # Cap the range at the daily limit to ensure we never exceed it
+                # If range is 50-300 but daily limit is 200, we use 50-200
+                effective_min = min(min_emails, daily_limit)
+                effective_max = min(max_emails, daily_limit)
+                # Further cap at remaining (in case manual sends already happened)
+                effective_max = min(effective_max, remaining)
+                
+                if effective_min > effective_max:
+                    # If min exceeds the cap, skip this account
+                    print(f"  [{account_id}] ⏭️  Skipped (min {min_emails} exceeds remaining limit {remaining})")
+                    continue
+                
+                # Randomly select target within effective range
+                target = random.randint(effective_min, effective_max)
+                account_targets[account_id] = {
+                    'account': account,
+                    'target': target,
+                    'remaining': remaining,
+                    'daily_limit': daily_limit,
+                    'sent_today': sent_today
+                }
+                total_target += target
+                print(f"  [{account_id}] Target: {target} emails (range: {effective_min}-{effective_max}, daily limit: {daily_limit}, already sent: {sent_today}, remaining: {remaining})")
+        
+        if not account_targets:
+            print("⏸️  No accounts available for auto-send (all at daily limit)")
+            return
+        
+        print(f"\n📊 Total target: {total_target} emails across {len(account_targets)} accounts\n")
+        
+        # Change to BASE_DIR to ensure relative paths work correctly
+        original_cwd = os.getcwd()
+        os.chdir(str(BASE_DIR))
+        
+        try:
+            # Determine which sender to use based on available accounts
+            # Prefer Gmail API if available, otherwise use SMTP
+            config = load_config()
+            has_gmail_api = any(acc.get('auth_method') == 'gmail_api' and acc.get('enabled', True) 
+                               for acc in config.get('accounts', []))
+            has_smtp = any(acc.get('auth_method') == 'app_password' and acc.get('enabled', True) 
+                          for acc in config.get('accounts', []))
+            
+            # Use the same logic as manual send
+            sender = None
+            if has_gmail_api:
+                try:
+                    sender = GmailAPISender(str(CONFIG_FILE))
+                except Exception as e:
+                    print(f"⚠️  Gmail API initialization failed: {e}")
+                    if has_smtp:
+                        print("   Falling back to SMTP...")
+                        sender = EmailSender(str(CONFIG_FILE))
+                    else:
+                        raise Exception("No valid accounts available")
+            elif has_smtp:
+                sender = EmailSender(str(CONFIG_FILE))
+            else:
+                raise Exception("❌ No enabled accounts found")
+            
+            # Set account targets for auto-send (this tells each account when to stop)
+            sender.account_targets = {acc_id: info['target'] for acc_id, info in account_targets.items()}
+            
+            # Set progress callback
+            if hasattr(sender, 'set_progress_callback'):
+                sender.set_progress_callback(on_email_sent_callback)
+            
+            # Process CSV directly (same as manual send - uses same logic!)
+            full_path = BASE_DIR.parent / csv_path
+            if not full_path.exists():
+                raise Exception(f"❌ CSV file not found: {csv_path}")
+            
+            print(f"🚀 Starting auto-send (same logic as manual send)...")
+            print(f"📁 CSV: {csv_path}")
+            
+            # Use the same process_csv method as manual send
+            # The account_worker will check account_targets and stop when target is reached
+            sender.process_csv(str(full_path), test_mode=False, max_emails=None)
+            
+            print(f"\n✅ Auto-send completed")
+            
+        except Exception as e:
+            import traceback
+            print(f"\n❌ Auto-send error: {e}")
+            print(traceback.format_exc())
+        finally:
+            os.chdir(original_cwd)
+        
+    except Exception as e:
+        import traceback
+        print(f"\n❌ Auto-send error: {e}")
+        print(traceback.format_exc())
+    finally:
+        sending_active = False
+
+
+@app.route('/auto-send')
+def auto_send_page():
+    """Auto-send settings page."""
+    config = load_config()
+    auto_send = config.get('auto_send', {})
+    return render_template('auto_send.html', auto_send=auto_send)
+
+
+@app.route('/api/auto-send/settings', methods=['GET'])
+def get_auto_send_settings():
+    """Get auto-send settings."""
+    config = load_config()
+    auto_send = config.get('auto_send', {
+        'enabled': False,
+        'min_emails_per_account': 50,
+        'max_emails_per_account': 150,
+        'schedule_time': '10:00',
+        'timezone': 'America/New_York'
+    })
+    return jsonify({"success": True, "settings": auto_send})
+
+
+@app.route('/api/auto-send/settings', methods=['PUT'])
+def update_auto_send_settings():
+    """Update auto-send settings."""
+    data = request.json or {}
+    
+    try:
+        config = load_config()
+        
+        # Update auto_send section
+        if 'auto_send' not in config:
+            config['auto_send'] = {}
+        
+        config['auto_send']['enabled'] = data.get('enabled', False)
+        config['auto_send']['min_emails_per_account'] = int(data.get('min_emails_per_account', 50))
+        config['auto_send']['max_emails_per_account'] = int(data.get('max_emails_per_account', 150))
+        config['auto_send']['schedule_time'] = data.get('schedule_time', '10:00')
+        config['auto_send']['timezone'] = data.get('timezone', 'America/New_York')
+        
+        # Validate range
+        if config['auto_send']['min_emails_per_account'] > config['auto_send']['max_emails_per_account']:
+            return jsonify({"success": False, "error": "Min emails must be <= max emails"}), 400
+        
+        save_config(config)
+        
+        # Restart scheduler with new settings
+        restart_scheduler()
+        
+        return jsonify({"success": True, "message": "Auto-send settings updated"})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+def start_scheduler():
+    """Start the background scheduler for auto-send."""
+    global scheduler
+    
+    config = load_config()
+    auto_send = config.get('auto_send', {})
+    
+    if not auto_send.get('enabled', False):
+        print("⏸️  Auto-send scheduler not started (disabled)")
+        return
+    
+    # Parse schedule time
+    schedule_time = auto_send.get('schedule_time', '10:00')
+    timezone_str = auto_send.get('timezone', 'America/New_York')
+    
+    try:
+        hour, minute = map(int, schedule_time.split(':'))
+    except:
+        hour, minute = 10, 0  # Default to 10:00
+    
+    tz = pytz.timezone(timezone_str)
+    
+    scheduler = BackgroundScheduler(timezone=tz)
+    scheduler.add_job(
+        func=auto_send_emails,
+        trigger=CronTrigger(hour=hour, minute=minute),
+        id='auto_send_daily',
+        name='Daily auto-send at 10 AM ET',
+        replace_existing=True
+    )
+    scheduler.start()
+    print(f"✅ Auto-send scheduler started: Daily at {schedule_time} {timezone_str}")
+
+
+def restart_scheduler():
+    """Restart scheduler with updated settings."""
+    global scheduler
+    if scheduler and scheduler.running:
+        scheduler.shutdown()
+    start_scheduler()
+
+
+# Initialize scheduler
+scheduler = None
+
+
 if __name__ == '__main__':
     # Register signal handlers for graceful shutdown
     signal.signal(signal.SIGINT, graceful_shutdown)
@@ -746,6 +1045,9 @@ if __name__ == '__main__':
     
     # Ensure secrets directory exists
     SECRETS_DIR.mkdir(exist_ok=True)
+    
+    # Start auto-send scheduler if enabled
+    start_scheduler()
     
     # Use port 5001 (5000 is often used by macOS AirPlay Receiver)
     port = int(os.environ.get('PORT', 5001))
@@ -757,7 +1059,11 @@ if __name__ == '__main__':
     
     # Run app
     try:
-        app.run(debug=True, host='0.0.0.0', port=port)
+        app.run(debug=True, host='0.0.0.0', port=port, use_reloader=False)  # Disable reloader to prevent scheduler duplication
     except KeyboardInterrupt:
         graceful_shutdown(None, None)
+    finally:
+        # Shutdown scheduler on exit
+        if scheduler and scheduler.running:
+            scheduler.shutdown()
 

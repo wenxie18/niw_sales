@@ -6,6 +6,7 @@ downloads PDFs, extracts emails, matches them to authors, and outputs results.
 """
 
 import csv
+import json
 import logging
 import fitz  # PyMuPDF
 import re
@@ -23,8 +24,30 @@ logger = logging.getLogger(__name__)
 # Cookie Management
 # ============================================================================
 
-def load_cookies(cookie_file: str = "arxiv.org_cookies.txt") -> Optional[MozillaCookieJar]:
+def load_config(config_file: str = 'arxiv_collection_config.json'):
+    """Load configuration from JSON file."""
+    config_path = Path(config_file)
+    
+    if not config_path.exists():
+        return None
+    
+    try:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception as e:
+        logger.warning(f"Error loading config file: {e}")
+        return None
+
+def load_cookies(cookie_file: str = None) -> Optional[MozillaCookieJar]:
     """Load cookies from Netscape format cookie file."""
+    # Load config to get cookie file path if not provided
+    if cookie_file is None:
+        config = load_config()
+        if config and 'email_extraction' in config:
+            cookie_file = config['email_extraction'].get('cookie_file', 'arxiv.org_cookies.txt')
+        else:
+            cookie_file = 'arxiv.org_cookies.txt'
+    
     cookie_path = Path(cookie_file)
     if not cookie_path.exists():
         logger.warning(f"Cookie file not found: {cookie_file}")
@@ -39,7 +62,7 @@ def load_cookies(cookie_file: str = "arxiv.org_cookies.txt") -> Optional[Mozilla
         logger.warning(f"Failed to load cookies: {e}")
         return None
 
-# Load cookies once at module level
+# Load cookies once at module level (will use config if available)
 COOKIES = load_cookies()
 
 # ============================================================================
@@ -378,7 +401,7 @@ def match_emails_to_authors(authors: List[str], emails: List[str]) -> List[Tuple
 # Paper Processing
 # ============================================================================
 
-def download_pdf(url: str, output_path: str, max_retries: int = 3) -> Tuple[bool, bool]:
+def download_pdf(url: str, output_path: str, max_retries: int = None, rate_limit_delay: float = None) -> Tuple[bool, bool]:
     """
     Download PDF from URL with rate limiting, cookies, and retries.
     
@@ -389,10 +412,25 @@ def download_pdf(url: str, output_path: str, max_retries: int = 3) -> Tuple[bool
     """
     import time
     
+    # Load config for defaults if not provided
+    if max_retries is None or rate_limit_delay is None:
+        config = load_config()
+        if config and 'email_extraction' in config:
+            ext_config = config['email_extraction']
+            if max_retries is None:
+                max_retries = ext_config.get('max_retries', 3)
+            if rate_limit_delay is None:
+                rate_limit_delay = ext_config.get('rate_limit_delay_seconds', 3.0)
+        else:
+            if max_retries is None:
+                max_retries = 3
+            if rate_limit_delay is None:
+                rate_limit_delay = 3.0
+    
     for attempt in range(max_retries):
         try:
-            # Add delay to respect arXiv rate limits (3 seconds as per official policy)
-            time.sleep(3.0)  # 3 seconds between requests as required by arXiv
+            # Add delay to respect arXiv rate limits (configurable)
+            time.sleep(rate_limit_delay)
             
             # Create session and use cookies if available
             session = requests.Session()
@@ -448,7 +486,7 @@ def clean_author_name(name: str) -> str:
     cleaned_parts = [p.capitalize() for p in parts]
     return ' '.join(cleaned_parts)
 
-def process_paper(paper_data: dict, temp_dir: Path) -> Tuple[List[Dict], bool, bool]:
+def process_paper(paper_data: dict, temp_dir: Path, max_retries: int = None, rate_limit_delay: float = None) -> Tuple[List[Dict], bool, bool]:
     """
     Process a single paper: download PDF, extract emails, match to authors.
     
@@ -472,7 +510,7 @@ def process_paper(paper_data: dict, temp_dir: Path) -> Tuple[List[Dict], bool, b
     
     # Download PDF
     pdf_path = temp_dir / f"{arxiv_id}.pdf"
-    pdf_downloaded, is_captcha = download_pdf(pdf_url, pdf_path)
+    pdf_downloaded, is_captcha = download_pdf(pdf_url, pdf_path, max_retries, rate_limit_delay)
     if not pdf_downloaded:
         return ([], False, is_captcha)  # PDF download FAILED, return CAPTCHA flag
     
@@ -535,8 +573,20 @@ def process_csv_file(input_csv: str, output_csv: str):
     """Process a CSV file of papers and extract email information."""
     logger.info(f"Processing {input_csv}...")
     
+    # Load config for email extraction parameters
+    config = load_config()
+    if config and 'email_extraction' in config:
+        ext_config = config['email_extraction']
+        temp_dir_name = ext_config.get('temp_dir', 'temp_pdfs')
+        max_retries = ext_config.get('max_retries', 3)
+        rate_limit_delay = ext_config.get('rate_limit_delay_seconds', 3.0)
+    else:
+        temp_dir_name = 'temp_pdfs'
+        max_retries = 3
+        rate_limit_delay = 3.0
+    
     # Create temp directory for PDFs
-    temp_dir = Path('temp_pdfs')
+    temp_dir = Path(temp_dir_name)
     temp_dir.mkdir(exist_ok=True)
     
     # Read input CSV
@@ -605,7 +655,7 @@ def process_csv_file(input_csv: str, output_csv: str):
                 eta_minutes = eta_seconds / 60
                 logger.info(f"  [{i}/{len(papers)}] {i/len(papers)*100:.1f}% | Processed: {processed_count} | Skipped: {skipped_count} | Records: {total_records} | Speed: {speed:.1f} papers/s | ETA: {eta_minutes:.1f} min")
             
-            results, pdf_success, is_captcha = process_paper(paper, temp_dir)
+            results, pdf_success, is_captcha = process_paper(paper, temp_dir, max_retries, rate_limit_delay)
             
             # If CAPTCHA detected, stop IMMEDIATELY (don't wait for 5 failures)
             if is_captcha:

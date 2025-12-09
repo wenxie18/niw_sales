@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Auto Send Settings - TurboNIW Email Sender{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>🤖 Auto-Send Configuration</h2>
+    <p>Configure automatic daily email sending. Emails will be sent automatically at the scheduled time.</p>
+    
+    <div id="alertContainer"></div>
+    
+    <form id="autoSendForm">
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="enabled" name="enabled" style="width: auto; margin-right: 0.5rem;">
+                Enable Auto-Send
+            </label>
+            <small style="display: block; color: #666; margin-top: 0.25rem;">
+                When enabled, emails will be sent automatically every day at the scheduled time.
+            </small>
+        </div>
+        
+        <div class="form-group">
+            <label for="min_emails">Minimum Emails Per Account</label>
+            <input type="number" id="min_emails" name="min_emails" min="1" max="1000" required>
+            <small style="display: block; color: #666; margin-top: 0.25rem;">
+                Each enabled account will send at least this many emails (capped by daily limit).
+            </small>
+        </div>
+        
+        <div class="form-group">
+            <label for="max_emails">Maximum Emails Per Account</label>
+            <input type="number" id="max_emails" name="max_emails" min="1" max="1000" required>
+            <small style="display: block; color: #666; margin-top: 0.25rem;">
+                Each enabled account will send at most this many emails. <strong>This will be automatically capped at each account's daily limit.</strong>
+            </small>
+        </div>
+        
+        <div id="dailyLimitWarning" style="display: none; padding: 0.75rem; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; margin-bottom: 1rem; color: #856404;">
+            <strong>⚠️ Note:</strong> Your max emails per account exceeds some accounts' daily limits. The system will automatically cap it at each account's daily limit to prevent exceeding limits.
+        </div>
+        
+        <div class="form-group">
+            <label for="schedule_time">Schedule Time (24-hour format)</label>
+            <input type="time" id="schedule_time" name="schedule_time" required>
+            <small style="display: block; color: #666; margin-top: 0.25rem;">
+                Time when auto-send will trigger daily (in selected timezone).
+            </small>
+        </div>
+        
+        <div class="form-group">
+            <label for="timezone">Timezone</label>
+            <select id="timezone" name="timezone" required>
+                <option value="America/New_York">Eastern Time (ET)</option>
+                <option value="America/Chicago">Central Time (CT)</option>
+                <option value="America/Denver">Mountain Time (MT)</option>
+                <option value="America/Los_Angeles">Pacific Time (PT)</option>
+                <option value="UTC">UTC</option>
+            </select>
+            <small style="display: block; color: #666; margin-top: 0.25rem;">
+                Timezone for the schedule time.
+            </small>
+        </div>
+        
+        <button type="submit" class="btn btn-success">💾 Save Settings</button>
+    </form>
+</div>
+
+<div class="card">
+    <h2>📊 How Auto-Send Works</h2>
+    <ul style="line-height: 1.8; padding-left: 1.5rem;">
+        <li><strong>Daily Schedule:</strong> Emails are sent automatically at the configured time each day.</li>
+        <li><strong>Per-Account Random Range:</strong> Each enabled account sends a random number of emails between min and max.</li>
+        <li><strong>Daily Limits (CRITICAL):</strong> Auto-send <strong>automatically caps</strong> the range at each account's daily limit. If you set range 50-300 but an account's daily limit is 200, it will use 50-200 for that account.</li>
+        <li><strong>Shared Limits:</strong> Daily limits are shared between manual and auto-send. If you manually sent 50 emails today, auto-send can only send up to (daily_limit - 50) more.</li>
+        <li><strong>No Duplicates:</strong> Auto-send will <strong>never send to the same email twice</strong>. It checks the history file to skip recipients who already received emails (from manual or previous auto-send).</li>
+        <li><strong>CSV Source:</strong> Uses the default CSV file (same as manual sending).</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h2>📝 Example</h2>
+    <p>If you have 3 enabled accounts with daily limits of 200 each:</p>
+    <ul style="line-height: 1.8; padding-left: 1.5rem; margin-top: 0.5rem;">
+        <li>Range set to: 50-150 emails per account</li>
+        <li>Account 1: Randomly sends 87 emails (if daily limit allows)</li>
+        <li>Account 2: Randomly sends 142 emails (if daily limit allows)</li>
+        <li>Account 3: Randomly sends 65 emails (if daily limit allows)</li>
+        <li>Total: ~294 emails sent automatically</li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Load current settings
+async function loadSettings() {
+    try {
+        const result = await apiCall('/api/auto-send/settings');
+        if (result.success) {
+            const settings = result.settings;
+            document.getElementById('enabled').checked = settings.enabled || false;
+            document.getElementById('min_emails').value = settings.min_emails_per_account || 50;
+            document.getElementById('max_emails').value = settings.max_emails_per_account || 150;
+            document.getElementById('schedule_time').value = settings.schedule_time || '10:00';
+            document.getElementById('timezone').value = settings.timezone || 'America/New_York';
+        }
+    } catch (error) {
+        showAlert('Error loading settings: ' + error, 'error');
+    }
+}
+
+// Check daily limits and show warning
+async function checkDailyLimits() {
+    try {
+        const accountsResult = await apiCall('/api/accounts');
+        if (accountsResult.success) {
+            const accounts = accountsResult.accounts || [];
+            const maxEmails = parseInt(document.getElementById('max_emails').value) || 0;
+            
+            // Find minimum daily limit among enabled accounts
+            const enabledAccounts = accounts.filter(acc => acc.enabled);
+            if (enabledAccounts.length > 0) {
+                const minDailyLimit = Math.min(...enabledAccounts.map(acc => acc.daily_limit || 0));
+                
+                if (maxEmails > minDailyLimit && minDailyLimit > 0) {
+                    document.getElementById('dailyLimitWarning').style.display = 'block';
+                } else {
+                    document.getElementById('dailyLimitWarning').style.display = 'none';
+                }
+            }
+        }
+    } catch (error) {
+        // Silently fail - this is just a warning
+    }
+}
+
+function showAlert(message, type) {
+    const container = document.getElementById('alertContainer');
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-error';
+    container.innerHTML = `<div class="alert ${alertClass}">${message}</div>`;
+    setTimeout(() => {
+        container.innerHTML = '';
+    }, 5000);
+}
+
+// Wait for DOM to be ready before accessing elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Load settings on page load
+    loadSettings();
+    
+    // Save settings
+    document.getElementById('autoSendForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const data = {
+            enabled: document.getElementById('enabled').checked,
+            min_emails_per_account: parseInt(document.getElementById('min_emails').value),
+            max_emails_per_account: parseInt(document.getElementById('max_emails').value),
+            schedule_time: document.getElementById('schedule_time').value,
+            timezone: document.getElementById('timezone').value
+        };
+        
+        // Validate
+        if (data.min_emails_per_account > data.max_emails_per_account) {
+            showAlert('Minimum emails must be less than or equal to maximum emails', 'error');
+            return;
+        }
+        
+        try {
+            const result = await apiCall('/api/auto-send/settings', {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            });
+            
+            if (result.success) {
+                showAlert('✅ Settings saved successfully!', 'success');
+            } else {
+                showAlert('❌ Error: ' + result.error, 'error');
+            }
+        } catch (error) {
+            showAlert('❌ Error saving settings: ' + error, 'error');
+        }
+    });
+    
+    // Check daily limits when max_emails changes
+    document.getElementById('max_emails').addEventListener('input', checkDailyLimits);
+});
+</script>
+{% endblock %}
+

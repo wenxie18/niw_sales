@@ -10,7 +10,10 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
-SCOPES = ['https://www.googleapis.com/auth/gmail.send']
+# Gmail API scopes
+# gmail.readonly: Read emails to check for bounce/rate limit messages
+# gmail.send: Send emails
+SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.send']
 
 def authenticate_account(account_id, credentials_file):
     """Authenticate a single Gmail account."""
@@ -38,20 +41,53 @@ def authenticate_account(account_id, credentials_file):
     secrets_dir.mkdir(parents=True, exist_ok=True)
     
     creds = None
+    needs_reauth = False
     
     # Load existing token
     if token_file.exists():
         print(f"✓ Found existing token: {token_file}")
-        creds = Credentials.from_authorized_user_file(str(token_file), SCOPES)
+        try:
+            # Try loading with old scopes first (backward compatibility)
+            old_scopes = ['https://www.googleapis.com/auth/gmail.send']
+            creds = Credentials.from_authorized_user_file(str(token_file), old_scopes)
+            
+            # Check if token has all required scopes
+            if creds and creds.valid:
+                token_scopes = set(creds.scopes or [])
+                required_scopes = set(SCOPES)
+                if not required_scopes.issubset(token_scopes):
+                    print("⚠️  Token missing required scopes (need gmail.readonly for bounce detection)")
+                    print(f"   Token has: {token_scopes}")
+                    print(f"   Required: {required_scopes}")
+                    print("   Deleting old token to force re-authentication...")
+                    token_file.unlink()  # Delete old token
+                    creds = None
+                    needs_reauth = True
+                else:
+                    # Token has correct scopes, but need to reload with new scopes
+                    creds = Credentials.from_authorized_user_file(str(token_file), SCOPES)
+        except Exception as e:
+            print(f"⚠️  Error loading token: {e}")
+            print("   Will re-authenticate...")
+            creds = None
+            needs_reauth = True
     
     # If no valid credentials, authenticate
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
+    if not creds or not creds.valid or needs_reauth:
+        if creds and creds.expired and creds.refresh_token and not needs_reauth:
             print("⟳ Refreshing expired token...")
-            creds.refresh(Request())
+            try:
+                creds.refresh(Request())
+            except Exception as e:
+                print(f"⚠️  Token refresh failed: {e}")
+                print("   Will re-authenticate...")
+                creds = None
         else:
             print("🌐 Opening browser for authentication...")
             print("   Please sign in and allow access.")
+            print("   You will be asked to grant:")
+            print("   - Send email on your behalf (gmail.send)")
+            print("   - Read your email (gmail.readonly) - for bounce detection")
             flow = InstalledAppFlow.from_client_secrets_file(str(credentials_path), SCOPES)
             creds = flow.run_local_server(port=0)
         
@@ -60,14 +96,14 @@ def authenticate_account(account_id, credentials_file):
         with open(str(token_file), 'w') as token:
             token.write(creds.to_json())
     else:
-        print("✓ Token is valid, no re-authentication needed")
+        print("✓ Token is valid with all required scopes, no re-authentication needed")
     
     # Test the connection (we only have gmail.send scope, so we can't access profile)
     print("🔍 Verifying credentials...")
     if creds and creds.valid:
         print("✅ SUCCESS! Credentials are valid and ready to send emails")
         print(f"   Token saved to: {token_file}")
-        print(f"   Scope: gmail.send (can send emails)")
+        print(f"   Scopes: gmail.send (send emails), gmail.readonly (check for bounce messages)")
         return True
     else:
         print("❌ Credentials are invalid")

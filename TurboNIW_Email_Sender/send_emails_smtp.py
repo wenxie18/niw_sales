@@ -36,6 +36,7 @@ class EmailSender:
         self.stop_check = None  # Function to check if should stop
         self.progress_callback = None  # Callback for real-time progress updates
         self.history_lock = threading.Lock()  # Thread-safe history updates
+        self.account_targets = {}  # Optional: per-account target counts (for auto-send)
         
     def load_config(self, config_file):
         """Load configuration from JSON."""
@@ -195,13 +196,57 @@ class EmailSender:
             print(f"  ✗ {error_msg}")
             self.failed_accounts.add(account_id)
             raise Exception(error_msg)  # Raise to stop processing
-        except Exception as e:
-            error_msg = f"Error sending email for account {account_id}: {e}"
-            print(f"  ✗ {error_msg}")
-            # If it's a path/credentials issue, mark as failed
-            if "password" in str(e).lower() or "file" in str(e).lower() or "credentials" in str(e).lower():
+        except smtplib.SMTPException as e:
+            error_msg = str(e)
+            
+            # Check for rate limit or sending limit errors
+            is_rate_limit = (
+                'reached a limit for sending mail' in error_msg.lower() or
+                'mail delivery subsystem' in error_msg.lower() or
+                'daily sending quota' in error_msg.lower() or
+                'quota exceeded' in error_msg.lower() or
+                'rate limit' in error_msg.lower() or
+                'too many requests' in error_msg.lower() or
+                'sending limit' in error_msg.lower()
+            )
+            
+            if is_rate_limit:
+                error_msg_full = f"🚨 RATE LIMIT HIT for account {account_id}: {error_msg}"
+                print(f"  ✗ {error_msg_full}")
+                print(f"  ⚠️  Account {account_id} has reached its sending limit. Stopping this account immediately.")
                 self.failed_accounts.add(account_id)
-                raise Exception(error_msg)  # Raise to stop processing
+                # Raise to stop processing from this account
+                raise Exception(f"Rate limit reached for {account_id}: {error_msg}")
+            
+            error_msg_full = f"SMTP error for account {account_id}: {error_msg}"
+            print(f"  ✗ {error_msg_full}")
+            return False
+        except Exception as e:
+            error_msg = str(e)
+            
+            # Check for rate limit errors in generic exceptions too
+            is_rate_limit = (
+                'reached a limit for sending mail' in error_msg.lower() or
+                'mail delivery subsystem' in error_msg.lower() or
+                'daily sending quota' in error_msg.lower() or
+                'quota exceeded' in error_msg.lower() or
+                'rate limit' in error_msg.lower() or
+                'sending limit' in error_msg.lower()
+            )
+            
+            if is_rate_limit:
+                error_msg_full = f"🚨 RATE LIMIT HIT for account {account_id}: {error_msg}"
+                print(f"  ✗ {error_msg_full}")
+                print(f"  ⚠️  Account {account_id} has reached its sending limit. Stopping this account immediately.")
+                self.failed_accounts.add(account_id)
+                raise Exception(f"Rate limit reached for {account_id}: {error_msg}")
+            
+            error_msg_full = f"Error sending email for account {account_id}: {error_msg}"
+            print(f"  ✗ {error_msg_full}")
+            # If it's a path/credentials issue, mark as failed
+            if "password" in error_msg.lower() or "file" in error_msg.lower() or "credentials" in error_msg.lower():
+                self.failed_accounts.add(account_id)
+                raise Exception(error_msg_full)  # Raise to stop processing
             return False
     
     def set_progress_callback(self, callback):
@@ -385,11 +430,21 @@ class EmailSender:
                     sent_today = daily_stats.get(account_id, 0)
                     daily_limit = account.get('daily_limit', 10)
                 
+                # Check if we've reached daily limit
                 if sent_today >= daily_limit:
                     print(f"  [{account_id}] ⏸️  Reached daily limit ({sent_today}/{daily_limit})")
                     if recipient:
                         recipient_queue.put(recipient)  # Put back recipient we were holding
                     break
+                
+                # Check if we've reached account-specific target (for auto-send)
+                if account_id in self.account_targets:
+                    target = self.account_targets[account_id]
+                    if sent_today >= target:
+                        print(f"  [{account_id}] ⏸️  Reached target ({sent_today}/{target})")
+                        if recipient:
+                            recipient_queue.put(recipient)  # Put back recipient we were holding
+                        break
                 
                 # Check if account failed
                 if account_id in self.failed_accounts:
@@ -443,18 +498,26 @@ class EmailSender:
                 except Exception as e:
                     # Account-specific error - mark as failed but continue other accounts
                     error_msg = str(e)
+                    
+                    # Check if this is a rate limit error
+                    is_rate_limit = 'rate limit reached' in error_msg.lower()
+                    
                     print(f"  [{account_id}] ❌ Error: {error_msg}")
                     self.failed_accounts.add(account_id)
                     account_stats['failed'] += 1
                     with stats['failed']:
                         stats['failed_count'] += 1
-                    # Put recipient back in queue for other accounts to try (if not a critical error)
-                    if "password" not in error_msg.lower() and "file" not in error_msg.lower():
+                    
+                    # For rate limit errors, don't put recipient back (account is done for today)
+                    # For other critical errors (password, file), don't retry
+                    # For non-critical errors, put recipient back for other accounts to try
+                    if is_rate_limit or "password" in error_msg.lower() or "file" in error_msg.lower():
+                        # Critical/rate limit error - we're done with this recipient, mark task as done
+                        recipient_queue.task_done()
+                    else:
+                        # Non-critical error - put back for other accounts to try
                         recipient_queue.put(recipient)
                         # Don't call task_done() since we're putting it back
-                    else:
-                        # Critical error - we're done with this recipient, mark task as done
-                        recipient_queue.task_done()
                     break  # Stop this account thread
                 
                 recipient_queue.task_done()

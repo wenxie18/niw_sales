@@ -1,7 +1,18 @@
 #!/usr/bin/env python3
 """
-Round 2 Collection: Complete collection using MONTHLY queries to bypass 10k offset limit.
-arXiv API has a hard 10,000 offset limit, so we query month-by-month instead of yearly.
+arXiv Paper Collection Script
+
+Collects papers from arXiv by category and year using monthly queries to bypass the 10,000 offset limit.
+Configuration is loaded from arxiv_collection_config.json.
+
+Usage:
+    python3.9 2.1-collect_arxiv_papers.py
+
+The script reads collection parameters from arxiv_collection_config.json:
+- Round number
+- Categories and years
+- Output directory
+- Batch size and rate limit delays
 """
 
 import requests
@@ -26,7 +37,7 @@ def get_month_days(year: int, month: int) -> int:
     else:
         return 31
 
-def query_month_papers(category: str, year: int, month: int, batch_size: int = 1000) -> List[Dict]:
+def query_month_papers(category: str, year: int, month: int, batch_size: int = 1000, rate_limit_delay: float = 3.0) -> List[Dict]:
     """
     Query arXiv API for all papers in a specific category/year/month.
     
@@ -157,8 +168,8 @@ def query_month_papers(category: str, year: int, month: int, batch_size: int = 1
             # Move to next batch
             start += batch_size
             
-            # Rate limiting (3 seconds per arXiv policy)
-            time.sleep(3)
+            # Rate limiting (configurable delay per arXiv policy)
+            time.sleep(rate_limit_delay)
             
         except Exception as e:
             logger.error(f"    Error at offset {start} for month {month}: {e}")
@@ -172,7 +183,7 @@ def query_month_papers(category: str, year: int, month: int, batch_size: int = 1
     logger.info(f"    ✓ Month {month:02d}/{year}: Collected {len(papers):,} papers")
     return papers
 
-def query_year_by_months(category: str, year: int) -> List[Dict]:
+def query_year_by_months(category: str, year: int, batch_size: int = 1000, rate_limit_delay: float = 3.0) -> List[Dict]:
     """
     Query all papers for a year by breaking into monthly queries.
     
@@ -191,7 +202,7 @@ def query_year_by_months(category: str, year: int) -> List[Dict]:
     
     # Query each month
     for month in range(1, 13):
-        month_papers = query_month_papers(category, year, month)
+        month_papers = query_month_papers(category, year, month, batch_size, rate_limit_delay)
         all_papers.extend(month_papers)
         logger.info(f"    Progress: {len(all_papers):,} papers collected so far")
     
@@ -246,12 +257,12 @@ def save_papers_to_csv(papers: List[Dict], output_file: str):
     
     logger.info(f"✓ Saved {len(papers):,} unique papers to {output_file}")
 
-def collect_category_year(category: str, category_short: str, year: int, output_dir: str):
+def collect_category_year(category: str, category_short: str, year: int, output_dir: str, batch_size: int = 1000, rate_limit_delay: float = 3.0):
     """Collect all papers for a category/year using monthly queries."""
     output_file = f"{output_dir}/{category_short}_{year}.csv"
     
     # Query all papers month-by-month
-    papers = query_year_by_months(category, year)
+    papers = query_year_by_months(category, year, batch_size, rate_limit_delay)
     
     # Save to CSV (with deduplication)
     if papers:
@@ -261,25 +272,73 @@ def collect_category_year(category: str, category_short: str, year: int, output_
     
     return len(papers)
 
+def load_config(config_file: str = 'arxiv_collection_config.json'):
+    """Load configuration from JSON file."""
+    import json
+    config_path = Path(config_file)
+    
+    if not config_path.exists():
+        logger.warning(f"Config file not found: {config_file}, using defaults")
+        return None
+    
+    try:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception as e:
+        logger.error(f"Error loading config file: {e}")
+        return None
+
 def main():
-    """Main function for Round 2 collection using monthly queries."""
+    """Main function for collection using monthly queries."""
     
-    # Round 2: Complete cs.LG and cs.CV for 2024-2025
-    CATEGORIES = [
-        ('cs.LG', 'cs_lg', 2024),
-        ('cs.LG', 'cs_lg', 2025),
-        ('cs.CV', 'cs_cv', 2024),
-        ('cs.CV', 'cs_cv', 2025),
-    ]
+    # Load configuration
+    config = load_config()
     
-    output_dir = 'data/arxiv/round2'
+    if config and 'collection' in config:
+        coll_config = config['collection']
+        output_dir = coll_config.get('output_dir', 'data/arxiv/round2')
+        round_num = coll_config.get('round', 2)
+        batch_size = coll_config.get('batch_size', 1000)
+        
+        # Build categories list from config
+        CATEGORIES = []
+        for cat_config in coll_config.get('categories', []):
+            arxiv_cat = cat_config['arxiv_category']
+            short_name = cat_config['short_name']
+            for year in cat_config.get('years', []):
+                CATEGORIES.append((arxiv_cat, short_name, year))
+        
+        if not CATEGORIES:
+            logger.error("No categories configured in config file!")
+            return
+    else:
+        # Default configuration (backward compatibility)
+        logger.warning("Using default configuration (no config file found)")
+        CATEGORIES = [
+            ('cs.LG', 'cs_lg', 2024),
+            ('cs.LG', 'cs_lg', 2025),
+            ('cs.CV', 'cs_cv', 2024),
+            ('cs.CV', 'cs_cv', 2025),
+        ]
+        output_dir = 'data/arxiv/round2'
+        round_num = 2
+        batch_size = 1000
     
     logger.info("="*80)
-    logger.info("ROUND 2 PAPER COLLECTION (MONTHLY STRATEGY)")
+    logger.info(f"ROUND {round_num} PAPER COLLECTION (MONTHLY STRATEGY)")
     logger.info("="*80)
-    logger.info(f"Categories: cs.LG, cs.CV")
-    logger.info(f"Years: 2024, 2025")
+    
+    # Show categories being collected
+    unique_cats = set()
+    years_set = set()
+    for arxiv_cat, short_name, year in CATEGORIES:
+        unique_cats.add(arxiv_cat)
+        years_set.add(year)
+    
+    logger.info(f"Categories: {', '.join(sorted(unique_cats))}")
+    logger.info(f"Years: {', '.join(map(str, sorted(years_set)))}")
     logger.info(f"Output directory: {output_dir}")
+    logger.info(f"Batch size: {batch_size}")
     logger.info(f"Strategy: Query month-by-month to bypass 10k offset limit")
     logger.info("="*80)
     
@@ -288,15 +347,17 @@ def main():
     
     total_papers = 0
     
+    rate_limit_delay = coll_config.get('rate_limit_delay_seconds', 3.0) if config and 'collection' in config else 3.0
+    
     for category, category_short, year in CATEGORIES:
-        papers_collected = collect_category_year(category, category_short, year, output_dir)
+        papers_collected = collect_category_year(category, category_short, year, output_dir, batch_size, rate_limit_delay)
         total_papers += papers_collected
         logger.info(f"\n{'='*80}")
         logger.info(f"Completed: {category} {year} - {papers_collected:,} papers")
         logger.info(f"{'='*80}\n")
     
     logger.info("\n" + "="*80)
-    logger.info("ROUND 2 COLLECTION COMPLETE!")
+    logger.info(f"ROUND {round_num} COLLECTION COMPLETE!")
     logger.info("="*80)
     logger.info(f"Total papers collected: {total_papers:,}")
     logger.info(f"Output location: {output_dir}/")
