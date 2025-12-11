@@ -82,19 +82,34 @@ def authenticate_account(account_id, credentials_file):
                 print(f"⚠️  Token refresh failed: {e}")
                 print("   Will re-authenticate...")
                 creds = None
-        else:
+        
+        # If still no valid credentials, authenticate via browser
+        if not creds or not creds.valid:
             print("🌐 Opening browser for authentication...")
             print("   Please sign in and allow access.")
             print("   You will be asked to grant:")
             print("   - Send email on your behalf (gmail.send)")
             print("   - Read your email (gmail.readonly) - for bounce detection")
-            flow = InstalledAppFlow.from_client_secrets_file(str(credentials_path), SCOPES)
-            creds = flow.run_local_server(port=0)
+            try:
+                flow = InstalledAppFlow.from_client_secrets_file(str(credentials_path), SCOPES)
+                creds = flow.run_local_server(port=0)
+                
+                # Check if authentication was successful
+                if not creds:
+                    print("❌ Authentication was cancelled or failed")
+                    return False
+            except Exception as e:
+                print(f"❌ Authentication error: {e}")
+                return False
         
-        # Save token
-        print(f"💾 Saving token to: {token_file}")
-        with open(str(token_file), 'w') as token:
-            token.write(creds.to_json())
+        # Save token (only if we have valid credentials)
+        if creds and creds.valid:
+            print(f"💾 Saving token to: {token_file}")
+            with open(str(token_file), 'w') as token:
+                token.write(creds.to_json())
+        else:
+            print("❌ No valid credentials to save")
+            return False
     else:
         print("✓ Token is valid with all required scopes, no re-authentication needed")
     

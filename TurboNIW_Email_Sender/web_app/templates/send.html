@@ -252,41 +252,10 @@ async function stopSending() {
 async function updateSendingStatus() {
     const result = await apiCall('/api/send/status');
     
-    // Check if stopping (stop requested but thread still running)
-    if (result.stopping) {
-        const progress = result.progress || {};
-        const sent = progress.sent || 0;
-        const total = progress.total || 0;
-        
-        let statusHtml = `<p><strong>⏹️ Stopping sending...</strong></p>`;
-        if (total > 0) {
-            const percentage = Math.min(100, Math.round((sent / total) * 100));
-            statusHtml += `
-                <div style="margin-top: 1rem;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                        <span><strong>Sent:</strong> ${sent} / ${total}</span>
-                        <span><strong>${percentage}%</strong></span>
-                    </div>
-                    <div style="background: #e0e0e0; border-radius: 4px; height: 24px; overflow: hidden;">
-                        <div style="background: #ff9800; height: 100%; width: ${percentage}%; transition: width 0.3s;"></div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        document.getElementById('sendingStatus').innerHTML = statusHtml;
-        // Keep stop button visible while stopping
-        document.getElementById('startBtn').style.display = 'none';
-        document.getElementById('stopBtn').style.display = 'inline-block';
-        document.getElementById('stopBtn').disabled = true;
-        document.getElementById('stopBtn').textContent = '⏹️ Stopping...';
-        
-        // Poll more frequently while stopping
-        setTimeout(updateSendingStatus, 1000);
-        return;
-    }
-    
-    if (result.active) {
+    // Check if thread is running (either active or stopping)
+    // Thread being alive is the most reliable indicator
+    if (result.active || result.stopping) {
+        const isStopping = result.stopping;
         const progress = result.progress || {};
         const sent = progress.sent || 0;
         const failed = progress.failed || 0;
@@ -296,9 +265,14 @@ async function updateSendingStatus() {
         
         let statusHtml = '';
         
+        if (isStopping) {
+            statusHtml = `<p><strong>⏹️ Stopping sending...</strong></p>`;
+        } else {
+            statusHtml = `<p><strong>✅ Sending in progress...</strong></p>`;
+        }
+        
         if (total > 0) {
             const percentage = Math.min(100, Math.round((sent / total) * 100));
-            statusHtml = `<p><strong>✅ Sending in progress...</strong></p>`;
             statusHtml += `
                 <div style="margin-top: 1rem;">
                     <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
@@ -306,7 +280,7 @@ async function updateSendingStatus() {
                         <span><strong>${percentage}%</strong></span>
                     </div>
                     <div style="background: #e0e0e0; border-radius: 4px; height: 24px; overflow: hidden;">
-                        <div style="background: #4CAF50; height: 100%; width: ${percentage}%; transition: width 0.3s;"></div>
+                        <div style="background: ${isStopping ? '#ff9800' : '#4CAF50'}; height: 100%; width: ${percentage}%; transition: width 0.3s;"></div>
                     </div>
                 </div>
             `;
@@ -314,43 +288,57 @@ async function updateSendingStatus() {
             statusHtml += `<p style="margin-top: 0.5rem;">Processing CSV and sending emails...</p>`;
         }
         
+        if (currentName || currentEmail) {
+            statusHtml += `<p style="margin-top: 0.5rem; color: #666; font-size: 0.9em;">Current: ${currentName || currentEmail}</p>`;
+        }
+        
         document.getElementById('sendingStatus').innerHTML = statusHtml;
         
         // Update button state
         document.getElementById('startBtn').style.display = 'none';
         document.getElementById('stopBtn').style.display = 'inline-block';
-        
-        setTimeout(updateSendingStatus, 2000);
-    } else {
-        // Not active - sending has completed or stopped
-        const progress = result.progress || {};
-        const sent = progress.sent || 0;
-        const total = progress.total || 0;
-        
-        let statusHtml = '';
-        if (sent > 0 && total > 0) {
-            const percentage = Math.min(100, Math.round((sent / total) * 100));
-            statusHtml = `
-                <p><strong>✅ Sending completed!</strong></p>
-                <p style="margin-top: 0.5rem;">Sent: <strong>${sent}</strong> / ${total} (${percentage}%)</p>
-            `;
-        } else if (sent > 0) {
-            statusHtml = `<p>Sent today: <strong>${sent}</strong></p>`;
+        if (isStopping) {
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('stopBtn').textContent = '⏹️ Stopping...';
+            // Poll more frequently while stopping
+            setTimeout(updateSendingStatus, 1000);
         } else {
-            statusHtml = `<p>No sending in progress</p>`;
+            document.getElementById('stopBtn').disabled = false;
+            document.getElementById('stopBtn').textContent = 'Stop Sending';
+            setTimeout(updateSendingStatus, 2000);
         }
-        
-        document.getElementById('sendingStatus').innerHTML = statusHtml;
-        
-        // Re-enable start button if sending finished
-        document.getElementById('startBtn').style.display = 'inline-block';
-        document.getElementById('stopBtn').style.display = 'none';
-        document.getElementById('startBtn').disabled = false;
-        document.getElementById('startBtn').textContent = '🚀 Start Sending';
-        
-        // Continue polling (less frequently when not active) to catch any state changes
-        setTimeout(updateSendingStatus, 5000);
+        return;
     }
+    
+    // Not active and not stopping - thread has finished
+    // Sending has completed or stopped
+    const progress = result.progress || {};
+    const sent = progress.sent || 0;
+    const total = progress.total || 0;
+    
+    let statusHtml = '';
+    if (sent > 0 && total > 0) {
+        const percentage = Math.min(100, Math.round((sent / total) * 100));
+        statusHtml = `
+            <p><strong>✅ Sending completed!</strong></p>
+            <p style="margin-top: 0.5rem;">Sent: <strong>${sent}</strong> / ${total} (${percentage}%)</p>
+        `;
+    } else if (sent > 0) {
+        statusHtml = `<p>Sent today: <strong>${sent}</strong></p>`;
+    } else {
+        statusHtml = `<p>No sending in progress</p>`;
+    }
+    
+    document.getElementById('sendingStatus').innerHTML = statusHtml;
+    
+    // Re-enable start button if sending finished
+    document.getElementById('startBtn').style.display = 'inline-block';
+    document.getElementById('stopBtn').style.display = 'none';
+    document.getElementById('startBtn').disabled = false;
+    document.getElementById('startBtn').textContent = '🚀 Start Sending';
+    
+    // Continue polling (less frequently when not active) to catch any state changes
+    setTimeout(updateSendingStatus, 5000);
 }
 
 // Initial status update

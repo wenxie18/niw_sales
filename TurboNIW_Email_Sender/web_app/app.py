@@ -478,17 +478,34 @@ def send_status():
     """Get sending status and progress - Industry standard: read from in-memory state."""
     global sending_thread, sending_active
     
-    # Check if sending is active
+    # Check if sending is active - thread state is the source of truth
     thread_alive = sending_thread and sending_thread.is_alive() if sending_thread else False
+    
+    # If thread is dead, clean up
     if sending_thread and not thread_alive:
         # Thread finished - clean up
         sending_thread = None
         sending_active = False  # Ensure flag is cleared when thread dies
     
-    # Sending is active only if both flag is True AND thread is alive
-    # If sending_active is False but thread is still alive, we're in "stopping" state
-    is_active = sending_active and thread_alive
-    is_stopping = not sending_active and thread_alive  # Stop requested but thread still running
+    # CRITICAL FIX: If thread is alive, we should show it as active
+    # The thread being alive is the most reliable indicator
+    # If sending_active is False but thread is alive, we're in "stopping" state
+    # But if thread is alive and we're not explicitly stopping, treat as active
+    # (This handles the case where user navigates away and comes back)
+    if thread_alive:
+        # Thread is running - check if we're stopping or actively sending
+        if not sending_active:
+            # Stop was requested but thread still running
+            is_stopping = True
+            is_active = False
+        else:
+            # Thread is running and actively sending
+            is_active = True
+            is_stopping = False
+    else:
+        # Thread is not alive - definitely not active
+        is_active = False
+        is_stopping = False
     
     # CRITICAL: Check if it's a new day - reset progress if date changed
     today = str(date.today())
