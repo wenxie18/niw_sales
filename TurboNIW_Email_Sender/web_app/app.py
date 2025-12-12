@@ -36,6 +36,7 @@ SECRETS_DIR = BASE_DIR / '.secrets'
 # Global state - Industry standard: in-memory state for real-time UI updates
 sending_active = False
 sending_thread = None
+sending_thread_id = None  # Track thread ID for persistence across page loads
 sending_progress = {
     "sent": 0,              # Total sent today (updated in real-time via callback)
     "failed": 0,            # Total failed
@@ -43,7 +44,8 @@ sending_progress = {
     "current_name": "",     # Current recipient being processed
     "current_email": "",    # Current recipient email
     "account_stats": {},    # Per-account stats: {account_id: {"sent": count, "limit": limit}}
-    "date": None            # Date this state is for (reset when date changes)
+    "date": None,           # Date this state is for (reset when date changes)
+    "thread_id": None       # Thread ID for tracking across page loads
 }
 progress_lock = threading.Lock()  # Thread-safe updates
 
@@ -96,6 +98,39 @@ def save_config(config):
         json.dump(config, f, indent=2)
 
 
+@app.route('/api/accounts/disabled', methods=['GET'])
+def get_disabled_accounts():
+    """Get list of accounts disabled due to bounce/block (for website notices)."""
+    from datetime import datetime
+    
+    config = load_config()
+    disabled_accounts = []
+    
+    for account in config.get('accounts', []):
+        disabled_until = account.get('disabled_until')
+        if disabled_until:
+            try:
+                disable_time = datetime.fromisoformat(disabled_until)
+                now = datetime.now()
+                
+                if now < disable_time:
+                    # Still disabled
+                    hours_remaining = (disable_time - now).total_seconds() / 3600
+                    disabled_accounts.append({
+                        'id': account.get('id'),
+                        'email': account.get('email', 'Unknown'),
+                        'disabled_until': disabled_until,
+                        'hours_remaining': round(hours_remaining, 1)
+                    })
+            except:
+                pass
+    
+    return jsonify({
+        'disabled_accounts': disabled_accounts,
+        'count': len(disabled_accounts)
+    })
+
+
 @app.route('/')
 def dashboard():
     """Main dashboard."""
@@ -115,18 +150,39 @@ def dashboard():
     # Account breakdown
     account_stats = []
     for account in config.get('accounts', []):
-        if account.get('enabled', True):
-            account_id = account['id']
-            sent_today = daily_stats.get(account_id, 0)
-            daily_limit = account.get('daily_limit', 0)
-            account_stats.append({
-                'id': account_id,
-                'email': account['email'],
-                'method': account.get('auth_method', 'app_password'),
-                'sent_today': sent_today,
-                'daily_limit': daily_limit,
-                'remaining': max(0, daily_limit - sent_today)
-            })
+        # Check if account is disabled (manual or bounce/block)
+        is_disabled = False
+        disabled_reason = None
+        if not account.get('enabled', True):
+            is_disabled = True
+            disabled_reason = "Manually disabled"
+        else:
+            # Check if disabled due to bounce/block
+            disabled_until = account.get('disabled_until')
+            if disabled_until:
+                try:
+                    disable_time = datetime.fromisoformat(disabled_until)
+                    now = datetime.now()
+                    if now < disable_time:
+                        is_disabled = True
+                        hours_remaining = (disable_time - now).total_seconds() / 3600
+                        disabled_reason = f"Disabled due to bounce/block (re-enables in {hours_remaining:.1f}h)"
+                except:
+                    pass
+        
+        account_id = account['id']
+        sent_today = daily_stats.get(account_id, 0)
+        daily_limit = account.get('daily_limit', 0)
+        account_stats.append({
+            'id': account_id,
+            'email': account['email'],
+            'method': account.get('auth_method', 'app_password'),
+            'sent_today': sent_today,
+            'daily_limit': daily_limit,
+            'remaining': max(0, daily_limit - sent_today),
+            'is_disabled': is_disabled,
+            'disabled_reason': disabled_reason
+        })
     
     return render_template('dashboard.html',
                          total_accounts=total_accounts,
@@ -292,17 +348,34 @@ def delete_account(account_id):
 @app.route('/api/accounts/<account_id>/authenticate', methods=['POST'])
 def authenticate_account(account_id):
     """Authenticate a Gmail API account."""
+    import sys
+    sys.stdout.flush()
+    
+    print(f"\n{'='*80}")
+    print(f"🔐 AUTHENTICATION REQUEST RECEIVED")
+    print(f"{'='*80}")
+    print(f"   Account ID: {account_id}")
+    sys.stdout.flush()
+    
     config = load_config()
     account = next((acc for acc in config['accounts'] if acc['id'] == account_id), None)
     
     if not account:
+        print(f"❌ Account not found: {account_id}")
+        sys.stdout.flush()
         return jsonify({"success": False, "error": "Account not found"}), 404
     
+    account_email = account.get('email', 'Unknown')
+    print(f"   Email: {account_email}")
+    print(f"   Auth Method: {account.get('auth_method', 'Unknown')}")
+    sys.stdout.flush()
+    
     if account.get('auth_method') != 'gmail_api':
+        print(f"❌ Only Gmail API accounts can be authenticated")
+        sys.stdout.flush()
         return jsonify({"success": False, "error": "Only Gmail API accounts can be authenticated"}), 400
     
     # Import authentication function
-    import sys
     sys.path.append(str(BASE_DIR))
     from test_gmail_auth import authenticate_account as auth_func
     
@@ -313,8 +386,19 @@ def authenticate_account(account_id):
     else:
         credentials_file = Path(cred_file_path)
     
+    print(f"   Credentials File: {credentials_file}")
+    sys.stdout.flush()
+    
     if not credentials_file.exists():
+        print(f"❌ Credentials file not found: {credentials_file}")
+        sys.stdout.flush()
         return jsonify({"success": False, "error": f"Credentials file not found: {credentials_file}"}), 400
+    
+    print(f"\n{'='*80}")
+    print(f"🌐 STARTING AUTHENTICATION PROCESS")
+    print(f"   Account: {account_id} ({account_email})")
+    print(f"{'='*80}\n")
+    sys.stdout.flush()
     
     try:
         # Change to BASE_DIR to ensure consistent working directory
@@ -323,10 +407,22 @@ def authenticate_account(account_id):
         
         try:
             # Run authentication (this will open browser)
+            print(f"⏳ Calling authentication function...")
+            sys.stdout.flush()
             success = auth_func(account_id, str(credentials_file.resolve()))
             if success:
+                print(f"\n{'='*80}")
+                print(f"✅ AUTHENTICATION ENDPOINT: SUCCESS")
+                print(f"   Account: {account_id} ({account_email})")
+                print(f"{'='*80}\n")
+                sys.stdout.flush()
                 return jsonify({"success": True, "message": "Authentication successful"})
             else:
+                print(f"\n{'='*80}")
+                print(f"❌ AUTHENTICATION ENDPOINT: FAILED")
+                print(f"   Account: {account_id} ({account_email})")
+                print(f"{'='*80}\n")
+                sys.stdout.flush()
                 return jsonify({"success": False, "error": "Authentication failed"}), 400
         finally:
             os.chdir(original_cwd)
@@ -417,95 +513,206 @@ def load_default_csv():
 @app.route('/api/send/start', methods=['POST'])
 def start_sending():
     """Start sending emails - processes CSV and sends directly like command-line."""
-    global sending_active, sending_thread
+    global sending_active, sending_thread, sending_thread_id
+    import sys
+    sys.stdout.flush()
     
-    # Check if thread is actually alive (clean up stale references)
-    if sending_thread and not sending_thread.is_alive():
-        sending_thread = None
-        sending_active = False
-    
-    if sending_active:
-        return jsonify({"success": False, "error": "Sending already in progress"}), 400
-    
-    # Get parameters
-    data = request.json or {}
-    csv_path = data.get('csv_path')
-    max_emails = int(data.get('max_emails', 0))
-    
-    # If no CSV path provided, use default
-    if not csv_path:
-        # Try to find default CSV
-        possible_paths = [
-            BASE_DIR.parent / 'data' / 'arxiv' / 'round1' / 'arxiv_high_confidence_non_chinese_no_acl.csv',
-            BASE_DIR.parent / 'data' / 'arxiv' / 'round1' / 'arxiv_high_confidence_non_chinese.csv',
-        ]
-        for path in possible_paths:
-            if path.exists():
-                csv_path = str(path.relative_to(BASE_DIR.parent))
-                break
-    
-    if not csv_path:
-        return jsonify({"success": False, "error": "No CSV file specified and no default file found"}), 400
-    
-    # Clear current recipient info - progress (sent/total) is always calculated from source of truth
-    sending_progress["current_name"] = ""
-    sending_progress["current_email"] = ""
-    sending_progress["failed"] = 0
-    
-    sending_active = True
-    sending_thread = threading.Thread(target=send_emails_worker_direct, args=(csv_path, max_emails), daemon=True)
-    sending_thread.start()
-    
-    return jsonify({"success": True, "message": "Sending started"})
+    try:
+        # Check thread state
+        thread_alive = False
+        if sending_thread:
+            try:
+                thread_alive = sending_thread.is_alive()
+            except:
+                thread_alive = False
+                sending_thread = None
+        
+        # If thread is alive AND sending_active is True, reject (actually sending)
+        if thread_alive and sending_active:
+            print(f"⚠️  Cannot start: Sending already in progress (thread_id={sending_thread.ident if sending_thread else 'None'})")
+            sys.stdout.flush()
+            return jsonify({"success": False, "error": "Sending already in progress"}), 400
+        
+        # If thread is alive but sending_active is False, it's stopping - wait for it to finish
+        if thread_alive and not sending_active:
+            print(f"⏳ Thread is finishing (stop was requested), waiting up to 5 seconds...")
+            sys.stdout.flush()
+            if sending_thread:
+                sending_thread.join(timeout=5.0)
+                # Check if still alive after wait
+                try:
+                    if sending_thread.is_alive():
+                        print(f"⚠️  Thread still alive after wait, clearing reference to allow new start")
+                        sys.stdout.flush()
+                        sending_thread = None
+                        sending_thread_id = None
+                        with progress_lock:
+                            sending_progress["thread_id"] = None
+                    else:
+                        print(f"✓ Thread finished successfully")
+                        sys.stdout.flush()
+                        sending_thread = None
+                        sending_thread_id = None
+                        with progress_lock:
+                            sending_progress["thread_id"] = None
+                except:
+                    sending_thread = None
+                    sending_thread_id = None
+        
+        # Clean up dead thread reference if any
+        if sending_thread and not thread_alive:
+            sending_thread = None
+            sending_thread_id = None
+            sending_active = False
+            with progress_lock:
+                sending_progress["thread_id"] = None
+        
+        # Get parameters
+        data = request.json or {}
+        csv_path = data.get('csv_path')
+        max_emails = int(data.get('max_emails', 0))
+        
+        print(f"📥 Start request: csv_path={csv_path}, max_emails={max_emails}")
+        
+        # If no CSV path provided, use default
+        if not csv_path:
+            # Try to find default CSV - check multiple possible locations
+            possible_paths = [
+                # Round 2 (most recent)
+                BASE_DIR.parent / 'data' / 'arxiv' / 'round2' / 'arxiv_high_confidence_non_chinese_no_acl_no_prior_rounds.csv',
+                BASE_DIR.parent / 'data' / 'arxiv' / 'round2' / 'arxiv_high_confidence_non_chinese_no_acl.csv',
+                BASE_DIR.parent / 'data' / 'arxiv' / 'round2' / 'arxiv_high_confidence_non_chinese.csv',
+                # Round 1
+                BASE_DIR.parent / 'data' / 'arxiv' / 'round1' / 'arxiv_high_confidence_non_chinese_no_acl.csv',
+                BASE_DIR.parent / 'data' / 'arxiv' / 'round1' / 'arxiv_high_confidence_non_chinese.csv',
+                # Legacy location
+                BASE_DIR.parent / 'data' / 'arxiv' / 'arxiv_high_confidence_non_chinese_no_acl.csv',
+            ]
+            for path in possible_paths:
+                if path.exists():
+                    csv_path = str(path.relative_to(BASE_DIR.parent))
+                    print(f"📁 Using default CSV: {csv_path}")
+                    break
+        
+        if not csv_path:
+            error_msg = "No CSV file specified and no default file found. Please upload a CSV file or ensure a default file exists."
+            print(f"❌ {error_msg}")
+            return jsonify({"success": False, "error": error_msg}), 400
+        
+        # Clear current recipient info - progress (sent/total) is always calculated from source of truth
+        sending_progress["current_name"] = ""
+        sending_progress["current_email"] = ""
+        sending_progress["failed"] = 0
+        
+        sending_active = True
+        sending_thread = threading.Thread(target=send_emails_worker_direct, args=(csv_path, max_emails), daemon=True)
+        sending_thread.start()
+        
+        # Store thread ID in progress for persistence
+        sending_thread_id = sending_thread.ident
+        with progress_lock:
+            sending_progress["thread_id"] = sending_thread_id
+        
+        print(f"✅ Sending started: thread_id={sending_thread.ident}, csv_path={csv_path}")
+        import sys
+        sys.stdout.flush()
+        return jsonify({"success": True, "message": "Sending started"})
+    except Exception as e:
+        import traceback
+        error_msg = f"Error starting send: {str(e)}"
+        print(f"❌ {error_msg}")
+        print(traceback.format_exc())
+        return jsonify({"success": False, "error": error_msg}), 500
 
 
 @app.route('/api/send/stop', methods=['POST'])
 def stop_sending():
     """Stop sending emails."""
     global sending_active, sending_progress, sending_thread
+    import sys
+    
+    print(f"\n{'='*60}")
+    print(f"⏹️  STOP REQUESTED")
+    if sending_thread:
+        print(f"   Thread ID: {sending_thread.ident}")
+        print(f"   Thread Alive: {sending_thread.is_alive()}")
+    print(f"{'='*60}\n")
+    sys.stdout.flush()
+    
+    # Set flag to False - worker threads check this and will stop
     sending_active = False
-    # Clear current recipient info - don't reset sent/total
-    # Status endpoint will recalculate total based on current daily limits
+    
+    # Clear current recipient info
     with progress_lock:
         sending_progress["current_name"] = ""
         sending_progress["current_email"] = ""
-    # Note: sending_thread will be cleaned up by status endpoint when it detects thread is dead
+    
+    print(f"✓ Stop flag set. Worker threads will stop after current email.")
+    sys.stdout.flush()
+    
     return jsonify({"success": True})
 
 
 @app.route('/api/send/status', methods=['GET'])
 def send_status():
     """Get sending status and progress - Industry standard: read from in-memory state."""
-    global sending_thread, sending_active
+    global sending_thread, sending_active, sending_thread_id
+    import threading
     
-    # Check if sending is active - thread state is the source of truth
-    thread_alive = sending_thread and sending_thread.is_alive() if sending_thread else False
+    # PRIORITY 1: Check stored thread ID first (for persistence across page loads)
+    # This is the most reliable method when navigating away and back
+    stored_thread_id = sending_progress.get("thread_id")
+    thread_alive = False
+    found_thread = None
     
-    # If thread is dead, clean up
-    if sending_thread and not thread_alive:
-        # Thread finished - clean up
-        sending_thread = None
-        sending_active = False  # Ensure flag is cleared when thread dies
+    if stored_thread_id:
+        # Try to find the thread by ID from all running threads
+        for thread in threading.enumerate():
+            if thread.ident == stored_thread_id:
+                try:
+                    if thread.is_alive():
+                        # Found the active thread! Restore reference
+                        found_thread = thread
+                        thread_alive = True
+                        sending_thread = thread  # Restore global reference
+                        sending_thread_id = stored_thread_id
+                        break
+                except:
+                    # Thread object is invalid
+                    pass
     
-    # CRITICAL FIX: If thread is alive, we should show it as active
-    # The thread being alive is the most reliable indicator
-    # If sending_active is False but thread is alive, we're in "stopping" state
-    # But if thread is alive and we're not explicitly stopping, treat as active
-    # (This handles the case where user navigates away and comes back)
-    if thread_alive:
-        # Thread is running - check if we're stopping or actively sending
-        if not sending_active:
-            # Stop was requested but thread still running
-            is_stopping = True
-            is_active = False
-        else:
-            # Thread is running and actively sending
-            is_active = True
-            is_stopping = False
-    else:
-        # Thread is not alive - definitely not active
-        is_active = False
-        is_stopping = False
+    # PRIORITY 2: If no thread found by ID, check the global thread object
+    if not thread_alive and sending_thread:
+        try:
+            if sending_thread.is_alive():
+                thread_alive = True
+                found_thread = sending_thread
+                # Update stored thread ID if not set
+                if not stored_thread_id:
+                    sending_thread_id = sending_thread.ident
+                    with progress_lock:
+                        sending_progress["thread_id"] = sending_thread_id
+        except:
+            # Thread object invalid - clean up
+            sending_thread = None
+            sending_thread_id = None
+    
+    # Clean up if thread is dead or not found
+    if not thread_alive:
+        # Thread is dead - clean up all references
+        if sending_thread:
+            sending_thread = None
+        sending_thread_id = None
+        # Only clear sending_active if thread is truly dead (not just stopping)
+        # If we're stopping, sending_active should already be False
+        if not stored_thread_id:  # No stored ID means thread definitely finished
+            sending_active = False
+        with progress_lock:
+            sending_progress["thread_id"] = None
+    
+    # Status: active if thread is alive
+    is_active = thread_alive
+    is_stopping = thread_alive and not sending_active  # Thread alive but stop was requested
     
     # CRITICAL: Check if it's a new day - reset progress if date changed
     today = str(date.today())
@@ -529,34 +736,47 @@ def send_status():
             config = load_config()
             new_total = 0
             for account in config.get('accounts', []):
-                if account.get('enabled', True):
+                # Check if account is enabled (manual or auto-check disabled_until)
+                account_enabled = account.get('enabled', True)
+                if not account_enabled:
+                    # Check if disabled due to bounce/block and if period expired
+                    disabled_until = account.get('disabled_until')
+                    if disabled_until:
+                        try:
+                            disable_time = datetime.fromisoformat(disabled_until)
+                            if datetime.now() >= disable_time:
+                                # Disable period expired - account is effectively enabled
+                                account_enabled = True
+                        except:
+                            pass
+                
+                if account_enabled:
                     if account.get('auth_method') in ['gmail_api', 'app_password']:
                         new_total += account.get('daily_limit', 0)
             
-            # Update total if it changed (user may have updated limits)
-            if new_total != total_limit:
-                sending_progress["total"] = new_total
-                total_limit = new_total
+            # Always update total (even if same) to ensure it's set
+            sending_progress["total"] = new_total
+            total_limit = new_total
         except:
             pass
         
-        # If not active, sync sent count from history file (source of truth)
+        # ALWAYS sync sent count from history file (source of truth)
         # This ensures we show accurate count even after stopping or thread finishing
-        if not is_active:
-            try:
-                history = load_history()
-                if today in history.get('daily_stats', {}):
-                    daily_stats = history['daily_stats'][today]
-                    actual_sent = sum(
-                        count for key, count in daily_stats.items() 
-                        if key != 'total'
-                    )
-                    # Update progress with actual sent count from history
-                    if actual_sent != sent_count:
-                        sending_progress["sent"] = actual_sent
-                        sent_count = actual_sent
-            except:
-                pass
+        # Do this regardless of active status to always show current stats
+        try:
+            history = load_history()
+            if today in history.get('daily_stats', {}):
+                daily_stats = history['daily_stats'][today]
+                actual_sent = sum(
+                    count for key, count in daily_stats.items() 
+                    if key != 'total'
+                )
+                # Update progress with actual sent count from history
+                sending_progress["sent"] = actual_sent
+                sent_count = actual_sent
+        except Exception as e:
+            # If history sync fails, keep using in-memory value
+            pass
     
     return jsonify({
         "active": is_active,
@@ -593,7 +813,12 @@ def on_email_sent_callback(account_id, account_email, account_limit):
 
 def send_emails_worker_direct(csv_path, max_emails=0):
     """Background worker that processes CSV and sends directly (exactly like command-line)."""
-    global sending_active, sending_progress
+    global sending_active, sending_progress, sending_thread
+    
+    # Store thread reference for status checking
+    import threading
+    current_thread = threading.current_thread()
+    print(f"🔵 Worker thread started: thread_id={current_thread.ident}, name={current_thread.name}")
     
     # Industry standard: Initialize progress state at start
     # 1. Load initial sent count from history file (for resume after restart)
@@ -649,30 +874,45 @@ def send_emails_worker_direct(csv_path, max_emails=0):
         os.chdir(str(BASE_DIR))
         
         try:
-            # Determine which sender to use based on available accounts
-            # Prefer Gmail API if available, otherwise use SMTP
+            # CRITICAL FIX: Use BOTH Gmail API and SMTP accounts if both are available
             config = load_config()
             has_gmail_api = any(acc.get('auth_method') == 'gmail_api' and acc.get('enabled', True) 
                                for acc in config.get('accounts', []))
             has_smtp = any(acc.get('auth_method') == 'app_password' and acc.get('enabled', True) 
                           for acc in config.get('accounts', []))
             
-            # Use the same logic as command-line scripts
-            sender = None
+            # Initialize both senders if both account types are available
+            gmail_sender = None
+            smtp_sender = None
+            
             if has_gmail_api:
                 try:
-                    sender = GmailAPISender(str(CONFIG_FILE))
+                    print(f"📧 Initializing Gmail API sender...")
+                    gmail_sender = GmailAPISender(str(CONFIG_FILE))
+                    print(f"✓ Gmail API sender initialized")
                 except Exception as e:
                     print(f"⚠️  Gmail API initialization failed: {e}")
-                    if has_smtp:
-                        print("   Falling back to SMTP...")
-                        sender = EmailSender(str(CONFIG_FILE))
-                    else:
-                        raise Exception("No valid accounts available")
-            elif has_smtp:
-                sender = EmailSender(str(CONFIG_FILE))
-            else:
-                raise Exception("❌ No enabled accounts found")
+                    print(f"   Will continue with SMTP only if available")
+            
+            if has_smtp:
+                try:
+                    print(f"📧 Initializing SMTP sender...")
+                    smtp_sender = EmailSender(str(CONFIG_FILE))
+                    print(f"✓ SMTP sender initialized")
+                except Exception as e:
+                    print(f"⚠️  SMTP initialization failed: {e}")
+                    print(f"   Will continue with Gmail API only if available")
+            
+            # Must have at least one sender
+            if not gmail_sender and not smtp_sender:
+                raise Exception("❌ No valid accounts available (both Gmail API and SMTP failed)")
+            
+            # Log enabled accounts
+            enabled_accounts = [acc for acc in config.get('accounts', []) 
+                              if acc.get('enabled', True) and acc.get('auth_method') in ['gmail_api', 'app_password']]
+            print(f"\n📋 Enabled accounts ({len(enabled_accounts)}):")
+            for acc in enabled_accounts:
+                print(f"   • {acc['id']}: {acc.get('email', 'Unknown')} (limit: {acc.get('daily_limit', 0)}/day)")
             
             # Process CSV directly (same as command-line - no queue needed!)
             full_path = BASE_DIR.parent / csv_path
@@ -699,20 +939,61 @@ def send_emails_worker_direct(csv_path, max_emails=0):
             print(f"🚀 Starting email sending (same as command-line)...")
             print(f"📁 CSV: {csv_path}")
             
-            # Add stop check function to sender
+            # Add stop check function
             def should_stop():
                 return not sending_active
             
-            if hasattr(sender, 'set_stop_check'):
-                sender.set_stop_check(should_stop)
+            # Process with Gmail API sender if available
+            gmail_thread = None
+            if gmail_sender:
+                if hasattr(gmail_sender, 'set_stop_check'):
+                    gmail_sender.set_stop_check(should_stop)
+                if hasattr(gmail_sender, 'set_progress_callback'):
+                    gmail_sender.set_progress_callback(on_email_sent_callback)
+                print(f"🚀 Starting Gmail API sending...")
+                import sys
+                sys.stdout.flush()
+                # Process in a separate thread so we can also use SMTP
+                import threading
+                gmail_thread = threading.Thread(
+                    target=gmail_sender.process_csv,
+                    args=(str(full_path),),
+                    kwargs={'test_mode': False, 'max_emails': max_emails if max_emails > 0 else None},
+                    daemon=True
+                )
+                gmail_thread.start()
             
-            # Industry standard: Set progress callback for real-time updates
-            # This updates in-memory state immediately when emails are sent
-            if hasattr(sender, 'set_progress_callback'):
-                sender.set_progress_callback(on_email_sent_callback)
+            # Process with SMTP sender if available (in parallel with Gmail API)
+            smtp_thread = None
+            if smtp_sender:
+                if hasattr(smtp_sender, 'set_stop_check'):
+                    smtp_sender.set_stop_check(should_stop)
+                if hasattr(smtp_sender, 'set_progress_callback'):
+                    smtp_sender.set_progress_callback(on_email_sent_callback)
+                print(f"🚀 Starting SMTP sending...")
+                import sys
+                sys.stdout.flush()
+                # Process in a separate thread so it runs in parallel with Gmail API
+                import threading
+                smtp_thread = threading.Thread(
+                    target=smtp_sender.process_csv,
+                    args=(str(full_path),),
+                    kwargs={'test_mode': False, 'max_emails': max_emails if max_emails > 0 else None},
+                    daemon=True
+                )
+                smtp_thread.start()
             
-            # This is the same method the command-line uses - processes CSV and sends directly
-            sender.process_csv(str(full_path), test_mode=False, max_emails=max_emails if max_emails > 0 else None)
+            # Wait for both threads to complete
+            if gmail_thread and smtp_thread:
+                print(f"⏳ Waiting for both Gmail API and SMTP threads to complete...")
+                import sys
+                sys.stdout.flush()
+                gmail_thread.join()
+                smtp_thread.join()
+            elif gmail_thread:
+                gmail_thread.join()
+            elif smtp_thread:
+                smtp_thread.join()
             
             print(f"✅ Email sending completed")
         except Exception as e:
@@ -731,10 +1012,31 @@ def send_emails_worker_direct(csv_path, max_emails=0):
         # The error will be visible in the terminal/logs
     finally:
         # Ensure state is cleaned up when thread finishes
+        import threading
+        current_thread_id = threading.current_thread().ident
+        print(f"\n{'='*60}")
+        print(f"🔴 WORKER THREAD FINISHING")
+        print(f"   Thread ID: {current_thread_id}")
+        print(f"{'='*60}\n")
+        import sys
+        sys.stdout.flush()
+        
         sending_active = False
         with progress_lock:
             sending_progress["current_name"] = ""
             sending_progress["current_email"] = ""
+            # Clear thread ID when thread finishes
+            if sending_progress.get("thread_id") == current_thread_id:
+                sending_progress["thread_id"] = None
+        
+        # Clear global thread reference if this is the active thread
+        global sending_thread, sending_thread_id
+        if sending_thread and sending_thread.ident == current_thread_id:
+            sending_thread = None
+            sending_thread_id = None
+        
+        print(f"✓ Thread cleanup complete")
+        sys.stdout.flush()
         # Don't reset total - status endpoint always calculates it fresh from config
 
 
@@ -1056,6 +1358,11 @@ scheduler = None
 
 
 if __name__ == '__main__':
+    # Force unbuffered output for real-time logging
+    import sys
+    sys.stdout = sys.__stdout__  # Ensure stdout is not buffered
+    import os
+    os.environ['PYTHONUNBUFFERED'] = '1'
     # Register signal handlers for graceful shutdown
     signal.signal(signal.SIGINT, graceful_shutdown)
     signal.signal(signal.SIGTERM, graceful_shutdown)

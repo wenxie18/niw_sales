@@ -17,10 +17,16 @@ SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googlea
 
 def authenticate_account(account_id, credentials_file):
     """Authenticate a single Gmail account."""
+    import sys
+    sys.stdout.flush()
+    
     print(f"\n{'='*80}")
-    print(f"Authenticating: {account_id}")
-    print(f"Credentials file: {credentials_file}")
+    print(f"🔐 AUTHENTICATING ACCOUNT")
     print(f"{'='*80}")
+    print(f"   Account ID: {account_id}")
+    print(f"   Credentials file: {credentials_file}")
+    print(f"{'='*80}\n")
+    sys.stdout.flush()
     
     # Resolve paths to absolute
     credentials_path = Path(credentials_file).resolve()
@@ -46,6 +52,7 @@ def authenticate_account(account_id, credentials_file):
     # Load existing token
     if token_file.exists():
         print(f"✓ Found existing token: {token_file}")
+        sys.stdout.flush()
         try:
             # Try loading with old scopes first (backward compatibility)
             old_scopes = ['https://www.googleapis.com/auth/gmail.send']
@@ -56,10 +63,11 @@ def authenticate_account(account_id, credentials_file):
                 token_scopes = set(creds.scopes or [])
                 required_scopes = set(SCOPES)
                 if not required_scopes.issubset(token_scopes):
-                    print("⚠️  Token missing required scopes (need gmail.readonly for bounce detection)")
+                    print(f"\n⚠️  Token missing required scopes (need gmail.readonly for bounce detection)")
                     print(f"   Token has: {token_scopes}")
                     print(f"   Required: {required_scopes}")
-                    print("   Deleting old token to force re-authentication...")
+                    print(f"   Deleting old token to force re-authentication...")
+                    sys.stdout.flush()
                     token_file.unlink()  # Delete old token
                     creds = None
                     needs_reauth = True
@@ -67,61 +75,119 @@ def authenticate_account(account_id, credentials_file):
                     # Token has correct scopes, but need to reload with new scopes
                     creds = Credentials.from_authorized_user_file(str(token_file), SCOPES)
         except Exception as e:
-            print(f"⚠️  Error loading token: {e}")
-            print("   Will re-authenticate...")
+            print(f"\n⚠️  Error loading token: {e}")
+            print(f"   Will re-authenticate...")
+            sys.stdout.flush()
             creds = None
             needs_reauth = True
     
     # If no valid credentials, authenticate
     if not creds or not creds.valid or needs_reauth:
         if creds and creds.expired and creds.refresh_token and not needs_reauth:
-            print("⟳ Refreshing expired token...")
+            print(f"\n⟳ Refreshing expired token...")
+            sys.stdout.flush()
             try:
                 creds.refresh(Request())
+                print(f"✓ Token refreshed successfully")
+                sys.stdout.flush()
             except Exception as e:
-                print(f"⚠️  Token refresh failed: {e}")
-                print("   Will re-authenticate...")
+                print(f"\n⚠️  Token refresh failed: {e}")
+                print(f"   Will re-authenticate...")
+                sys.stdout.flush()
                 creds = None
         
         # If still no valid credentials, authenticate via browser
         if not creds or not creds.valid:
-            print("🌐 Opening browser for authentication...")
-            print("   Please sign in and allow access.")
-            print("   You will be asked to grant:")
-            print("   - Send email on your behalf (gmail.send)")
-            print("   - Read your email (gmail.readonly) - for bounce detection")
+            print(f"\n{'='*80}")
+            print(f"🌐 OPENING BROWSER FOR AUTHENTICATION")
+            print(f"{'='*80}")
+            print(f"   Please sign in and allow access.")
+            print(f"   You will be asked to grant:")
+            print(f"   - Send email on your behalf (gmail.send)")
+            print(f"   - Read your email (gmail.readonly) - for bounce detection")
+            print(f"\n   ⚠️  NOTE: If you see 'access_denied' or '403' error:")
+            print(f"      The app needs to be verified by Google OR")
+            print(f"      Your email needs to be added as a test user")
+            print(f"      in Google Cloud Console > OAuth consent screen")
+            print(f"{'='*80}\n")
+            sys.stdout.flush()
+            
             try:
                 flow = InstalledAppFlow.from_client_secrets_file(str(credentials_path), SCOPES)
+                print(f"⏳ Waiting for browser authentication...")
+                sys.stdout.flush()
                 creds = flow.run_local_server(port=0)
                 
                 # Check if authentication was successful
                 if not creds:
-                    print("❌ Authentication was cancelled or failed")
+                    print(f"\n❌ Authentication was cancelled or failed")
+                    sys.stdout.flush()
                     return False
+                
+                print(f"\n✓ Browser authentication completed")
+                sys.stdout.flush()
             except Exception as e:
-                print(f"❌ Authentication error: {e}")
+                error_msg = str(e)
+                print(f"\n{'='*80}")
+                print(f"❌ AUTHENTICATION ERROR")
+                print(f"   Error: {error_msg}")
+                if 'access_denied' in error_msg or '403' in error_msg:
+                    print(f"\n   🔧 SOLUTION:")
+                    print(f"   1. Go to Google Cloud Console")
+                    print(f"   2. Select your project")
+                    print(f"   3. Navigate to: APIs & Services > OAuth consent screen")
+                    print(f"   4. Add your email as a TEST USER")
+                    print(f"   5. Save and try again")
+                    print(f"\n   See GMAIL_API_VERIFICATION.md for detailed instructions")
+                print(f"{'='*80}\n")
+                sys.stdout.flush()
                 return False
         
         # Save token (only if we have valid credentials)
         if creds and creds.valid:
-            print(f"💾 Saving token to: {token_file}")
+            print(f"\n💾 Saving token to: {token_file}")
+            sys.stdout.flush()
             with open(str(token_file), 'w') as token:
                 token.write(creds.to_json())
+            print(f"✓ Token saved successfully")
+            sys.stdout.flush()
         else:
             print("❌ No valid credentials to save")
+            sys.stdout.flush()
             return False
     else:
-        print("✓ Token is valid with all required scopes, no re-authentication needed")
+        print(f"\n{'='*80}")
+        print(f"✓ TOKEN ALREADY VALID")
+        print(f"   Account: {account_id}")
+        print(f"   Token file: {token_file}")
+        print(f"   No re-authentication needed")
+        print(f"{'='*80}\n")
+        sys.stdout.flush()
+        return True
     
     # Test the connection (we only have gmail.send scope, so we can't access profile)
-    print("🔍 Verifying credentials...")
+    print(f"\n{'='*80}")
+    print(f"🔍 VERIFYING CREDENTIALS")
+    print(f"{'='*80}")
+    sys.stdout.flush()
+    
     if creds and creds.valid:
-        print("✅ SUCCESS! Credentials are valid and ready to send emails")
+        print(f"\n{'='*80}")
+        print(f"✅ AUTHENTICATION COMPLETED SUCCESSFULLY")
+        print(f"{'='*80}")
+        print(f"   Account: {account_id}")
         print(f"   Token saved to: {token_file}")
         print(f"   Scopes: gmail.send (send emails), gmail.readonly (check for bounce messages)")
+        print(f"   Status: Ready to send emails")
+        print(f"{'='*80}\n")
+        sys.stdout.flush()
         return True
     else:
-        print("❌ Credentials are invalid")
+        print(f"\n{'='*80}")
+        print(f"❌ CREDENTIALS ARE INVALID")
+        print(f"   Account: {account_id}")
+        print(f"{'='*80}\n")
+        sys.stdout.flush()
         return False
 
 def main():

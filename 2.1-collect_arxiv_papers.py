@@ -20,6 +20,7 @@ import xml.etree.ElementTree as ET
 import csv
 import time
 import logging
+import json
 from pathlib import Path
 from typing import List, Dict
 from datetime import datetime
@@ -257,8 +258,95 @@ def save_papers_to_csv(papers: List[Dict], output_file: str):
     
     logger.info(f"✓ Saved {len(papers):,} unique papers to {output_file}")
 
-def collect_category_year(category: str, category_short: str, year: int, output_dir: str, batch_size: int = 1000, rate_limit_delay: float = 3.0):
+def load_collection_history(history_file: str = 'arxiv_collection_history.json'):
+    """Load collection history to check what's already been collected."""
+    history_path = Path(history_file)
+    if not history_path.exists():
+        return {}
+    
+    try:
+        with open(history_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception as e:
+        logger.warning(f"Could not load history file: {e}")
+        return {}
+
+def is_already_collected(history: dict, category_short: str, year: int) -> bool:
+    """Check if a category+year combination has already been collected."""
+    if not history:
+        return False
+    
+    if category_short not in history:
+        return False
+    
+    year_str = str(year)
+    if year_str not in history[category_short]:
+        return False
+    
+    # If entry exists, it's already collected
+    return True
+
+def update_collection_history(history_file: str, category_short: str, year: int, 
+                             round_num: int, paper_count: int, author_count: int, 
+                             output_file: str, email_count: int = 0):
+    """Update collection history after collecting a category+year.
+    Adds stats to existing entry or creates new one.
+    """
+    history_path = Path(history_file)
+    
+    # Load existing history
+    history = load_collection_history(history_file)
+    
+    # Ensure structure exists
+    if category_short not in history:
+        history[category_short] = {}
+    
+    year_str = str(year)
+    if year_str not in history[category_short]:
+        # New entry
+        history[category_short][year_str] = {
+            'papers_collected': 0,
+            'authors_collected': 0,
+            'emails_collected': 0,
+            'rounds': [],
+            'last_collection_date': datetime.now().isoformat()
+        }
+    
+    # Add stats (sum them up for same category+year across rounds)
+    history[category_short][year_str]['papers_collected'] += paper_count
+    history[category_short][year_str]['authors_collected'] += author_count
+    # Keep max email count (emails might be extracted later)
+    history[category_short][year_str]['emails_collected'] = max(
+        history[category_short][year_str]['emails_collected'],
+        email_count
+    )
+    
+    # Add round number if not already there
+    if round_num not in history[category_short][year_str]['rounds']:
+        history[category_short][year_str]['rounds'].append(round_num)
+    
+    # Update last collection date
+    history[category_short][year_str]['last_collection_date'] = datetime.now().isoformat()
+    
+    # Save updated history
+    history_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(history_path, 'w', encoding='utf-8') as f:
+        json.dump(history, f, indent=2, ensure_ascii=False)
+    
+    logger.info(f"✓ Updated collection history: {category_short} {year} (Round {round_num})")
+
+def collect_category_year(category: str, category_short: str, year: int, output_dir: str, 
+                         batch_size: int = 1000, rate_limit_delay: float = 3.0,
+                         round_num: int = None, history_file: str = 'arxiv_collection_history.json'):
     """Collect all papers for a category/year using monthly queries."""
+    
+    # Check if already collected
+    history = load_collection_history(history_file)
+    if is_already_collected(history, category_short, year):
+        logger.info(f"⏭️  SKIPPING {category} {year} - already collected in previous round(s)")
+        logger.info(f"   To re-collect, remove entry from {history_file}")
+        return 0
+    
     output_file = f"{output_dir}/{category_short}_{year}.csv"
     
     # Query all papers month-by-month
@@ -267,6 +355,17 @@ def collect_category_year(category: str, category_short: str, year: int, output_
     # Save to CSV (with deduplication)
     if papers:
         save_papers_to_csv(papers, output_file)
+        
+        # Count authors
+        author_count = sum(int(p.get('num_authors', 0) or 0) for p in papers)
+        
+        # Update history (always update if round_num is provided)
+        if round_num is not None:
+            update_collection_history(history_file, category_short, year, round_num, 
+                                   len(papers), author_count, Path(output_file).name)
+            logger.info(f"✓ History updated: {category_short} {year}")
+        else:
+            logger.warning(f"⚠️  round_num not provided - history not updated for {category_short} {year}")
     else:
         logger.warning(f"No papers collected for {category} {year}")
     
@@ -314,13 +413,13 @@ def main():
     else:
         # Default configuration (backward compatibility)
         logger.warning("Using default configuration (no config file found)")
-        CATEGORIES = [
-            ('cs.LG', 'cs_lg', 2024),
-            ('cs.LG', 'cs_lg', 2025),
-            ('cs.CV', 'cs_cv', 2024),
-            ('cs.CV', 'cs_cv', 2025),
-        ]
-        output_dir = 'data/arxiv/round2'
+    CATEGORIES = [
+        ('cs.LG', 'cs_lg', 2024),
+        ('cs.LG', 'cs_lg', 2025),
+        ('cs.CV', 'cs_cv', 2024),
+        ('cs.CV', 'cs_cv', 2025),
+    ]
+    output_dir = 'data/arxiv/round2'
         round_num = 2
         batch_size = 1000
     
@@ -348,9 +447,11 @@ def main():
     total_papers = 0
     
     rate_limit_delay = coll_config.get('rate_limit_delay_seconds', 3.0) if config and 'collection' in config else 3.0
+    history_file = coll_config.get('history_file', 'arxiv_collection_history.json') if config and 'collection' in config else 'arxiv_collection_history.json'
     
     for category, category_short, year in CATEGORIES:
-        papers_collected = collect_category_year(category, category_short, year, output_dir, batch_size, rate_limit_delay)
+        papers_collected = collect_category_year(category, category_short, year, output_dir, 
+                                                batch_size, rate_limit_delay, round_num, history_file)
         total_papers += papers_collected
         logger.info(f"\n{'='*80}")
         logger.info(f"Completed: {category} {year} - {papers_collected:,} papers")

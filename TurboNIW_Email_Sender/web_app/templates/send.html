@@ -43,7 +43,9 @@
         <p>No sending in progress</p>
     </div>
 </div>
+{% endblock %}
 
+{% block extra_js %}
 <script>
 let csvData = null;
 let usingDefaultFile = false;
@@ -313,18 +315,35 @@ async function updateSendingStatus() {
     // Not active and not stopping - thread has finished
     // Sending has completed or stopped
     const progress = result.progress || {};
-    const sent = progress.sent || 0;
-    const total = progress.total || 0;
+    const sent = parseInt(progress.sent) || 0;  // Ensure it's a number
+    const total = parseInt(progress.total) || 0;  // Ensure it's a number
+    
+    console.log('Status update - sent:', sent, 'total:', total, 'active:', result.active);
     
     let statusHtml = '';
-    if (sent > 0 && total > 0) {
-        const percentage = Math.min(100, Math.round((sent / total) * 100));
-        statusHtml = `
-            <p><strong>✅ Sending completed!</strong></p>
-            <p style="margin-top: 0.5rem;">Sent: <strong>${sent}</strong> / ${total} (${percentage}%)</p>
-        `;
-    } else if (sent > 0) {
-        statusHtml = `<p>Sent today: <strong>${sent}</strong></p>`;
+    if (sent > 0) {
+        // Always show stats if emails were sent today
+        if (total > 0) {
+            const percentage = Math.min(100, Math.round((sent / total) * 100));
+            statusHtml = `
+                <p><strong>✅ Sending completed!</strong></p>
+                <div style="margin-top: 1rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                        <span><strong>Sent:</strong> ${sent.toLocaleString()} / ${total.toLocaleString()}</span>
+                        <span><strong>${percentage}%</strong></span>
+                    </div>
+                    <div style="background: #e0e0e0; border-radius: 4px; height: 24px; overflow: hidden;">
+                        <div style="background: #4CAF50; height: 100%; width: ${percentage}%; transition: width 0.3s;"></div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Total not available but we have sent count
+            statusHtml = `
+                <p><strong>✅ Sending completed!</strong></p>
+                <p style="margin-top: 0.5rem;">Sent today: <strong>${sent.toLocaleString()}</strong> emails</p>
+            `;
+        }
     } else {
         statusHtml = `<p>No sending in progress</p>`;
     }
@@ -341,7 +360,26 @@ async function updateSendingStatus() {
     setTimeout(updateSendingStatus, 5000);
 }
 
-// Initial status update
-updateSendingStatus();
+// Initial status update - wait for apiCall to be available
+if (typeof apiCall !== 'undefined') {
+    updateSendingStatus();
+} else {
+    // Wait for apiCall to be defined (from base template)
+    document.addEventListener('DOMContentLoaded', function() {
+        // Double check after DOM is ready
+        if (typeof apiCall !== 'undefined') {
+            updateSendingStatus();
+        } else {
+            // Fallback: wait a bit more
+            setTimeout(function() {
+                if (typeof apiCall !== 'undefined') {
+                    updateSendingStatus();
+                } else {
+                    console.error('apiCall function not found');
+                }
+            }, 100);
+        }
+    });
+}
 </script>
 {% endblock %}

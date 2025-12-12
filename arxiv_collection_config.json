@@ -3,18 +3,34 @@
   "_note": "Edit this file to change collection parameters without modifying Python scripts",
   
   "collection": {
-    "round": 2,
-    "output_dir": "data/arxiv/round2",
+    "round": 3,
+    "output_dir": "data/arxiv/round3",
+    "history_file": "arxiv_collection_history.json",
     "categories": [
       {
         "arxiv_category": "cs.LG",
         "short_name": "cs_lg",
-        "years": [2024, 2025]
+        "years": [2023]
       },
       {
         "arxiv_category": "cs.CV",
         "short_name": "cs_cv",
-        "years": [2024, 2025]
+        "years": [2023]
+      },
+      {
+        "arxiv_category": "cs.RO",
+        "short_name": "cs_ro",
+        "years": [2023]
+      },
+      {
+        "arxiv_category": "eess.SP",
+        "short_name": "eess_sp",
+        "years": [2023]
+      },
+      {
+        "arxiv_category": "eess.SY",
+        "short_name": "eess_sy",
+        "years": [2023]
       }
     ],
     "batch_size": 1000,

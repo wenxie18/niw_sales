@@ -201,6 +201,14 @@
         </nav>
     </div>
     
+    <!-- Disabled Accounts Notice -->
+    <div id="disabledAccountsNotice" style="display: none; background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem 2rem; margin: 0;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <h3 style="margin: 0 0 0.5rem 0; color: #856404;">⚠️ Account Disabled Due to Bounce/Block</h3>
+            <div id="disabledAccountsList"></div>
+        </div>
+    </div>
+    
     <div class="container">
         {% block content %}{% endblock %}
     </div>
@@ -217,6 +225,35 @@
             });
             return await response.json();
         }
+        
+        // Check for disabled accounts and show notice
+        async function checkDisabledAccounts() {
+            try {
+                const result = await apiCall('/api/accounts/disabled');
+                const notice = document.getElementById('disabledAccountsNotice');
+                const list = document.getElementById('disabledAccountsList');
+                
+                if (result.disabled_accounts && result.disabled_accounts.length > 0) {
+                    let html = '<p style="margin: 0 0 0.5rem 0; color: #856404;">The following accounts have been automatically disabled for 24 hours due to bounce/block detection:</p><ul style="margin: 0; padding-left: 1.5rem;">';
+                    result.disabled_accounts.forEach(acc => {
+                        html += `<li style="margin: 0.25rem 0;"><strong>${acc.email}</strong> - Will be re-enabled in <strong>${acc.hours_remaining} hours</strong></li>`;
+                    });
+                    html += '</ul>';
+                    list.innerHTML = html;
+                    notice.style.display = 'block';
+                } else {
+                    notice.style.display = 'none';
+                }
+            } catch (e) {
+                console.error('Error checking disabled accounts:', e);
+            }
+        }
+        
+        // Check on page load
+        checkDisabledAccounts();
+        
+        // Check every 5 minutes
+        setInterval(checkDisabledAccounts, 5 * 60 * 1000);
     </script>
     {% block extra_js %}{% endblock %}
 </body>

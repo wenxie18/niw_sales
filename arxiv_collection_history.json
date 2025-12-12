@@ -1,0 +1,250 @@
+{
+  "cs_cv": {
+    "2024": {
+      "papers_collected": 30584,
+      "authors_collected": 169805,
+      "emails_collected": 55834,
+      "rounds": [
+        1,
+        2
+      ],
+      "last_collection_date": "2024-12-10T00:00:00"
+    },
+    "2025": {
+      "papers_collected": 32245,
+      "authors_collected": 189613,
+      "emails_collected": 58550,
+      "rounds": [
+        1,
+        2
+      ],
+      "last_collection_date": "2024-12-10T00:00:00"
+    },
+    "2023": {
+      "papers_collected": 24522,
+      "authors_collected": 128942,
+      "emails_collected": 0,
+      "rounds": [
+        3
+      ],
+      "last_collection_date": "2025-12-12T14:42:58.521335"
+    }
+  },
+  "cs_lg": {
+    "2024": {
+      "papers_collected": 69600,
+      "authors_collected": 327634,
+      "emails_collected": 47812,
+      "rounds": [
+        1,
+        2
+      ],
+      "last_collection_date": "2024-12-10T00:00:00"
+    },
+    "2025": {
+      "papers_collected": 42728,
+      "authors_collected": 208070,
+      "emails_collected": 47963,
+      "rounds": [
+        1,
+        2
+      ],
+      "last_collection_date": "2024-12-10T00:00:00"
+    },
+    "2023": {
+      "papers_collected": 33018,
+      "authors_collected": 149073,
+      "emails_collected": 0,
+      "rounds": [
+        3
+      ],
+      "last_collection_date": "2025-12-12T14:40:19.456815"
+    }
+  },
+  "cs_ro": {
+    "2024": {
+      "papers_collected": 8648,
+      "authors_collected": 43169,
+      "emails_collected": 43061,
+      "rounds": [
+        1
+      ],
+      "last_collection_date": "2024-12-01T00:00:00"
+    },
+    "2025": {
+      "papers_collected": 9785,
+      "authors_collected": 53506,
+      "emails_collected": 52277,
+      "rounds": [
+        1,
+        2
+      ],
+      "last_collection_date": "2024-12-10T00:00:00"
+    },
+    "2023": {
+      "papers_collected": 6753,
+      "authors_collected": 31760,
+      "emails_collected": 0,
+      "rounds": [
+        3
+      ],
+      "last_collection_date": "2025-12-12T14:43:55.794398"
+    }
+  },
+  "eess_sp": {
+    "2024": {
+      "papers_collected": 5856,
+      "authors_collected": 26456,
+      "emails_collected": 26401,
+      "rounds": [
+        1
+      ],
+      "last_collection_date": "2024-12-01T00:00:00"
+    },
+    "2025": {
+      "papers_collected": 5857,
+      "authors_collected": 26570,
+      "emails_collected": 463,
+      "rounds": [
+        1,
+        2
+      ],
+      "last_collection_date": "2024-12-10T00:00:00"
+    },
+    "2023": {
+      "papers_collected": 5011,
+      "authors_collected": 21724,
+      "emails_collected": 0,
+      "rounds": [
+        3
+      ],
+      "last_collection_date": "2025-12-12T14:44:51.368497"
+    }
+  },
+  "eess_sy": {
+    "2024": {
+      "papers_collected": 5970,
+      "authors_collected": 23570,
+      "emails_collected": 23464,
+      "rounds": [
+        1
+      ],
+      "last_collection_date": "2024-12-01T00:00:00"
+    },
+    "2025": {
+      "papers_collected": 6756,
+      "authors_collected": 26478,
+      "emails_collected": 25867,
+      "rounds": [
+        1,
+        2
+      ],
+      "last_collection_date": "2024-12-10T00:00:00"
+    },
+    "2023": {
+      "papers_collected": 5297,
+      "authors_collected": 19832,
+      "emails_collected": 0,
+      "rounds": [
+        3
+      ],
+      "last_collection_date": "2025-12-12T14:45:46.731797"
+    }
+  },
+  "acl": {
+    "2019": {
+      "papers_collected": 2438,
+      "authors_collected": 1424,
+      "emails_collected": 1424,
+      "rounds": [
+        "acl"
+      ],
+      "last_collection_date": "2024-11-14T00:00:00",
+      "tracks": [
+        "main"
+      ]
+    },
+    "2020": {
+      "papers_collected": 2644,
+      "authors_collected": 1616,
+      "emails_collected": 1616,
+      "rounds": [
+        "acl"
+      ],
+      "last_collection_date": "2024-11-14T00:00:00",
+      "tracks": [
+        "main"
+      ]
+    },
+    "2021": {
+      "papers_collected": 4914,
+      "authors_collected": 2848,
+      "emails_collected": 2848,
+      "rounds": [
+        "acl"
+      ],
+      "last_collection_date": "2024-11-14T00:00:00",
+      "tracks": [
+        "long",
+        "short",
+        "findings"
+      ]
+    },
+    "2022": {
+      "papers_collected": 4475,
+      "authors_collected": 2469,
+      "emails_collected": 2469,
+      "rounds": [
+        "acl"
+      ],
+      "last_collection_date": "2024-11-14T00:00:00",
+      "tracks": [
+        "long",
+        "short",
+        "findings"
+      ]
+    },
+    "2023": {
+      "papers_collected": 9155,
+      "authors_collected": 4560,
+      "emails_collected": 4560,
+      "rounds": [
+        "acl"
+      ],
+      "last_collection_date": "2024-11-14T00:00:00",
+      "tracks": [
+        "long",
+        "short",
+        "findings"
+      ]
+    },
+    "2024": {
+      "papers_collected": 10138,
+      "authors_collected": 4493,
+      "emails_collected": 4493,
+      "rounds": [
+        "acl"
+      ],
+      "last_collection_date": "2024-11-14T00:00:00",
+      "tracks": [
+        "long",
+        "short",
+        "findings"
+      ]
+    },
+    "2025": {
+      "papers_collected": 17867,
+      "authors_collected": 6281,
+      "emails_collected": 6281,
+      "rounds": [
+        "acl"
+      ],
+      "last_collection_date": "2024-11-14T00:00:00",
+      "tracks": [
+        "long",
+        "short",
+        "findings"
+      ]
+    }
+  }
+}
