@@ -147,7 +147,7 @@ def dashboard():
     # Sum only account-specific values, exclude 'total' key to avoid double-counting
     total_sent_today = sum(v for k, v in daily_stats.items() if k != 'total')
     
-    # Account breakdown
+    # Account breakdown - only show enabled accounts on dashboard
     account_stats = []
     for account in config.get('accounts', []):
         # Check if account is disabled (manual or bounce/block)
@@ -169,6 +169,10 @@ def dashboard():
                         disabled_reason = f"Disabled due to bounce/block (re-enables in {hours_remaining:.1f}h)"
                 except:
                     pass
+        
+        # Skip disabled accounts on dashboard (only show enabled ones)
+        if is_disabled:
+            continue
         
         account_id = account['id']
         sent_today = daily_stats.get(account_id, 0)

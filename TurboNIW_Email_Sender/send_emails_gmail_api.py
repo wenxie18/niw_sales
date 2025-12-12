@@ -12,12 +12,13 @@ import argparse
 import base64
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from email.utils import formataddr
-from datetime import datetime, date
+from email.utils import formataddr, parsedate_to_datetime
+from datetime import datetime, date, timedelta
 from pathlib import Path
 import time
 import random
 import threading
+import sys
 from queue import Queue
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -219,8 +220,8 @@ class GmailAPISender:
                     except:
                         creds = None
                 
-                # Check if token has all required scopes
-                if creds and creds.valid:
+                # Check if token has all required scopes (even if expired, check scopes first)
+                if creds:
                     token_scopes = set(creds.scopes or [])
                     required_scopes = set(SCOPES)
                     if not required_scopes.issubset(token_scopes):
@@ -233,8 +234,8 @@ class GmailAPISender:
                         Path(token_file).unlink()
                         creds = None
                         needs_reauth = True
-                    else:
-                        # Token has correct scopes - ensure we're using the right scopes
+                    elif creds.valid:
+                        # Token has correct scopes and is valid - ensure we're using the right scopes
                         if set(creds.scopes or []) != required_scopes:
                             # Reload with correct scopes
                             creds = Credentials.from_authorized_user_file(token_file, SCOPES)
@@ -254,13 +255,27 @@ class GmailAPISender:
                     print(f"  ⟳ [{account_id}] Refreshing expired token...")
                     sys.stdout.flush()
                     creds.refresh(Request())
-                    # Save refreshed token
-                    token_path = Path(token_file)
-                    token_path.parent.mkdir(parents=True, exist_ok=True)
-                    with open(token_file, 'w') as token:
-                        token.write(creds.to_json())
-                    print(f"  ✓ [{account_id}] Token refreshed and saved")
-                    sys.stdout.flush()
+                    # After refresh, check if scopes are still correct
+                    token_scopes = set(creds.scopes or [])
+                    required_scopes = set(SCOPES)
+                    if not required_scopes.issubset(token_scopes):
+                        # Refreshed token still missing required scopes - delete and re-authenticate
+                        print(f"  ⚠️  [{account_id}] Refreshed token missing required scopes")
+                        print(f"      Token has: {token_scopes}")
+                        print(f"      Required: {required_scopes}")
+                        print(f"      Deleting token to force re-authentication with correct scopes...")
+                        sys.stdout.flush()
+                        Path(token_file).unlink()
+                        creds = None
+                        needs_reauth = True
+                    else:
+                        # Save refreshed token
+                        token_path = Path(token_file)
+                        token_path.parent.mkdir(parents=True, exist_ok=True)
+                        with open(token_file, 'w') as token:
+                            token.write(creds.to_json())
+                        print(f"  ✓ [{account_id}] Token refreshed and saved")
+                        sys.stdout.flush()
                 except Exception as e:
                     # Refresh failed - need to re-authenticate
                     print(f"  ⚠️  [{account_id}] Token refresh failed: {e}")
@@ -410,12 +425,43 @@ class GmailAPISender:
                 return False
             
             # Check each message for bounce/block indicators
+            # Calculate 20 minutes ago timestamp for verification (use UTC to avoid timezone issues)
+            from datetime import timezone
+            now_utc = datetime.now(timezone.utc)
+            twenty_minutes_ago_utc = now_utc - timedelta(minutes=20)
+            
             for msg in messages:
                 try:
                     message = service.users().messages().get(userId='me', id=msg['id'], format='full').execute()
                     
-                    # Get subject and snippet
+                    # Get message date and verify it's within last 20 minutes
                     headers = message['payload'].get('headers', [])
+                    date_header = next((h['value'] for h in headers if h['name'].lower() == 'date'), '')
+                    
+                    if date_header:
+                        try:
+                            # Parse the date header (RFC 2822 format)
+                            msg_date = parsedate_to_datetime(date_header)
+                            
+                            # Convert to UTC if timezone-aware, or assume UTC if naive
+                            if msg_date.tzinfo is None:
+                                # Naive datetime - assume UTC
+                                msg_date_utc = msg_date.replace(tzinfo=timezone.utc)
+                            else:
+                                # Timezone-aware - convert to UTC
+                                msg_date_utc = msg_date.astimezone(timezone.utc)
+                            
+                            # Check if message is older than 20 minutes
+                            if msg_date_utc < twenty_minutes_ago_utc:
+                                # Skip old messages (shouldn't happen with newer_than:20m, but double-check)
+                                continue
+                        except Exception as e:
+                            # If date parsing fails, log but continue (better to check than skip)
+                            print(f"  ⚠️  Could not parse date '{date_header}': {e}")
+                            sys.stdout.flush()
+                            # Continue processing - don't skip on date parse error
+                    
+                    # Get subject and snippet
                     subject = next((h['value'] for h in headers if h['name'].lower() == 'subject'), '')
                     snippet = message.get('snippet', '')
                     body_text = ''
@@ -436,8 +482,6 @@ class GmailAPISender:
                     # Check for rate limit indicators
                     rate_limit_phrases = [
                         'reached a limit for sending mail',
-                        'limit for sending mail',
-                        'sending limit',
                         'daily sending quota',
                         'quota exceeded',
                         'you have reached a limit'
@@ -445,11 +489,7 @@ class GmailAPISender:
                     
                     # Check for message blocked/rejected indicators
                     blocked_phrases = [
-                        'message blocked',
-                        'message was blocked',
-                        'blocked. see technical details',
                         'message rejected',
-                        'delivery status notification (failure)'
                     ]
                     
                     # Check if any indicator matches
@@ -457,6 +497,19 @@ class GmailAPISender:
                     is_blocked = any(phrase in combined_text for phrase in blocked_phrases)
                     
                     if is_rate_limit or is_blocked:
+                        # Log message date for verification
+                        if date_header:
+                            try:
+                                msg_date = parsedate_to_datetime(date_header)
+                                if msg_date.tzinfo is None:
+                                    msg_date_utc = msg_date.replace(tzinfo=timezone.utc)
+                                else:
+                                    msg_date_utc = msg_date.astimezone(timezone.utc)
+                                age_minutes = (now_utc - msg_date_utc).total_seconds() / 60
+                                print(f"  📅 Message date: {msg_date_utc.strftime('%Y-%m-%d %H:%M:%S UTC')} (age: {age_minutes:.1f} minutes)")
+                            except:
+                                print(f"  📅 Message date: {date_header}")
+                        
                         if is_rate_limit:
                             print(f"  🚨 RATE LIMIT BOUNCE DETECTED for account {account_id} ({account_email})")
                             print(f"  ⚠️  Found: 'You have reached a limit for sending mail'")
