@@ -246,28 +246,31 @@ def analyze_message(service, msg_id):
         # Combine all text for pattern matching
         combined_text = f"{subject} {snippet} {body_text}".lower()
         
-        # Check for bounce/block indicators
+        # Check for bounce/block indicators (synced with send_emails_gmail_api.py)
+        # Rate limit phrases (from send_emails_gmail_api.py lines 483-488)
+        rate_limit_phrases = [
+            'reached a limit for sending mail',
+            'daily sending quota',
+            'quota exceeded',
+            'you have reached a limit'
+        ]
+        
+        # Message blocked/rejected phrases (from send_emails_gmail_api.py lines 491-493)
+        blocked_phrases = [
+            'message rejected',
+        ]
+        
+        # Check indicators (matching main script logic exactly)
+        is_rate_limit = any(phrase in combined_text for phrase in rate_limit_phrases)
+        is_blocked = any(phrase in combined_text for phrase in blocked_phrases)
+        
         indicators = {
-            'message_blocked': any(phrase in combined_text for phrase in [
-                'message blocked',
-                'message was blocked',
-                'blocked. see technical details',
-            ]),
-            'rate_limit': any(phrase in combined_text for phrase in [
-                'reached a limit for sending mail',
-                'limit for sending mail',
-                'you have reached a limit',
-                'sending limit',
-                'daily sending quota',
-                'quota exceeded',
-            ]),
-            'delivery_failed': any(phrase in combined_text for phrase in [
-                'delivery status notification',
-                'mail delivery subsystem',
-                'message was not sent',
-                'delivery failed',
-            ]),
+            'message_rejected': is_blocked,  # Matches main script: 'message rejected'
+            'rate_limit': is_rate_limit,    # Matches main script: rate limit phrases
         }
+        
+        # Match main script logic: bounce detected if rate_limit OR blocked
+        is_bounce = is_rate_limit or is_blocked
         
         return {
             'id': msg_id,
@@ -277,7 +280,7 @@ def analyze_message(service, msg_id):
             'snippet': snippet[:200],
             'body_preview': body_text[:500] if body_text else '',
             'indicators': indicators,
-            'is_bounce': any(indicators.values())
+            'is_bounce': is_bounce
         }
     except Exception as e:
         print(f"      ⚠️  Error reading message {msg_id}: {e}")

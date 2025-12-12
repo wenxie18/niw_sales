@@ -207,22 +207,37 @@ class GmailAPISender:
         # Load existing token
         if Path(token_file).exists():
             try:
-                # Try loading with required scopes first
-                creds = Credentials.from_authorized_user_file(token_file, SCOPES)
+                # First, check scopes in token file directly (before loading)
+                token_scopes_in_file = None
+                try:
+                    with open(token_file, 'r') as f:
+                        token_data = json.load(f)
+                        token_scopes_in_file = set(token_data.get('scopes', []))
+                except:
+                    pass
                 
-                # If that fails, try with old scopes (backward compatibility)
-                if not creds or not creds.valid:
-                    print(f"  ⟳ [{account_id}] Trying to load with old scopes for compatibility...")
+                # Try loading with required scopes first
+                try:
+                    creds = Credentials.from_authorized_user_file(token_file, SCOPES)
+                except Exception as load_error:
+                    # Loading with SCOPES failed - might be old token format
+                    print(f"  ⟳ [{account_id}] Could not load with new scopes, trying old scopes for compatibility...")
                     sys.stdout.flush()
+                    creds = None
                     old_scopes = ['https://www.googleapis.com/auth/gmail.send']
                     try:
                         creds = Credentials.from_authorized_user_file(token_file, old_scopes)
                     except:
                         creds = None
                 
-                # Check if token has all required scopes (even if expired, check scopes first)
+                # Check scopes: use scopes from file if available, otherwise from creds
                 if creds:
-                    token_scopes = set(creds.scopes or [])
+                    # Use scopes from file if we have them, otherwise from creds object
+                    if token_scopes_in_file:
+                        token_scopes = token_scopes_in_file
+                    else:
+                        token_scopes = set(creds.scopes or [])
+                    
                     required_scopes = set(SCOPES)
                     if not required_scopes.issubset(token_scopes):
                         # Token missing required scopes - delete and re-authenticate
@@ -235,11 +250,20 @@ class GmailAPISender:
                         creds = None
                         needs_reauth = True
                     elif creds.valid:
-                        # Token has correct scopes and is valid - ensure we're using the right scopes
+                        # Token has correct scopes and is valid
+                        # Ensure we're using the right scopes in the creds object
+                        if set(creds.scopes or []) != required_scopes:
+                            # Reload with correct scopes to ensure creds object has both
+                            creds = Credentials.from_authorized_user_file(token_file, SCOPES)
+                        print(f"  ✓ [{account_id}] Token loaded successfully with correct scopes")
+                        sys.stdout.flush()
+                    else:
+                        # Token has correct scopes but is expired - will refresh later
+                        # Ensure creds object has correct scopes
                         if set(creds.scopes or []) != required_scopes:
                             # Reload with correct scopes
                             creds = Credentials.from_authorized_user_file(token_file, SCOPES)
-                        print(f"  ✓ [{account_id}] Token loaded successfully with correct scopes")
+                        print(f"  ✓ [{account_id}] Token has correct scopes (expired, will refresh)")
                         sys.stdout.flush()
             except Exception as e:
                 # Token file corrupted or invalid - will re-authenticate
@@ -301,10 +325,16 @@ class GmailAPISender:
                 try:
                     flow = InstalledAppFlow.from_client_secrets_file(credentials_file, SCOPES)
                     creds = flow.run_local_server(port=0)
+                    
+                    # Check if authentication was successful
+                    if creds is None:
+                        raise Exception("Authentication returned None - user may have canceled")
+                    
                     print(f"\n{'='*60}")
                     print(f"✓ AUTHENTICATION SUCCESSFUL")
                     print(f"   Account ID: {account_id}")
                     print(f"   Email: {account_email}")
+                    print(f"   Scopes obtained: {creds.scopes}")
                     print(f"{'='*60}\n")
                     sys.stdout.flush()
                 except Exception as auth_error:
@@ -325,18 +355,42 @@ class GmailAPISender:
                     sys.stdout.flush()
                     raise
             
-            # CRITICAL: Save token after authentication
-            if creds and creds.valid:
+            # CRITICAL: Save token after authentication or refresh
+            if creds:
                 # Ensure .secrets directory exists
                 token_path = Path(token_file)
                 token_path.parent.mkdir(parents=True, exist_ok=True)
                 
-                print(f"\n💾 Saving token to: {token_file}")
-                sys.stdout.flush()
-                with open(token_file, 'w') as token:
-                    token.write(creds.to_json())
-                print(f"✓ Token saved successfully with scopes: {creds.scopes}")
-                sys.stdout.flush()
+                try:
+                    print(f"\n💾 Saving token to: {token_file}")
+                    sys.stdout.flush()
+                    token_json = creds.to_json()
+                    with open(token_file, 'w') as token:
+                        token.write(token_json)
+                    
+                    # Verify the file was saved
+                    if Path(token_file).exists():
+                        file_size = Path(token_file).stat().st_size
+                        print(f"✓ Token saved successfully")
+                        print(f"  File: {token_file}")
+                        print(f"  Size: {file_size} bytes")
+                        print(f"  Scopes: {creds.scopes}")
+                        print(f"  Valid: {creds.valid}")
+                        print(f"  Expired: {creds.expired if hasattr(creds, 'expired') else 'N/A'}")
+                        if hasattr(creds, 'expiry') and creds.expiry:
+                            print(f"  Expires: {creds.expiry}")
+                    else:
+                        print(f"  ⚠️  WARNING: Token file was not created!")
+                        print(f"  Expected path: {token_file}")
+                    sys.stdout.flush()
+                except Exception as save_error:
+                    print(f"  ❌ ERROR saving token: {save_error}")
+                    print(f"  Token file path: {token_file}")
+                    print(f"  Token file exists: {Path(token_file).exists()}")
+                    import traceback
+                    traceback.print_exc()
+                    sys.stdout.flush()
+                    # Don't raise - continue anyway, but log the error
         
         # Build service
         service = build('gmail', 'v1', credentials=creds)

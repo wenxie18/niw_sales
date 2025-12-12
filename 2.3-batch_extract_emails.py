@@ -84,7 +84,7 @@ def extract_emails_for_file(input_csv: str, output_csv: str, log_file: str) -> t
         
         if result.returncode == 0:
             logger.info(f"✓ {category_name} completed successfully")
-            return (True, True)  # Success, continue
+        return (True, True)  # Success, continue
         else:
             logger.error(f"✗ {category_name} failed with exit code {result.returncode}")
             return (False, True)  # Failed, but can continue to next file
@@ -178,25 +178,25 @@ Examples:
             log_file = logs_dir / f"{category_name}_round{args.round}_processing.log"
         
         logger.info(f"\n[{i}/{total_files}] Processing {category_name}...")
-        
+            
         success, should_continue = extract_emails_for_file(str(input_csv), str(output_csv), str(log_file))
-        
-        if success:
-            completed += 1
-        else:
-            failed += 1
-        
-        # If we hit CAPTCHA/rate limit, stop the entire batch
-        if not should_continue:
-            stopped_early = True
-            logger.error("="*80)
-            logger.error("⚠️  BATCH STOPPED DUE TO CAPTCHA/RATE LIMIT")
-            logger.error("⚠️  To resume:")
-            logger.error("⚠️  1. Export fresh cookies from browser")
-            logger.error("⚠️  2. Save as arxiv.org_cookies.txt")
+            
+            if success:
+                completed += 1
+            else:
+                failed += 1
+            
+            # If we hit CAPTCHA/rate limit, stop the entire batch
+            if not should_continue:
+                stopped_early = True
+                logger.error("="*80)
+                logger.error("⚠️  BATCH STOPPED DUE TO CAPTCHA/RATE LIMIT")
+                logger.error("⚠️  To resume:")
+                logger.error("⚠️  1. Export fresh cookies from browser")
+                logger.error("⚠️  2. Save as arxiv.org_cookies.txt")
             logger.error(f"⚠️  3. Run: python3.9 2.3-batch_extract_emails.py --round {args.round}")
-            logger.error("="*80)
-            break
+                logger.error("="*80)
+                break
             
     # Summary
     elapsed_time = time.time() - start_time
