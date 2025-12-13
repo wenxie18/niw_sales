@@ -1,0 +1,1271 @@
+{
+  "analysis_date": "2025-12-13T01:25:13.994210",
+  "category": "replied",
+  "description": "Recipients who replied to our emails (from all accounts)",
+  "total": 57,
+  "accounts_analyzed": 12,
+  "recipients": [
+    {
+      "account_id": "account3_gmail_api",
+      "account_email": "spy.observer.wx@gmail.com",
+      "email": "reachsmanna@gmail.com",
+      "name": "Supriya Manna",
+      "paper_title": "Reconciling Privacy and Explainability in High-Stakes: A Systematic Inquiry",
+      "first_sent": "2025-12-03",
+      "last_sent": "2025-12-03",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hi, Wen here, wanted to share something helpful",
+          "from": "Supriya Manna <reachsmanna@gmail.com>",
+          "date": "Wed, 3 Dec 2025 21:34:59 -0500",
+          "snippet": "If you like the work then cite the paper. Best, Supriya On Wed, Dec 3, 2025, 5:11 PM Wen &lt;spy.observer.wx@gmail.com&gt; wrote: Hi Supriya, I hope you&#39;re doing well! I recently saw your work",
+          "body_preview": "If you like the work then cite the paper.\r\n\r\nBest,\r\nSupriya\r\n\r\nOn Wed, Dec 3, 2025, 5:11 PM Wen <spy.observer.wx@gmail.com> wrote:\r\n\r\n> Hi Supriya,\r\n>\r\n> I hope you're doing well!\r\n>\r\n> I recently saw your work titled \"Reconciling Privacy and Explainability in\r\n> High-Stakes: A Systematic Inquiry\" and found it quite interesting,\r\n> especially in the context of U.S. immigration pathways for researchers. As\r\n> someone whose research aligns with critical technology areas, you might\r\n> already know ",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account3_gmail_api",
+      "account_email": "spy.observer.wx@gmail.com",
+      "email": "yoosj@umd.edu",
+      "name": "Seong Jong Yoo",
+      "paper_title": "VioPose: Violin Performance 4D Pose Estimation by Hierarchical Audiovisual Inference",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "Seong Jong Yoo <yoosj@umd.edu>",
+          "date": "Tue, 9 Dec 2025 07:42:19 -0500",
+          "snippet": "Hello Wen, Thank you for your consideration, however, I already processed green card. Thank you, Best regards, Seong Jong Yoo Ph.D. Student Department of Computer Science University of Maryland,",
+          "body_preview": "",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account3_gmail_api",
+      "account_email": "spy.observer.wx@gmail.com",
+      "email": "garen.boyadjian@inrae.fr",
+      "name": "Garen Boyadjian",
+      "paper_title": "Synthetic Crop-Weed Image Generation and its Impact on Model Generalization",
+      "first_sent": "2025-12-12",
+      "last_sent": "2025-12-12",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Réponse automatique : From one researcher to another",
+          "from": "Garen Boyadjian <garen.boyadjian@inrae.fr>",
+          "date": "Fri, 12 Dec 2025 23:20:11 +0000",
+          "snippet": "Bonjour, Le/la destinataire de ce message a quitté ses fonctions au sein d&#39;INRAE. N&#39;ayant plus accès à sa messagerie, il/elle ne pourra traiter votre demande. Veuillez noter que votre message",
+          "body_preview": "Bonjour,\r\nLe/la destinataire de ce message a quitté ses fonctions au sein d’INRAE.\r\nN’ayant plus accès à sa messagerie, il/elle ne pourra traiter votre demande.\r\nVeuillez noter que votre message ne sera pas transféré automatiquement.\r\n\r\nCordialement.\r\n\r\n----\r\n\r\nHello,\r\nThe recipient of this message does not work for INRAE any more.\r\nAs the recipient no longer has access to their email, you will not receive a reply.\r\nPlease note that your message will not be forwarded automatically.\r\n\r\nBest regar",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account4_gmail_api",
+      "account_email": "qqq.observer.wx@gmail.com",
+      "email": "arctanxarc@gmail.com",
+      "name": "Ruichuan An",
+      "paper_title": "MC-LLaVA: Multi-Concept Personalized Vision-Language Model",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "tanx arc <arctanxarc@gmail.com>",
+          "date": "Sun, 7 Dec 2025 15:49:28 +0800",
+          "snippet": "Thank you for your email, shall we add contact information for future reference? Ruichuan Am Wen &lt;qqq.observer.wx@gmail.com&gt; 于2025年12月7日周日 02:00写道： Hi Ruichuan, I hope this message finds you well",
+          "body_preview": "Thank you for your email, shall we add contact information for future\r\nreference?\r\n\r\nRuichuan Am\r\n\r\nWen <qqq.observer.wx@gmail.com> 于2025年12月7日周日 02:00写道：\r\n\r\n> Hi Ruichuan,\r\n>\r\n> I hope this message finds you well.\r\n>\r\n> I recently came across your work titled \"*MC-LLaVA: Multi-Concept\r\n> Personalized Vision-Language Model*\", and it stood out to me,\r\n> particularly because it touches on areas that fall under the U.S. Critical\r\n> and Emerging Technologies framework. For researchers in these field",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account4_gmail_api",
+      "account_email": "qqq.observer.wx@gmail.com",
+      "email": "michael.schopf@uni-siegen.de",
+      "name": "Michael Schopf-kuester",
+      "paper_title": "3D Shape Completion with Test-Time Training",
+      "first_sent": "2025-12-07",
+      "last_sent": "2025-12-07",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Automatische Antwort: Hi, Wen here, wanted to share something helpful",
+          "from": "\"Schopf-Küster, Michael\" <Michael.Schopf@uni-siegen.de>",
+          "date": "Sun, 7 Dec 2025 16:59:17 +0000",
+          "snippet": "Hello everyone, I won&#39;t be in office for the next weeks. Therefore, I won&#39;t respond to all messages during this time. Kind regards, Michael Schopf-Küster",
+          "body_preview": "Hello everyone,\r\n\r\n\r\nI won't be in office for the next weeks. Therefore, I won't respond to all messages during this time.\r\n\r\n\r\nKind regards,\r\n\r\nMichael Schopf-Küster\r\n\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account4_gmail_api",
+      "account_email": "qqq.observer.wx@gmail.com",
+      "email": "yashwanthh23@iitk.ac.in",
+      "name": "Yashwanth Holla",
+      "paper_title": "MM-Telco: Benchmarks and Multimodal Large Language Models for Telecom Applications",
+      "first_sent": "2025-12-12",
+      "last_sent": "2025-12-12",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Graduated from IITK",
+          "from": "yashwanthh23@iitk.ac.in",
+          "date": "Fri, 12 Dec 2025 23:12:21 +0530 (IST)",
+          "snippet": "Hello. I&#39;m graduated from IITK. You can reach out to me to this mail id : yashwanth.holla@gmail.com PS: This automatic response is only sent after your first message. It won&#39;t be sent again in",
+          "body_preview": "Hello.  I'm graduated from IITK. You can reach out to me to this mail id : yashwanth.holla@gmail.com \r\n\r\nPS:  This automatic response is only sent after your first\r\nmessage.  It won't be sent again in the near future, even if\r\nyou send more email before I return.\r\n\r\nBest regards.\r\n\r\n    -- yashwanthh23\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account6_gmail_api",
+      "account_email": "albertjia25@gmail.com",
+      "email": "tellyashvir@gmail.com",
+      "name": "Yashvir Sabharwal",
+      "paper_title": "Comprehensive Review of EEG-to-Output Research: Decoding Neural Signals into Images, Videos, and Audio",
+      "first_sent": "2025-12-03",
+      "last_sent": "2025-12-03",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hi from Wen, sharing a helpful NIW resource",
+          "from": "Yashvir Sabharwal <tellyashvir@gmail.com>",
+          "date": "Thu, 4 Dec 2025 22:07:35 -0500",
+          "snippet": "Hi Wen, Thanks for reaching out and for the kind words about the EEG paper. I&#39;m an undergraduate at Harvard College, and I was born in the US. I don&#39;t know anyone who can benefit from this, but",
+          "body_preview": "Hi Wen,\r\n\r\nThanks for reaching out and for the kind words about the EEG paper.\r\n\r\nI'm an undergraduate at Harvard College, and I was born in the US. I don't\r\nknow anyone who can benefit from this, but it is definitely useful for\r\nthese students who are conducting research.\r\n\r\nI would just advise to maybe watch the emails you are scraping etc. It's\r\npossible that someone finds this offensive!\r\n\r\nVery Respectfully,\r\nYashvir Sabharwal\r\nHarvard College\r\n\r\nOn Wed, Dec 3, 2025 at 10:22 PM Wen <albertj",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account6_gmail_api",
+      "account_email": "albertjia25@gmail.com",
+      "email": "tassilo.wald@dkfz-heidelberg.de",
+      "name": "Tassilo Wald",
+      "paper_title": "An OpenMind for 3D medical vision self-supervised learning",
+      "first_sent": "2025-12-03",
+      "last_sent": "2025-12-03",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: [Extern] - Hi, Wen here, wanted to share something helpful",
+          "from": "\"Wald, Tassilo\" <tassilo.wald@dkfz-heidelberg.de>",
+          "date": "Thu, 4 Dec 2025 13:02:15 +0000",
+          "snippet": "Hey Wen, great to hear that you are interested in doing your thesis in our lab! I think the direction of SSL research is still of great interest to our department and hence, there will be research in",
+          "body_preview": "Hey Wen,\r\n\r\ngreat to hear that you are interested in doing your thesis in our lab! I think the direction of SSL research is still of great interest to our department and hence, there will be research in this direction.\r\n\r\nHowever, as I am on the verge of leaving the department early next year, I figured I would forward your request to my colleagues Constantin, Max and Yannick. I am sure one of them will reach out to you for a Zoom call to get to know you and talk about potential projects.\r\n\r\nBes",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account6_gmail_api",
+      "account_email": "albertjia25@gmail.com",
+      "email": "rongtao.xu@mbzuai.ac.ae",
+      "name": "Rongtao Xu",
+      "paper_title": "Constraint-Aware Zero-Shot Vision-Language Navigation in Continuous Environments",
+      "first_sent": "2025-12-04",
+      "last_sent": "2025-12-04",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "回复: Hi, Wen here, wanted to share something helpful",
+          "from": "Rongtao Xu <Rongtao.Xu@mbzuai.ac.ae>",
+          "date": "Mon, 8 Dec 2025 02:24:30 +0000",
+          "snippet": "Hi Wen, Thank you for reaching out and for sharing this resource. It sounds like a thoughtful tool that could indeed help many early-career researchers who are navigating this pathway. I&#39;ll take a",
+          "body_preview": "Hi Wen,\r\nThank you for reaching out and for sharing this resource. It sounds like a thoughtful tool that could indeed help many early-career researchers who are navigating this pathway.\r\nI’ll take a closer look and keep it in mind for students or colleagues who might find it useful. Thanks again for thinking of me and for passing this along.\r\nWishing you all the best with your work and with TurboNIW.\r\nBest regards,\r\n\r\n________________________________\r\n发件人: Wen <albertjia25@gmail.com>\r\n发送时间: 2025",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account6_gmail_api",
+      "account_email": "albertjia25@gmail.com",
+      "email": "bvmquan@kaist.ac.kr",
+      "name": "Minh-quan Viet Bui",
+      "paper_title": "SplineGS: Robust Motion-Adaptive Spline for Real-Time Dynamic 3D Gaussians from Monocular Video",
+      "first_sent": "2025-12-04",
+      "last_sent": "2025-12-04",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "RE: Hello from Wen, a resource for NIW applications",
+          "from": "BUI VIET MINH QUAN <bvmquan@kaist.ac.kr>",
+          "date": "Fri, 05 Dec 2025 08:06:24 +0900 (KST)",
+          "snippet": "Hi Wen, Thank you for your sharings. Best Regards, Quan -----Original Message----- From: Wen &lt;albertjia25@gmail.com&gt; To: BUI VIET MINH QUAN &lt;bvmquan@kaist.ac.kr&gt; Cc: Sent: 2025-12-05T07:06:",
+          "body_preview": "\nHi Wen,Thank you for your sharings.&nbsp;\n\nBest Regards,\nQuan-----Original Message-----From: Wen &lt;albertjia25@gmail.com&gt;To: BUI VIET MINH QUAN &lt;bvmquan@kaist.ac.kr&gt;Cc: Sent: 2025-12-05T07:06:54+09:00Subject: Hello from Wen, a resource for NIW applications\n\nHi Minh-quan,\n\nI hope this note finds you well.\n\nI came across your recent work titled \"SplineGS: Robust Motion-Adaptive Spline for Real-Time Dynamic 3D Gaussians from Monocular Video\". Given the areas you're researching, I though",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account6_gmail_api",
+      "account_email": "albertjia25@gmail.com",
+      "email": "binxu_wang@hms.harvard.edu",
+      "name": "Binxu Wang",
+      "paper_title": "The Unreasonable Effectiveness of Gaussian Score Approximation for Diffusion Models and its Applications",
+      "first_sent": "2025-12-04",
+      "last_sent": "2025-12-04",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hi from Wen, sharing a helpful NIW resource",
+          "from": "\"Wang, Binxu\" <binxu_wang@hms.harvard.edu>",
+          "date": "Fri, 5 Dec 2025 08:31:58 +0000",
+          "snippet": "Hi Wen, Thanks for your recommendation! This sounds interesting and relevant, but how should I start to use the TurboNIW tool you developed? Best wishes, Binxu Wang, Binxu (she / they) Research Fellow",
+          "body_preview": "Hi Wen,\r\n\r\nThanks for your recommendation!\r\nThis sounds interesting and relevant, but how should I start to use the TurboNIW tool you developed?\r\n\r\nBest wishes,\r\nBinxu\r\n\r\nWang, Binxu  (she / they)\r\n\r\nResearch Fellow\r\n\r\nKempner Institute for the Study of Natural and Artificial Intelligence\r\n\r\nHarvard University\r\nhttps://animadversio.github.io/\r\n\r\n\r\n\r\nFrom: Wen <albertjia25@gmail.com>\r\nDate: Thursday, December 4, 2025 at 2:25 PM\r\nTo: Wang, Binxu <binxu_wang@hms.harvard.edu>\r\nSubject: Hi from Wen, ",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account6_gmail_api",
+      "account_email": "albertjia25@gmail.com",
+      "email": "rahmat.cardio@gmail.com",
+      "name": "Rahmat Ghaffar",
+      "paper_title": "Echocardiography to Cardiac MRI View Transformation for Real-Time Blind Restoration",
+      "first_sent": "2025-12-05",
+      "last_sent": "2025-12-05",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "Rahmat Ghaffar <rahmat.cardio@gmail.com>",
+          "date": "Sat, 6 Dec 2025 23:11:08 +0300",
+          "snippet": "Our leading Research Colleague has submitted it and we are waiting for the approval. I think, it is around, as &gt;10 months passed since we applied Dr. Rahmat Ghaffar Assistant Professor Cardiology",
+          "body_preview": "Our leading Research Colleague has submitted it and we are waiting for the\r\napproval. I think, it is around, as >10 months passed since we applied\r\n\r\nDr. Rahmat Ghaffar\r\nAssistant Professor Cardiology\r\nHayatabad Medical Complex, Peshawar\r\n\r\n\r\nOn Fri, 5 Dec 2025 at 6:46 PM Wen <albertjia25@gmail.com> wrote:\r\n\r\n> Hi Rahmat,\r\n>\r\n> I hope you're having a good week.\r\n>\r\n> I wanted to reach out because I recently came across your work titled \"*Echocardiography\r\n> to Cardiac MRI View Transformation for",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account6_gmail_api",
+      "account_email": "albertjia25@gmail.com",
+      "email": "ragibtahshin@gmail.com",
+      "name": "Ragib Tahshin Rinath",
+      "paper_title": "Biomolecular Analysis of Soil Samples and Rock Imagery for Tracing Evidence of Life Using a Mobile Robot",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hi, Wen here, wanted to share something helpful",
+          "from": "Ragib Tahshin Rinath <ragibtahshin@gmail.com>",
+          "date": "Wed, 10 Dec 2025 21:02:14 +0800",
+          "snippet": "Dear Wen, Accept my gratitude for your patience. I want to know more about this project. Can you deliver me a little more details about it? Thank you for your time. Regards, Ragib Tahshin Rinath",
+          "body_preview": "Dear Wen,\r\nAccept my gratitude for your patience. I want to  know more about this\r\nproject. Can you deliver me a little more details about it?\r\nThank you for your time.\r\nRegards,\r\nRagib Tahshin Rinath\r\nMasters Student\r\nChongqing University\r\n\r\nOn Sun, 7 Dec 2025, 01:01 Wen, <albertjia25@gmail.com> wrote:\r\n\r\n> Hi Ragib,\r\n>\r\n> I hope this email finds you well.\r\n>\r\n> I came across your recent work titled \"*Biomolecular Analysis of Soil\r\n> Samples and Rock Imagery for Tracing Evidence of Life Using a",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account6_gmail_api",
+      "account_email": "albertjia25@gmail.com",
+      "email": "health-ai-foundations@google.com",
+      "name": "Daniel Golden",
+      "paper_title": "Health AI Developer Foundations",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "\"health-ai-foundations@google.com\" <health-ai-foundations+noreply@google.com>",
+          "date": "Sat, 06 Dec 2025 17:32:20 +0000",
+          "snippet": "Hello there, Thank you for your interest in the Health AI Foundation APIs! This is an automated response to confirm that we have received your inquiry. A member of our team will be in touch as soon as",
+          "body_preview": "Hello there,\r\n\r\nThank you for your interest in the Health AI Foundation APIs! This is an automated response to confirm that we have received your inquiry.\r\n\r\nA member of our team will be in touch as soon as possible.\r\n\r\nWe appreciate your interest and look forward to speaking with you.\r\n\r\nBest regards,\r\n\r\nGoogle Health AI\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account6_gmail_api",
+      "account_email": "albertjia25@gmail.com",
+      "email": "anshsoni@sas.upenn.edu",
+      "name": "Ansh Soni",
+      "paper_title": "Evaluating Representational Similarity Measures from the Lens of Functional Correspondence",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "Ansh Soni <anshsoni@sas.upenn.edu>",
+          "date": "Sat, 6 Dec 2025 09:44:05 -0800",
+          "snippet": "I am US citizen. I was born in the us. Sent from my iPhone &gt; On Dec 6, 2025, at 9:39 AM, Wen &lt;albertjia25@gmail.com&gt; wrote: &gt; &gt; ﻿ Hi Ansh, &gt; &gt; I hope you&#39;re doing well! &gt;",
+          "body_preview": "I am US citizen. I was born in the us.\r\nSent from my iPhone\r\n\r\n> On Dec 6, 2025, at 9:39 AM, Wen <albertjia25@gmail.com> wrote:\r\n> \r\n> ﻿ Hi Ansh,\r\n> \r\n> I hope you're doing well!\r\n> \r\n> I recently saw your work titled \"Evaluating Representational Similarity Measures from the Lens of Functional Correspondence\" and found it quite interesting, especially in the context of U.S. immigration pathways for researchers. As someone whose research aligns with critical technology areas, you might already kn",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account6_gmail_api",
+      "account_email": "albertjia25@gmail.com",
+      "email": "taichi.a.nishimura@sony.com",
+      "name": "Taichi Nishimura",
+      "paper_title": "EgoOops: A Dataset for Mistake Action Detection from Egocentric Videos referring to Procedural Texts",
+      "first_sent": "2025-12-08",
+      "last_sent": "2025-12-08",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "\"Taichi.A.Nishimura@sony.com\" <Taichi.A.Nishimura@sony.com>",
+          "date": "Tue, 9 Dec 2025 01:03:59 +0000",
+          "snippet": "Hi Wen, Thank you for reaching out and sharing your tool. I&#39;m currently not based in the US, so the NIW process is not relevant to me at the moment. But I appreciate the information and wish you",
+          "body_preview": "Hi Wen,\r\n\r\nThank you for reaching out and sharing your tool.\r\nI'm currently not based in the U.S., so the NIW process is not relevant to me at the moment.\r\nBut I appreciate the information and wish you the best with your project.\r\n\r\nBest\r\nTaichi\r\n________________________________\r\n差出人: Wen <albertjia25@gmail.com>\r\n送信日時: 2025年12月9日 9:37\r\n宛先: Nishimura, Taichi (SIE) <Taichi.A.Nishimura@sony.com>\r\n件名: Hello from Wen, a resource for NIW applications\r\n\r\nHi Taichi,\r\n\r\nI hope this message finds you well",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account6_gmail_api",
+      "account_email": "albertjia25@gmail.com",
+      "email": "siyao.peng@lmu.de",
+      "name": "Siyao Peng",
+      "paper_title": "MultiClimate: Multimodal Stance Detection on Climate Change Videos",
+      "first_sent": "2025-12-10",
+      "last_sent": "2025-12-10",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "\"Peng, Siyao\" <Siyao.Peng@lmu.de>",
+          "date": "Wed, 10 Dec 2025 15:49:29 +0000",
+          "snippet": "Thank you for reaching out. I just started my EB1A application with Wegreened. If you would like to offer extra help for free, I would be pleased. Best, Logan On 10. Dec 2025, at 15:22, Wen &lt;",
+          "body_preview": "Thank you for reaching out.\r\nI just started my EB1A application with Wegreened.\r\nIf you would like to offer extra help for free, I would be pleased.\r\nBest,\r\nLogan\r\n\r\n\r\nOn 10. Dec 2025, at 15:22, Wen <albertjia25@gmail.com> wrote:\r\n\r\nHi Siyao,\r\n\r\nI hope you're having a good week.\r\n\r\nI wanted to reach out because I recently came across your work titled \"MultiClimate: Multimodal Stance Detection on Climate Change Videos\". It's genuinely impressive, and it reminded me of how many international resea",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account6_gmail_api",
+      "account_email": "albertjia25@gmail.com",
+      "email": "claudia.scherl@umm.de",
+      "name": "Claudia Scherl",
+      "paper_title": "SynBench: A Synthetic Benchmark for Non-rigid 3D Point Cloud Registration",
+      "first_sent": "2025-12-10",
+      "last_sent": "2025-12-10",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Automatische Antwort: Quick hello and a resource to share",
+          "from": "\"Scherl, Claudia\" <Claudia.Scherl@umm.de>",
+          "date": "Wed, 10 Dec 2025 14:43:52 +0000",
+          "snippet": "﻿ Sehr geehrte Damen und Herren, bis 22.12.2025, 07:30 Uhr bin ich nicht erreichbar. In dringenden Fällen wenden Sie sich bitte an das Sekretariat der HNO-Klinik. Mit freundlichen Grüßen Claudia Scherl",
+          "body_preview": "\r\nSehr geehrte Damen und Herren,\r\nbis 22.12.2025, 07:30 Uhr bin ich nicht erreichbar. In dringenden Fällen wenden Sie sich bitte an das Sekretariat der HNO-Klinik.\r\nMit freundlichen Grüßen\r\nClaudia Scherl\r\n---\r\nDear Sir or Madam,\r\nI will be unavailable until 12-22-25.\r\nIn urgent matters, please contact the secretariat of the ENT Clinic.\r\nKind regards,\r\nClaudia Scherl\r\n\r\n\r\n\r\n\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account7_gmail_api",
+      "account_email": "wenxie.research@gmail.com",
+      "email": "wangsh@fas.harvard.edu",
+      "name": "Zhenglei Wang",
+      "paper_title": "S3TU-Net: Structured Convolution and Superpixel Transformer for Lung Nodule Segmentation",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "\"Wang, Shuohong\" <wangsh@fas.harvard.edu>",
+          "date": "Sat, 6 Dec 2025 18:55:07 +0000",
+          "snippet": "Hi Wen, Thanks for your email! I already received my green card last year (EB-1A petition), so I might not need the tool. As far as I know, most of my colleagues already got their card. But this tool",
+          "body_preview": "Hi Wen,\r\n\r\n      Thanks for your email! I already received my green card last year (EB-1A petition), so I might not need the tool. As far as I know, most of my colleagues already got their card. But this tool would be very useful for many other researchers (if it’s NIW only, it would be more useful for those who are not born in China or India because they do not have the long queuing time). I guess you could try to contact those people, or extend its function to multiple types of I140 applicatio",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account7_gmail_api",
+      "account_email": "wenxie.research@gmail.com",
+      "email": "syedaishmee19@gmail.com",
+      "name": "Syeda Aynul Karim",
+      "paper_title": "Revitalizing Electoral Trust: Enhancing Transparency and Efficiency through Automated Voter Counting with Machine Learning",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "Syeda Ishmee <syedaishmee19@gmail.com>",
+          "date": "Sun, 7 Dec 2025 00:18:16 +0600",
+          "snippet": "Hi Wen, Thank you so much for reaching out and for sharing the TurboNIW resource with me. I truly appreciate you taking the time to explain the NIW pathway and providing tools that make the process",
+          "body_preview": "Hi Wen,\r\n\r\nThank you so much for reaching out and for sharing the TurboNIW resource\r\nwith me. I truly appreciate you taking the time to explain the NIW pathway\r\nand providing tools that make the process clearer for early-career\r\nresearchers like me. Your initiative will definitely be helpful, and I will\r\nexplore it further.\r\n\r\nSince you are currently working as a Research Fellow at Northeastern\r\nUniversity, I wanted to ask if it’s not too much trouble whether you know\r\nof any ongoing research pr",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account7_gmail_api",
+      "account_email": "wenxie.research@gmail.com",
+      "email": "markus.schoen@uni-ulm.de",
+      "name": "Markus Schön",
+      "paper_title": "MGNiceNet: Unified Monocular Geometric Scene Understanding",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hi, Wen here, wanted to share something helpful",
+          "from": "markus.schoen@uni-ulm.de",
+          "date": "Sat, 6 Dec 2025 19:00:58 +0100 (CET)",
+          "snippet": "Vielen Dank für Ihre Nachricht. Ich bin seit dem 30.09.2025 nicht mehr unter diese Email-Adresse erreichbar. Sie können mich zukünftig unter meiner Alumni-Email-Adresse (markus.schoen@alumni.uni-ulm.de",
+          "body_preview": "Vielen Dank für Ihre Nachricht. Ich bin seit dem 30.09.2025 nicht mehr unter diese Email-Adresse erreichbar. Sie können mich zukünftig unter meiner Alumni-Email-Adresse (markus.schoen@alumni.uni-ulm.de) erreichen.\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account7_gmail_api",
+      "account_email": "wenxie.research@gmail.com",
+      "email": "kpassarella@google.com",
+      "name": "Katrina Passarella",
+      "paper_title": "Enhancing XR Auditory Realism via Multimodal Scene-Aware Acoustic Rendering",
+      "first_sent": "2025-12-12",
+      "last_sent": "2025-12-12",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Maternity Leave Re: Hi from Wen, sharing a helpful NIW resource",
+          "from": "Katrina Passarella <kpassarella@google.com>",
+          "date": "Fri, 12 Dec 2025 09:57:36 -0800",
+          "snippet": "I am on maternity leave through mid-April 2026. Please see go/kpassarella-leave for more details and DRIs or reach out to my manager, adarshkowdle@.",
+          "body_preview": "I am on maternity leave through mid-April 2026. Please see\r\ngo/kpassarella-leave for more details and DRIs or reach out to my\r\nmanager, adarshkowdle@.\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account8_gmail_api",
+      "account_email": "vince.xie.job@gmail.com",
+      "email": "a.tleubayeva@astanait.edu.kz",
+      "name": "Arailym Tleubayeva",
+      "paper_title": "Enhancing Fingerprint Recognition Systems: Comparative Analysis of Biometric Authentication Algorithms and Techniques for Improved Accuracy and Reliability",
+      "first_sent": "2025-12-04",
+      "last_sent": "2025-12-04",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "Arailym Tleubayeva <a.tleubayeva@astanait.edu.kz>",
+          "date": "Thu, 4 Dec 2025 19:29:28 +0000",
+          "snippet": "Hi Wen, Thank you again for your message and for sharing TurboNIW — it&#39;s an impressive project and I think it can really help many researchers. At the moment, I&#39;m in the process of completing",
+          "body_preview": "Hi Wen,\r\n\r\n\r\nThank you again for your message and for sharing TurboNIW — it’s an impressive project and I think it can really help many researchers.\r\n\r\n\r\nAt the moment, I’m in the process of completing my PhD dissertation, so I can’t apply for other programs yet. But I appreciate you thinking of me.\r\n\r\n\r\nYour work actually reminded me of a similar project created by some friends of mine from Kazakhstan who are now building startups in the U.S.:\r\n\r\nhttps://www.instagram.com/porttus.ai?igsh=MTRlZX",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account8_gmail_api",
+      "account_email": "vince.xie.job@gmail.com",
+      "email": "joshua66@illinois.edu",
+      "name": "Joshua Cho",
+      "paper_title": "Zero-Shot Low Light Image Enhancement with Diffusion Prior",
+      "first_sent": "2025-12-04",
+      "last_sent": "2025-12-04",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "\"Cho, Joshua\" <joshua66@illinois.edu>",
+          "date": "Fri, 5 Dec 2025 10:14:39 +0000",
+          "snippet": "Hi Wen, I hope this email finds you well, and thank you for your email. Thank you for sharing the NIW solution you developed with me - it is a thoughtful effort and resource for the others, and I wish",
+          "body_preview": "Hi Wen,\r\n\r\nI hope this email finds you well, and thank you for your email.\r\n\r\nThank you for sharing the NIW solution you developed with me - it is a thoughtful effort and resource for the others, and I wish you continued success.\r\n\r\nAlthough I’m a U.S. citizen and grew up in the United States, and don’t personally need NIW assistance, I am grateful you shared this with me, and I’d be glad to share your website with international students who might find it helpful.\r\n\r\nAdditionally, feel free to r",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account8_gmail_api",
+      "account_email": "vince.xie.job@gmail.com",
+      "email": "priteshprakash@bel.co.in",
+      "name": "Pritesh Prakash",
+      "paper_title": "Transformer-Based Auxiliary Loss for Face Recognition Across Age Variations",
+      "first_sent": "2025-12-05",
+      "last_sent": "2025-12-05",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "pritesh <priteshprakash@bel.co.in>",
+          "date": "Tue, 09 Dec 2025 09:14:10 +0530",
+          "snippet": "Hi Wen, Thank you for reaching out and for sharing this. Your initiative with TurboNIW sounds genuinely helpful, especially for researchers navigating the NIW process on their own. I appreciate you",
+          "body_preview": "\r\n\r\nHi Wen,\r\n\r\nThank you for reaching out and for sharing this. Your initiative with \r\nTurboNIW sounds genuinely helpful, especially for researchers navigating \r\nthe NIW process on their own. I appreciate you taking the time to \r\nintroduce it to me.\r\n\r\nI'll keep your tool in mind and share it with colleagues or students who \r\nmight benefit from it.\r\n\r\nWishing you all the best with this project and your future work.\r\n\r\nBest regards,\r\nPritesh\r\n\r\nOn 2025-12-05 21:49, Wen wrote:\r\n\r\n> CAUTION: This e",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account8_gmail_api",
+      "account_email": "vince.xie.job@gmail.com",
+      "email": "asdutt2@stanford.edu",
+      "name": "Aditya Dutt",
+      "paper_title": "Mutli-View 3D Reconstruction using Knowledge Distillation",
+      "first_sent": "2025-12-05",
+      "last_sent": "2025-12-05",
+      "send_count": 1,
+      "reply_count": 2,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "Aditya Dutt <asdutt2@stanford.edu>",
+          "date": "Fri, 5 Dec 2025 23:13:38 +0000",
+          "snippet": "Hi Wen, Sounds good. I signed up for tomorrow at 11am. Hope to see you then! Best Aditya From: TurboNIW &lt;vince.xie.job@gmail.com&gt; Sent: Friday, December 5, 2025 3:02:58 PM To: Aditya Dutt &lt;",
+          "body_preview": "Hi Wen,\r\n\r\nSounds good. I signed up for tomorrow at 11am. Hope to see you then!\r\n\r\nBest\r\nAditya\r\n________________________________\r\nFrom: TurboNIW <vince.xie.job@gmail.com>\r\nSent: Friday, December 5, 2025 3:02:58 PM\r\nTo: Aditya Dutt <asdutt2@stanford.edu>\r\nSubject: Re: Greetings from Wen, a resource you might find helpful\r\n\r\nDear Aditya,\r\n\r\nIt's great to hear from you.\r\nThank you for letting me know that our tool could help! This is\r\nexactly what we (former Ph.D. students) aim to support. Your wo",
+          "classification": "real_reply"
+        },
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "Aditya Dutt <asdutt2@stanford.edu>",
+          "date": "Fri, 5 Dec 2025 17:29:58 +0000",
+          "snippet": "Hi Wen, Thank you for reaching out! This platform is exactly what I need and what I was looking for. I want to apply through the EB2 route using NIW to get my green card, but I honestly wasn&#39;t sure",
+          "body_preview": "Hi Wen,\r\n\r\nThank you for reaching out! This platform is exactly what I need and what I was looking for.\r\n\r\nI want to apply through the EB2 route using NIW to get my green card, but I honestly wasn't sure if I have the right documents or if my case is strong enough.\r\n\r\nI would love to schedule a free consultation call with the team to get a better understanding!\r\n\r\nBest,\r\nAditya\r\n________________________________\r\nFrom: Wen <vince.xie.job@gmail.com>\r\nSent: Friday, December 5, 2025 8:20:09 AM\r\nTo: ",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account8_gmail_api",
+      "account_email": "vince.xie.job@gmail.com",
+      "email": "ty.shi@mail.utoronto.ca",
+      "name": "Tianyu Shi",
+      "paper_title": "FASIONAD : FAst and Slow FusION Thinking Systems for Human-Like Autonomous Driving with Adaptive Feedback",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "Tianyu Shi <ty.shi@mail.utoronto.ca>",
+          "date": "Sat, 6 Dec 2025 17:10:12 +0000",
+          "snippet": "Hello Wen, I am also trying to apply for NIW green card or EB1A. We can connect through WeChat. Best, Tianyu On Dec 6, 2025, at 9:06 AM, Wen &lt;vince.xie.job@gmail.com&gt; wrote: You don&#39;t often",
+          "body_preview": "Hello Wen,\r\n\r\nI am also trying to apply for NIW green card or EB1A. We can connect through WeChat.\r\n\r\nBest,\r\n\r\nTianyu\r\n\r\nOn Dec 6, 2025, at 9:06 AM, Wen <vince.xie.job@gmail.com> wrote:\r\n\r\nYou don't often get email from vince.xie.job@gmail.com. Learn why this is important<https://aka.ms/LearnAboutSenderIdentification>\r\nHi Tianyu,\r\n\r\nI hope this message finds you well.\r\n\r\nI recently came across your work titled \"FASIONAD : FAst and Slow FusION Thinking Systems for Human-Like Autonomous Driving wi",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account8_gmail_api",
+      "account_email": "vince.xie.job@gmail.com",
+      "email": "yixiong@cvc.uab.cat",
+      "name": "Yixiong Yang",
+      "paper_title": "MLI-NeRF: Multi-Light Intrinsic-Aware Neural Radiance Fields",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "Yixiong Yang <yixiong@cvc.uab.cat>",
+          "date": "Mon, 8 Dec 2025 02:43:37 +0000",
+          "snippet": "Hi Wen, Thank you for your message and for sharing information about TurboNIW. At the moment, I&#39;m not planning to pursue an NIW application. Wishing you all the best with your work and the",
+          "body_preview": "Hi Wen,\r\n\r\nThank you for your message and for sharing information about TurboNIW.\r\n\r\nAt the moment, I’m not planning to pursue an NIW application.\r\n\r\nWishing you all the best with your work and the continued development of TurboNIW.\r\n\r\nBest regards,\r\nYixiong\r\n________________________________\r\nFrom: Wen <vince.xie.job@gmail.com>\r\nSent: 06 December 2025 18:14\r\nTo: Yixiong Yang <yixiong@cvc.uab.cat>\r\nSubject: Hello from Wen, a resource for NIW applications\r\n\r\nHi Yixiong,\r\n\r\nI hope this message find",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account8_gmail_api",
+      "account_email": "vince.xie.job@gmail.com",
+      "email": "sos.agaian@csi.cuny.edu",
+      "name": "Sos S. Agaian",
+      "paper_title": "FactorizePhys: Matrix Factorization for Multidimensional Attention in Remote Physiological Sensing",
+      "first_sent": "2025-12-07",
+      "last_sent": "2025-12-07",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "Sos Agaian <Sos.Agaian@csi.cuny.edu>",
+          "date": "Sun, 7 Dec 2025 17:22:25 +0000",
+          "snippet": "hi Wen, Please contact my coauthors. All the best, Sos Agaian Distinguished Professor Ph.D. in Mathematics, Dr. Engineering Science, Director, Computational Vision and Learning Lab. Fellow SPIE, Fellow",
+          "body_preview": "hi  Wen,\r\nPlease contact my coauthors.\r\n\r\n\r\nAll the best,\r\n\r\n\r\n\r\nSos Agaian\r\n\r\nDistinguished Professor\r\nPh.D. in Mathematics, Dr.  Engineering Science,\r\nDirector, Computational Vision and Learning Lab.\r\n\r\nFellow SPIE, Fellow IEEE, Fellow IS&T, Fellow AAAS, Fellow AAIA\r\n\r\nMember European Academy\r\nComputer Science Department\r\nCollege of Staten Island, CUNY\r\n2800 Victory Boulevard, Staten Island, NY, 10314\r\nBuilding 1N Room 203\r\nPhone : 718.982.2843; Fax: 718.982.2856; Skype: sos.agaian@csi.cuny.ed",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account8_gmail_api",
+      "account_email": "vince.xie.job@gmail.com",
+      "email": "yansc@nus.edu.sg",
+      "name": "Shuicheng Yan",
+      "paper_title": "Boosting Reasoning in Large Multimodal Models via Activation Replay",
+      "first_sent": "2025-12-11",
+      "last_sent": "2025-12-11",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "回复: Greetings from Wen, a resource you might find helpful",
+          "from": "Yan Shuicheng <yansc@nus.edu.sg>",
+          "date": "Fri, 12 Dec 2025 13:42:44 +0000",
+          "snippet": "Dear Vince, Thank you very much for the sharing! Shall check into your mentioned interesting tool! Cheers, Shuicheng 发件人: Wen &lt;vince.xie.job@gmail.com&gt; 发送时间: 2025年12月12日 07:14 收件人: Yan Shuicheng",
+          "body_preview": "Dear Vince,\r\n\r\nThank you very much for the sharing! Shall check into your mentioned interesting tool!\r\n\r\nCheers,\r\nShuicheng\r\n________________________________\r\n发件人: Wen <vince.xie.job@gmail.com>\r\n发送时间: 2025年12月12日 07:14\r\n收件人: Yan Shuicheng <yansc@nus.edu.sg>\r\n主题: Greetings from Wen, a resource you might find helpful\r\n\r\n        - External Email -\r\n\r\n\r\n\r\nHi Shuicheng,\r\n\r\nI hope you're doing well!\r\n\r\nI recently saw your work titled \"Boosting Reasoning in Large Multimodal Models via Activation Replay",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account8_gmail_api",
+      "account_email": "vince.xie.job@gmail.com",
+      "email": "istiak.ahmed1@northsouth.edu",
+      "name": "Istiak Ahmed",
+      "paper_title": "OncoVision: Integrating Mammography and Clinical Data through Attention-Driven Multimodal AI for Enhanced Breast Cancer Diagnosis",
+      "first_sent": "2025-12-11",
+      "last_sent": "2025-12-11",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "Istiak Ahmed 1722070642 <istiak.ahmed1@northsouth.edu>",
+          "date": "Fri, 12 Dec 2025 12:09:57 +0600",
+          "snippet": "Thank you so much for reaching out and for taking the time to look at my work. I truly appreciate your thoughtful message and the resource you shared. TurboNIW sounds like a very helpful tool,",
+          "body_preview": "Thank you so much for reaching out and for taking the time to look at my\r\nwork. I truly appreciate your thoughtful message and the resource you\r\nshared.\r\n\r\nTurboNIW sounds like a very helpful tool, especially for researchers\r\nnavigating the NIW process. At the moment, I’m not looking to pursue this\r\npathway, but I genuinely appreciate you considering me and sharing\r\nsomething that could benefit many others.\r\n\r\nWishing you all the best with your platform and future endeavors!\r\n\r\nWarm regards,\r\nIs",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account9_gmail_api",
+      "account_email": "sanqiresearch@gmail.com",
+      "email": "ayman.gh@anu.edu.au",
+      "name": "Yman Elgharabawy",
+      "paper_title": "Locally-Focused Face Representation for Sketch-to-Image Generation Using Noise-Induced Refinement",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hi, Wen here, wanted to share something helpful",
+          "from": "\"Ayman Gh.\" <Ayman.Gh@anu.edu.au>",
+          "date": "Sat, 6 Dec 2025 17:44:30 +0000",
+          "snippet": "Hi Wen, Thank you for your email. I am interested. I wish we had a chat to explain to me what you offer, as i think the visa acceptance is not 100% guaranteed. this is my personal email on the team:",
+          "body_preview": "",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account9_gmail_api",
+      "account_email": "sanqiresearch@gmail.com",
+      "email": "barak@pearlmutter.net",
+      "name": "Barak A. Pearlmutter",
+      "paper_title": "Creating a Formally Verified Neural Network for Autonomous Navigation: An Experience Report",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hi, Wen here, wanted to share something helpful",
+          "from": "\"Barak A. Pearlmutter\" <barak@pearlmutter.net>",
+          "date": "Sat, 6 Dec 2025 18:47:26 +0000",
+          "snippet": "Thanks. I am a US citizen so not an issue for me, but that might prove helpful for colleagues and collaborators, so I&#39;ll keep it on file. Cheers, --Barak.",
+          "body_preview": "Thanks. I am a US citizen so not an issue for me, but that might prove\r\nhelpful for colleagues and collaborators, so I'll keep it on file.\r\n\r\nCheers,\r\n\r\n--Barak.\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account9_gmail_api",
+      "account_email": "sanqiresearch@gmail.com",
+      "email": "swapnilmishra.anu@gmail.com",
+      "name": "Swapnil Mishra",
+      "paper_title": "Uncertainty-Aware Regression for Socio-Economic Estimation via Multi-View Remote Sensing",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "swapnil mishra <swapnilmishra.anu@gmail.com>",
+          "date": "Sat, 6 Dec 2025 09:41:24 -0800",
+          "snippet": "Thanks for reaching out. I am away for my annual leave till 7 th jan. If at all time permits I will try to get back else I would be replying back once back. Regards, Swapnil -- Thanks and Regards",
+          "body_preview": "<div dir=\"ltr\"><div style=\"border:0px;font-stretch:inherit;font-size:11pt;line-height:inherit;font-family:&quot;Segoe UI Web (West European)&quot;,&quot;Segoe UI&quot;,-apple-system,&quot;system-ui&quot;,Roboto,&quot;Helvetica Neue&quot;,sans-serif;font-size-adjust:inherit;margin:0px;padding:0px;vertical-align:baseline;color:rgb(0,0,0)\"><span style=\"font-size:11pt\">Thanks for reaching out. I am away for my annual leave till 7<sup>th</sup> jan. If at all time permits I will try to get back else I",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account9_gmail_api",
+      "account_email": "sanqiresearch@gmail.com",
+      "email": "wangwenhao0716@gmail.com",
+      "name": "Wenhao Wang",
+      "paper_title": "TIP-I2V: A Million-Scale Real Text and Image Prompt Dataset for Image-to-Video Generation",
+      "first_sent": "2025-12-07",
+      "last_sent": "2025-12-07",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Quick hello and a resource to share",
+          "from": "Wenhao Wang <wangwenhao0716@gmail.com>",
+          "date": "Sun, 7 Dec 2025 16:08:34 +0000",
+          "snippet": "my eb1a is approved about 2 years ago. Thanks anyway Get Outlook for iOS From: Wen &lt;sanqiresearch@gmail.com&gt; Sent: Monday, December 8, 2025 3:06:33 AM To: wangwenhao0716@gmail.com &lt;",
+          "body_preview": "my eb1a is approved about 2 years ago. Thanks anyway\r\n\r\nGet Outlook for iOS<https://aka.ms/o0ukef>\r\n________________________________\r\nFrom: Wen <sanqiresearch@gmail.com>\r\nSent: Monday, December 8, 2025 3:06:33 AM\r\nTo: wangwenhao0716@gmail.com <wangwenhao0716@gmail.com>\r\nSubject: Quick hello and a resource to share\r\n\r\nHi Wenhao,\r\n\r\nI hope this email finds you well.\r\n\r\nI came across your recent work titled \"TIP-I2V: A Million-Scale Real Text and Image Prompt Dataset for Image-to-Video Generation\",",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account9_gmail_api",
+      "account_email": "sanqiresearch@gmail.com",
+      "email": "charles.steinmetz@hshl.de",
+      "name": "Charles Steinmetz",
+      "paper_title": "Human-in-the-loop Reasoning For Traffic Sign Detection: Collaborative Approach Yolo With Video-llava",
+      "first_sent": "2025-12-08",
+      "last_sent": "2025-12-08",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "[Automatische Antwort]Hello from Wen, a resource for NIW applications",
+          "from": "\"charles.steinmetz@hshl.de\" <charles.steinmetz@hshl.de>",
+          "date": "Tue, 9 Dec 2025 01:35:18 +0100",
+          "snippet": "Sehr geehrte Damen und Herren, vielen Dank für Ihre E-Mail an charles.steinmetz@hshl.de Dieses Postfach wurde deaktiviert und eingehende E-Mails werden nicht weitergeleitet. Mit freundlichen Grüßen",
+          "body_preview": "Sehr geehrte Damen und Herren,\r\n\r\n\r\n\r\nvielen Dank für Ihre E-Mail an charles.steinmetz@hshl.de\r\n\r\n\r\n\r\nDieses Postfach wurde deaktiviert und eingehende E-Mails werden nicht weitergeleitet.\r\n\r\n\r\n\r\n\r\n\r\nMit freundlichen Grüßen\r\n\r\n\r\n\r\n\r\n\r\nHochschule Hamm-Lippstadt\r\n\r\nMarker Allee 76-78\r\n\r\n59063 Hamm\r\n\r\nhttp://www.hshl.de/<http://www.hshl.de>\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account9_gmail_api",
+      "account_email": "sanqiresearch@gmail.com",
+      "email": "david.maennle@medma.uni-heidelberg.de",
+      "name": "David Männle",
+      "paper_title": "SynBench: A Synthetic Benchmark for Non-rigid 3D Point Cloud Registration",
+      "first_sent": "2025-12-10",
+      "last_sent": "2025-12-10",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Automatische Antwort: Quick hello and a resource to share",
+          "from": "\"Maennle, David\" <David.Maennle@medma.uni-heidelberg.de>",
+          "date": "Wed, 10 Dec 2025 14:43:51 +0000",
+          "snippet": "﻿Sehr geehrter Absender, diese E-Mail Adresse wird ab dem 27.11.2025 nicht mehr geprüft, da ich das Klinikum verlassen habe. Die nun zuständigen Ansprechpersonen finden Sie hier: https://www.umm.uni-",
+          "body_preview": "Sehr geehrter Absender,\r\n\r\ndiese E-Mail Adresse wird ab dem 27.11.2025 nicht mehr geprüft, da ich das Klinikum verlassen habe. Die nun zuständigen Ansprechpersonen finden Sie hier:\r\n\r\nhttps://www.umm.uni-heidelberg.de/miism/biomedizinische-informatik/team/\r\nVielen Dank für Ihre Verständnis.\r\n\r\nMit freundlichen Grüßen,\r\nDr. med. David Männle\r\n\r\nDear Sender,\r\n\r\nThis account is no longer maintained starting from the 27th November 2025, due to me leaving the Medical Faculty and Mannheim Medical Cent",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account9_gmail_api",
+      "account_email": "sanqiresearch@gmail.com",
+      "email": "levlevi@cs.unc.edu",
+      "name": "Levi Harris",
+      "paper_title": "A Space-Time Transformer for Precipitation Forecasting",
+      "first_sent": "2025-12-12",
+      "last_sent": "2025-12-12",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hi from Wen, sharing a helpful NIW resource",
+          "from": "Levi David Harris <levlevi@cs.unc.edu>",
+          "date": "Fri, 12 Dec 2025 16:02:34 -0500",
+          "snippet": "I&#39;m an American citizen 😂 On Fri, Dec 12, 2025 at 1:06 PM Wen &lt;sanqiresearch@gmail.com&gt; wrote: Hi Levi, I hope you&#39;re having a good week. I wanted to reach out because I recently came",
+          "body_preview": "I'm an American citizen 😂\r\n\r\nOn Fri, Dec 12, 2025 at 1:06 PM Wen <sanqiresearch@gmail.com> wrote:\r\n\r\n> Hi Levi,\r\n>\r\n> I hope you're having a good week.\r\n>\r\n> I wanted to reach out because I recently came across your work titled \"*A\r\n> Space-Time Transformer for Precipitation Forecasting*\". It's genuinely\r\n> impressive, and it reminded me of how many international researchers are\r\n> working on technologies that align with the U.S. government's Critical and\r\n> Emerging Technologies list, which can",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account9_gmail_api",
+      "account_email": "sanqiresearch@gmail.com",
+      "email": "langner@fzi.de",
+      "name": "Jacob Langner",
+      "paper_title": "A Feedback-Control Framework for Efficient Dataset Collection from In-Vehicle Data Streams",
+      "first_sent": "2025-12-12",
+      "last_sent": "2025-12-12",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Automatische Antwort: A resource for researchers like us",
+          "from": "Jacob Langner <langner@fzi.de>",
+          "date": "Fri, 12 Dec 2025 23:08:50 +0000",
+          "snippet": "Sehr geehrte Damen und Herren, vielen Dank für Ihre Nachricht. Ich bin bis zum 15.12.2025 außer Haus und melde mich gerne zurück, sobald ich wieder im Büro bin. In dringlichen Fällen melden Sie sich",
+          "body_preview": "Sehr geehrte Damen und Herren,\r\n\r\nvielen Dank für Ihre Nachricht. Ich bin bis zum 15.12.2025 außer Haus und melde mich gerne zurück, sobald ich wieder im Büro bin.\r\n\r\nIn dringlichen Fällen melden Sie sich bitte bei meinem Kollegen Tobias Schürmann (schuermann@fzi.de).\r\n\r\nMit freundlichen Grüßen\r\nJacob Langner\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account10_gmail_api",
+      "account_email": "media.elyroy@gmail.com",
+      "email": "jiajun.deng@adelaide.edu.au",
+      "name": "Jiajun Deng",
+      "paper_title": "Hierarchical Context Alignment with Disentangled Geometric and Temporal Modeling for Semantic Occupancy Prediction",
+      "first_sent": "2025-12-04",
+      "last_sent": "2025-12-04",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "自动答复: Hi, Wen here, wanted to share something helpful",
+          "from": "Jiajun Deng <jiajun.deng@adelaide.edu.au>",
+          "date": "Fri, 5 Dec 2025 01:12:01 +0000",
+          "snippet": "Hello, The person associated with this email address is no longer with the University of Adelaide. Please visit the Contacts page on the University of Adelaide website (http://www.adelaide.edu.au/",
+          "body_preview": "Hello,\r\nThe person associated with this email address is no longer with the University of Adelaide. Please visit the Contacts page on the University of Adelaide website (http://www.adelaide.edu.au/contacts/ ) for further inquires.\r\n\r\nRegards,\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account10_gmail_api",
+      "account_email": "media.elyroy@gmail.com",
+      "email": "khawari@student.unimelb.edu.au",
+      "name": "Khawar Islam",
+      "paper_title": "GenMix: Effective Data Augmentation with Generative Diffusion Model Image Editing",
+      "first_sent": "2025-12-05",
+      "last_sent": "2025-12-05",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "Khawar Islam <khawari@student.unimelb.edu.au>",
+          "date": "Fri, 5 Dec 2025 21:26:19 +0000",
+          "snippet": "Hello Wen, Thanks for your email. Do you have free demo of this tool or any video? Are you covering EB1A as well? Regards, Khawar From: Wen &lt;media.elyroy@gmail.com&gt; Sent: Saturday, 6 December",
+          "body_preview": "Hello Wen,\r\n\r\nThanks for your email. Do you have free demo of this tool or any video?\r\n\r\nAre you covering EB1A as well?\r\n\r\nRegards,\r\nKhawar\r\n________________________________\r\nFrom: Wen <media.elyroy@gmail.com>\r\nSent: Saturday, 6 December 2025 3:17 AM\r\nTo: Khawar Islam <khawari@student.unimelb.edu.au>\r\nSubject: Hello from Wen, a resource for NIW applications\r\n\r\nHi Khawar,\r\n\r\nI hope this note finds you well.\r\n\r\nI came across your recent work titled \"GenMix: Effective Data Augmentation with Generat",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account10_gmail_api",
+      "account_email": "media.elyroy@gmail.com",
+      "email": "jinnan.c@u.nus.edu",
+      "name": "Jinnan Chen",
+      "paper_title": "DiHuR: Diffusion-Guided Generalizable Human Reconstruction",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "Chen Jinnan <jinnan.c@u.nus.edu>",
+          "date": "Tue, 9 Dec 2025 16:30:18 +0000",
+          "snippet": "Hi Wen, Thanks for reaching out! I am indeed interested in NIW application and your tool. We may use WeChat (my id: Knmelo) for more convenient communication if you think so! Thanks! Best, Jinnan 获取",
+          "body_preview": "Hi Wen,\r\n\r\nThanks for reaching out! I am indeed interested in NIW application and your tool. We may use WeChat (my id: Knmelo) for more convenient communication if you think so! Thanks!\r\n\r\nBest,\r\nJinnan\r\n\r\n获取 Outlook for iOS<https://aka.ms/o0ukef>\r\n________________________________\r\n发件人: Wen <media.elyroy@gmail.com>\r\n发送时间: Sunday, December 7, 2025 2:07:36 AM\r\n收件人: Chen Jinnan <jinnan.c@u.nus.edu>\r\n主题: Hello from Wen, a resource for NIW applications\r\n\r\n        - External Email -\r\n\r\n\r\n\r\nHi Jinnan,\r",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account10_gmail_api",
+      "account_email": "media.elyroy@gmail.com",
+      "email": "dstork@stanford.edu",
+      "name": "David G. Stork",
+      "paper_title": "Deep neural network-based detection of counterfeit products from smartphone images",
+      "first_sent": "2025-12-08",
+      "last_sent": "2025-12-08",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "David Stork <dstork@stanford.edu>",
+          "date": "Tue, 9 Dec 2025 01:08:20 +0000",
+          "snippet": "Thanks! --David Stork From: Wen &lt;media.elyroy@gmail.com&gt; Sent: Monday, December 8, 2025 4:29 PM To: David Stork &lt;dstork@stanford.edu&gt; Subject: Hello from Wen, a resource for NIW",
+          "body_preview": "Thanks!\r\n\r\n--David Stork\r\n________________________________\r\nFrom: Wen <media.elyroy@gmail.com>\r\nSent: Monday, December 8, 2025 4:29 PM\r\nTo: David Stork <dstork@stanford.edu>\r\nSubject: Hello from Wen, a resource for NIW applications\r\n\r\nHi David,\r\n\r\nI hope you're having a good week.\r\n\r\nI wanted to reach out because I recently came across your work titled \"Deep neural network-based detection of counterfeit products from smartphone images\". It's genuinely impressive, and it reminded me of how many i",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account10_gmail_api",
+      "account_email": "media.elyroy@gmail.com",
+      "email": "hojunson@umich.edu",
+      "name": "Hojun Son",
+      "paper_title": "Quantifying Context Bias in Domain Adaptation for Object Detection",
+      "first_sent": "2025-12-10",
+      "last_sent": "2025-12-10",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "Hojun Son <hojunson@umich.edu>",
+          "date": "Wed, 10 Dec 2025 11:08:40 -0500",
+          "snippet": "Hi Wen, Thank you for reaching out to me. Here is my opinion. I will recommend the turboNIW to someone who wants to file themselves. I am a Korean, so I know the Korean community has some guidelines",
+          "body_preview": "Hi Wen,\r\n\r\nThank you for reaching out to me.\r\nHere is my opinion.\r\n\r\nI will recommend the turboNIW to someone who wants to file themselves.\r\nI am a Korean, so I know the Korean community has some guidelines for DIY\r\nNIW applications, but not as a tool.\r\nIt would be great to have multiple options for filling up.\r\nHowever, the critical point is the legal responsibility.\r\nI was with my lawyer because of the responsibility.\r\nIt would be better for turboNIW to consider the fact.\r\n\r\nSincerely,\r\nHojun ",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account10_gmail_api",
+      "account_email": "media.elyroy@gmail.com",
+      "email": "regev.aviv@gene.com",
+      "name": "Aviv Regev",
+      "paper_title": "Sparse Mixture-of-Experts for Multi-Channel Imaging: Are All Channel Interactions Required?",
+      "first_sent": "2025-12-11",
+      "last_sent": "2025-12-11",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Away from the office Re: Greetings from Wen, a resource you might find helpful",
+          "from": "Aviv Regev <regev.aviv@gene.com>",
+          "date": "Thu, 11 Dec 2025 15:41:25 -0800",
+          "snippet": "Hi, I am away and will be checking emails sporadically. For urgent matters, please email regev-office-d@gene.com. Aviv",
+          "body_preview": "Hi,\r\n\r\nI am away and will be checking emails sporadically.\r\n\r\nFor urgent matters, please email regev-office-d@gene.com.\r\n\r\nAviv\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account10_gmail_api",
+      "account_email": "media.elyroy@gmail.com",
+      "email": "simone.frintrop@uni-hamburg.de",
+      "name": "Simone Frintrop",
+      "paper_title": "Walk the Lines 2: Contour Tracking for Detailed Segmentation",
+      "first_sent": "2025-12-12",
+      "last_sent": "2025-12-12",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Automatische Antwort: Hello from Wen, a resource for NIW applications",
+          "from": "\"Frintrop, Prof. Dr. Simone\" <simone.frintrop@uni-hamburg.de>",
+          "date": "Fri, 12 Dec 2025 18:59:42 +0000",
+          "snippet": "Hello, I am currently on sick leave. Please expect a delay in response. For urgent issues please contact my team assistant Kerstin Diop-Nickel (kerstin.diop@uni-hamburg.de) or one of my team members.",
+          "body_preview": "Hello,\r\n\r\n\r\nI am currently on sick leave. Please expect a delay in response.\r\n\r\n\r\nFor urgent issues please contact my team assistant Kerstin Diop-Nickel (kerstin.diop@uni-hamburg.de) or one of my team members.\r\n\r\nBest regards,\r\n\r\nSimone Frintrop\r\n\r\n\r\n--\r\n-----------------------------------------------------------------------\r\n\r\nProf. Dr. Simone Frintrop\r\n\r\nProfessor of Computer Vision\r\nUniversity of Hamburg\r\nFaculty of Mathematics, Informatics, and Natural Sciences\r\nDepartment of Informatics\r\nGr",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account11_gmail_api",
+      "account_email": "sanqiacademic@gmail.com",
+      "email": "dhzhou@link.cuhk.edu.hk",
+      "name": "Donghao Zhou",
+      "paper_title": "MagicTailor: Component-Controllable Personalization in Text-to-Image Diffusion Models",
+      "first_sent": "2025-12-07",
+      "last_sent": "2025-12-07",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hi from Wen, sharing a helpful NIW resource",
+          "from": "\"ZHOU, Donghao\" <dhzhou@link.cuhk.edu.hk>",
+          "date": "Mon, 8 Dec 2025 04:27:13 +0000",
+          "snippet": "Dear Wen, Thank you for sharing this. Wishing you a good day! Best, Donghao From: Wen &lt;sanqiacademic@gmail.com&gt; Sent: Monday, December 8, 2025 1:27 To: ZHOU, Donghao &lt;dhzhou@link.cuhk.edu.hk",
+          "body_preview": "Dear Wen,\r\n\r\nThank you for sharing this.\r\nWishing you a good day!\r\n\r\nBest,\r\nDonghao\r\n\r\n________________________________\r\nFrom: Wen <sanqiacademic@gmail.com>\r\nSent: Monday, December 8, 2025 1:27\r\nTo: ZHOU, Donghao <dhzhou@link.cuhk.edu.hk>\r\nSubject: Hi from Wen, sharing a helpful NIW resource\r\n\r\nHi Donghao,\r\n\r\nI hope this message finds you well.\r\n\r\nI recently came across your work titled \"MagicTailor: Component-Controllable Personalization in Text-to-Image Diffusion Models\", and it stood out to m",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account11_gmail_api",
+      "account_email": "sanqiacademic@gmail.com",
+      "email": "laure.soulier@isir.upmc.fr",
+      "name": "Laure Soulier",
+      "paper_title": "2D or not 2D: How Does the Dimensionality of Gesture Representation Affect 3D Co-Speech Gesture Generation?",
+      "first_sent": "2025-12-10",
+      "last_sent": "2025-12-10",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Out-of-office until January 2026",
+          "from": "<laure.soulier@isir.upmc.fr>",
+          "date": "Wed, 10 Dec 2025 16:08:56 +0100",
+          "snippet": "Dear all, I am currently on maternity leave and will not be checking my emails until January 2026. If your message concerns one of the topics listed below, please feel free to contact the person",
+          "body_preview": "Dear all,\r\n\r\nI am currently on maternity leave and will not be checking my emails until January 2026.\r\n\r\nIf your message concerns one of the topics listed below, please feel free to contact the person indicated:\r\n\r\n- Gap year / césure at Sorbonne (Master in Computer Science): \r\n                 for validating your project and signatures: marie-jeanne.lesot@lip6.fr - after August 18th - \r\n                 for administrative issues: lydia.verin_pistol@sorbonne-universite.fr\r\n- ETAL summer school: ",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account11_gmail_api",
+      "account_email": "sanqiacademic@gmail.com",
+      "email": "arthij@udel.edu",
+      "name": "Arthi Jayaraman",
+      "paper_title": "Machine Learning for Analyzing Atomic Force Microscopy (AFM) Images Generated from Polymer Blends",
+      "first_sent": "2025-12-10",
+      "last_sent": "2025-12-10",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "Arthi Jayaraman <arthij@udel.edu>",
+          "date": "Wed, 10 Dec 2025 10:16:23 -0500",
+          "snippet": "Thank you! I will forward this tool to other students/postdocs. Currently there is no one I am aware of in my lab who is doing this. Arthi Jayaraman, Ph.D. Professor, Dept. of Chemical and Biomolecular",
+          "body_preview": "Thank you! I will forward this tool to other students/postdocs. Currently\r\nthere is no one I am aware of in my lab who is doing this.\r\n\r\nArthi Jayaraman,  Ph.D.\r\nProfessor, Dept. of Chemical and Biomolecular Engineering\r\nProfessor, Dept. of Materials Science and Engineering\r\nAffiliated faculty, Data Science Institute\r\nDirector, NSF-NRT Computing and Data Science Training for Materials\r\nInnovation, Discovery, and Analytics <https://sites.udel.edu/midas-nrt/>\r\nUniversity of Delaware, Newark DE\r\nFe",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account12_gmail_api",
+      "account_email": "zuzubangatl@gmail.com",
+      "email": "juhha@iu.edu",
+      "name": "Juhyung Ha",
+      "paper_title": "Multi-resolution Guided 3D GANs for Medical Image Translation",
+      "first_sent": "2025-12-05",
+      "last_sent": "2025-12-05",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: [External] Quick hello and a resource to share",
+          "from": "\"Ha, Tony\" <juhha@iu.edu>",
+          "date": "Wed, 10 Dec 2025 20:38:42 +0000",
+          "snippet": "Hi, Wen. I am actually considering about applying NIW. Can you tell me more about this? What&#39;s the process of NIW and where does TurboNIW help? Thanks! Tony From: Wen &lt;zuzubangatl@gmail.com&gt;",
+          "body_preview": "Hi, Wen.\r\n\r\nI am actually considering about applying NIW. <https://aka.ms/GetOutlookForMac>\r\nCan you tell me more about this?\r\n\r\nWhat’s the process of NIW and where does TurboNIW help?\r\n\r\nThanks!\r\nTony\r\n\r\nFrom: Wen <zuzubangatl@gmail.com>\r\nDate: Friday, December 5, 2025 at 11:32 AM\r\nTo: Ha, Tony <juhha@iu.edu>\r\nSubject: [External] Quick hello and a resource to share\r\n\r\nYou don't often get email from zuzubangatl@gmail.com. Learn why this is important<https://aka.ms/LearnAboutSenderIdentification>",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account12_gmail_api",
+      "account_email": "zuzubangatl@gmail.com",
+      "email": "franziska.mathis-ullrich@fau.de",
+      "name": "Franziska Mathis-ullrich",
+      "paper_title": "LUDO: Low-Latency Understanding of Deformable Objects using Point Cloud Occupancy Functions",
+      "first_sent": "2025-12-06",
+      "last_sent": "2025-12-06",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Automatische Antwort: Hi from Wen, sharing a helpful NIW resource",
+          "from": "\"Mathis-Ullrich, Franziska\" <franziska.mathis-ullrich@fau.de>",
+          "date": "Sat, 6 Dec 2025 18:28:08 +0000",
+          "snippet": "Dear sender, Thank you for your email. I am currently on part-time parental leave. Thus, responses to emails may take longer than usual. For urgent administrative matters, you may also contact Lynn",
+          "body_preview": "Dear sender,\r\n\r\nThank you for your email.\r\nI am currently on part-time parental leave. Thus, responses to emails may take longer than usual.\r\n\r\n\r\n  *   For urgent administrative matters, you may also contact Lynn Ngyuen (lynn.nguyen@fau.de)\r\n  *   For urgent research-related inquiries, you can reach out to Dr. Christian Kunz (christian.kunz@fau.de)\r\n\r\nStudent inquiries:\r\n\r\n\r\n  *   If you have questions concerning lectures or exams, contact the according lecture tutor.\r\n  *   For inquiries about ",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account12_gmail_api",
+      "account_email": "zuzubangatl@gmail.com",
+      "email": "maubard@oceanscan-mst.com",
+      "name": "Martin Aubard",
+      "paper_title": "ROSAR: An Adversarial Re-Training Framework for Robust Side-Scan Sonar Object Detection",
+      "first_sent": "2025-12-07",
+      "last_sent": "2025-12-07",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "AVISO e-mail desativado | WARNING e-mail disabled",
+          "from": "<maubard@oceanscan-mst.com>",
+          "date": "Sun, 07 Dec 2025 17:50:02 +0000",
+          "snippet": "Esta conta de e-mail está desativada e o seu e-mail não será lido. Para qualquer assunto enviar e-mail para info@oceanscan-mst.com. Obrigado. This email account is disabled and your email will not be",
+          "body_preview": "Esta conta de e-mail está desativada e o seu e-mail não será lido.\r\nPara qualquer assunto enviar e-mail para info@oceanscan-mst.com. Obrigado.\r\n\r\nThis email account is disabled and your email will not be read.\r\nFor any matter send email to info@oceanscan-mst.com. Thanks.\r\n\r\n\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account12_gmail_api",
+      "account_email": "zuzubangatl@gmail.com",
+      "email": "balint.kovacs@dkfz-heidelberg.de",
+      "name": "Balint Kovacs",
+      "paper_title": "Data-Centric Strategies for Overcoming PET/CT Heterogeneity: Insights from the AutoPET III Lesion Segmentation Challenge",
+      "first_sent": "2025-12-10",
+      "last_sent": "2025-12-10",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Automatikus válasz: [Extern] - Hello from Wen, a resource for NIW applications",
+          "from": "\"Kovacs, Balint\" <balint.kovacs@dkfz-heidelberg.de>",
+          "date": "Wed, 10 Dec 2025 15:10:45 +0000",
+          "snippet": "Thank you for your email, I am on a conference/research stay till 15th of December with no or very limited availability.",
+          "body_preview": "Thank you for your email, I am on a conference/research stay till 15th of December with no or very limited availability.\r\n",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account12_gmail_api",
+      "account_email": "zuzubangatl@gmail.com",
+      "email": "xuelian.cheng@monash.edu",
+      "name": "Xuelian Cheng",
+      "paper_title": "RoomPlanner: Explicit Layout Planner for Easier LLM-Driven 3D Room Generation",
+      "first_sent": "2025-12-11",
+      "last_sent": "2025-12-11",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "Xuelian Cheng <xuelian.cheng@monash.edu>",
+          "date": "Thu, 11 Dec 2025 15:44:41 -0800",
+          "snippet": "I am currently on annual leave and will return to work on Dec 19, 2025. During this time, I could not be able to check my emails promptly. -- Xuelian Cheng, PhD ---------------------------- Adjunct",
+          "body_preview": "<div dir=\"ltr\">I am currently on annual leave and will return to work on Dec 19, 2025. <br>During this time, I could not be able to check my emails promptly.<br></div><br/><br/>-- <br/><div dir=\"ltr\"><div><span style=\"color:rgb(34,34,34)\"><b>Xuelian Cheng</b>, PhD</span></div><span style=\"color:rgb(34,34,34)\">----------------------------</span><div>Adjunct Lecturer<br>Department of Data Science &amp; Artificial Intelligence (DSAI)<br>Monash University<br>Clayton, Victoria 3800, Australia<br><br>",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account12_gmail_api",
+      "account_email": "zuzubangatl@gmail.com",
+      "email": "yuhengq@andrew.cmu.edu",
+      "name": "Yuheng Qiu",
+      "paper_title": "Co-Me: Confidence-Guided Token Merging for Visual Geometric Transformers",
+      "first_sent": "2025-12-11",
+      "last_sent": "2025-12-11",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hi from Wen, sharing a helpful NIW resource",
+          "from": "Yuheng Qiu <yuhengq@andrew.cmu.edu>",
+          "date": "Thu, 11 Dec 2025 19:15:04 -0500",
+          "snippet": "Thanks for sharing! On Dec 11, 2025, at 7:08 PM, Wen &lt;zuzubangatl@gmail.com&gt; wrote: ﻿ Hi Yuheng, I hope this note finds you well. I came across your recent work titled &quot;Co-Me: Confidence-",
+          "body_preview": "Thanks for sharing!\r\n\r\n> On Dec 11, 2025, at 7:08 PM, Wen <zuzubangatl@gmail.com> wrote:\r\n> \r\n> ﻿ Hi Yuheng,\r\n> \r\n> I hope this note finds you well.\r\n> \r\n> I came across your recent work titled \"Co-Me: Confidence-Guided Token Merging for Visual Geometric Transformers\". Given the areas you're researching, I thought it might be worth mentioning a resource related to NIW (National Interest Waiver) green cards, which can be relevant for researchers in emerging tech fields who are considering U.S. op",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "account15-gmail_api",
+      "account_email": "academic.turboniw@gmail.com",
+      "email": "zshan2@illinois.edu",
+      "name": "Zihan Shan",
+      "paper_title": "SIFT-Graph: Benchmarking Multimodal Defense Against Image Adversarial Attacks With Robust Feature Graph",
+      "first_sent": "2025-12-12",
+      "last_sent": "2025-12-12",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Hello from Wen, a resource for NIW applications",
+          "from": "Zihan Shan <zshan2@illinois.edu>",
+          "date": "Fri, 12 Dec 2025 14:37:23 -0600",
+          "snippet": "Hi Wen, Thank you for contacting and sharing information about TurboNIW. It sounds like a cool project. I am currently still considering plans after graduation, so I may start challenging NIW sometime",
+          "body_preview": "Hi Wen,\r\n\r\nThank you for contacting and sharing information about TurboNIW. It sounds\r\nlike a cool project. I am currently still considering plans after\r\ngraduation, so I may start challenging NIW sometime later.\r\nIt will be great if I have some questions then, and we may have some\r\ndiscussion. I will share the info about TurboNIW with the other guys in my\r\nlab to see if they have any thoughts.\r\n\r\nAgain, thank you for contacting. Have a nice one!\r\n\r\nBest regards,\r\nZihan Shan\r\n\r\nOn Fri, Dec 12, 2",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    },
+    {
+      "account_id": "16api",
+      "account_email": "phd.help.phd@gmail.com",
+      "email": "zyuan2@nd.edu",
+      "name": "Zhengqing Yuan",
+      "paper_title": "TTT-Unet: Enhancing U-Net with Test-Time Training Layers for Biomedical Image Segmentation",
+      "first_sent": "2025-12-10",
+      "last_sent": "2025-12-10",
+      "send_count": 1,
+      "reply_count": 1,
+      "replies": [
+        {
+          "subject": "Re: Greetings from Wen, a resource you might find helpful",
+          "from": "Zhengqing Yuan <zyuan2@nd.edu>",
+          "date": "Wed, 10 Dec 2025 10:21:28 -0500",
+          "snippet": "my NIW and EB1A has been approved thanks On Wed, Dec 10, 2025 at 10:03 AM Wen &lt;phd.help.phd@gmail.com&gt; wrote: Hi Zhengqing, I hope you&#39;re having a good week. I wanted to reach out because I",
+          "body_preview": "my NIW and EB1A has been approved thanks\r\nOn Wed, Dec 10, 2025 at 10:03 AM Wen <phd.help.phd@gmail.com> wrote:\r\n\r\n> Hi Zhengqing,\r\n>\r\n> I hope you're having a good week.\r\n>\r\n> I wanted to reach out because I recently came across your work titled \"*TTT-Unet:\r\n> Enhancing U-Net with Test-Time Training Layers for Biomedical Image\r\n> Segmentation*\". It's genuinely impressive, and it reminded me of how many\r\n> international researchers are working on technologies that align with the\r\n> U.S. governmen",
+          "classification": "real_reply"
+        }
+      ],
+      "ooo_replies": []
+    }
+  ]
+}

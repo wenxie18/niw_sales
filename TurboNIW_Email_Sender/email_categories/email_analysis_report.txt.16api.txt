@@ -1,0 +1,1556 @@
+================================================================================
+SENT EMAIL ANALYSIS REPORT
+================================================================================
+
+Account: phd.help.phd@gmail.com
+Analysis Date: 2025-12-13 01:23:07
+Total Recipients Analyzed: 161
+
+================================================================================
+CATEGORY 1: REPLIED (They responded)
+================================================================================
+Total: 1
+
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Zhengqing Yuan
+Email: zyuan2@nd.edu
+Paper Title: TTT-Unet: Enhancing U-Net with Test-Time Training Layers for Biomedical Image Segmentation
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Replies Found: 1
+
+  Reply 1:
+    Subject: Re: Greetings from Wen, a resource you might find helpful
+    From: Zhengqing Yuan <zyuan2@nd.edu>
+    Date: Wed, 10 Dec 2025 10:21:28 -0500
+    Snippet: my NIW and EB1A has been approved thanks On Wed, Dec 10, 2025 at 10:03 AM Wen &lt;phd.help.phd@gmail.com&gt; wrote: Hi Zhengqing, I hope you&#39;re having a good week. I wanted to reach out because I...
+    Body Preview: my NIW and EB1A has been approved thanks
+On Wed, Dec 10, 2025 at 10:03 AM Wen <phd.help.phd@gmail.com> wrote:
+
+> Hi Zhengqing,
+>
+> I hope you're having a good week.
+>
+> I wanted to reach out because I recently came across your work titled "*TTT-Unet:
+> Enhancing U-Net with Test-Time Training...
+
+
+================================================================================
+CATEGORY 2: NO REPLY (No response yet)
+================================================================================
+Total: 132
+
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jiawei Fan
+Email: jiawei.fan@intel.com
+Paper Title: ScaleKD: Strong Vision Transformers Could Be Excellent Teachers
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Xiaolong Liu
+Email: xiaolong.liu@imotion.ai
+Paper Title: ScaleKD: Strong Vision Transformers Could Be Excellent Teachers
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Konstantin Kozhemyakov
+Email: konstantin.kozhemiakov@graphics.cs.msu.ru
+Paper Title: Machine vision-aware quality metrics for compressed image and video assessment
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Mikhail Dremin
+Email: mikhail.dremin@graphics.cs.msu.ru
+Paper Title: Machine vision-aware quality metrics for compressed image and video assessment
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Benn Gallagher
+Email: benn.gallagher@epicgames.com
+Paper Title: Shallow Signed Distance Functions for Kinematic Collision Bodies
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Ronald Fedkiw
+Email: fedkiw@cs.stanford.edu
+Paper Title: Shallow Signed Distance Functions for Kinematic Collision Bodies
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Joseph Teran
+Email: jteran@math.ucdavis.edu
+Paper Title: Shallow Signed Distance Functions for Kinematic Collision Bodies
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Weixian Lan
+Email: wlan@ucdavis.edu
+Paper Title: Shallow Signed Distance Functions for Kinematic Collision Bodies
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yizhou Chen
+Email: chenyizhou@ucla.edu
+Paper Title: Shallow Signed Distance Functions for Kinematic Collision Bodies
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Xuming He
+Email: hexuming773@gmail.com
+Paper Title: DiffSR: Learning Radar Reflectivity Synthesis via Diffusion Model from Satellite Observations
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Lei Bai
+Email: baisanshi@gmail.com
+Paper Title: DiffSR: Learning Radar Reflectivity Synthesis via Diffusion Model from Satellite Observations
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Ming Yang
+Email: m-yang4@u.northwestern.edu
+Paper Title: HomoMatcher: Dense Feature Matching Results with Semi-Dense Efficiency by Homography Estimation
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Damien Diaz
+Email: diaz@bertin.fr
+Paper Title: METRIC: a complete methodology for performances evaluation of automatic target Detection, Recognition and Tracking algorithms in infrared imagery
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jean-luc Maillart
+Email: maillart@bertin.fr
+Paper Title: METRIC: a complete methodology for performances evaluation of automatic target Detection, Recognition and Tracking algorithms in infrared imagery
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Tristan Dagobert
+Email: tan.dagobert@dga.defense.gouv.fr
+Paper Title: METRIC: a complete methodology for performances evaluation of automatic target Detection, Recognition and Tracking algorithms in infrared imagery
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Eric Stiée
+Email: eric.stiee@dga.defense.gouv.fr
+Paper Title: METRIC: a complete methodology for performances evaluation of automatic target Detection, Recognition and Tracking algorithms in infrared imagery
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Guandong Li
+Email: leeguandon@gmail.com
+Paper Title: Layout Control and Semantic Guidance with Attention Loss Backward for T2I Diffusion Model
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Shanghang Zhang
+Email: hsinyanghuang7@gmail.com
+Paper Title: Learning from Different Samples: A Source-free Framework for Semi-supervised Domain Adaptation
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yuewen Ma
+Email: mayuewen@bytedance.com
+Paper Title: TexPro: Text-guided PBR Texturing with Procedural Material Modeling
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Wen Ge
+Email: wge@wpi.edu
+Paper Title: Contrastive Learning with Auxiliary User Detection for Identifying Activities
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Lorenz Hurni
+Email: lhurni@ethz.ch
+Paper Title: An Efficient System for Automatic Map Storytelling -- A Case Study on Historical Maps
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Qi Bing
+Email: qbin4920@uni.sydney.edu.au
+Paper Title: DeepIcon: A Hierarchical Network for Layer-wise Icon Vectorization
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Guntu Charitasri
+Email: 4charitasrig@gmail.com
+Paper Title: Transforming Blood Cell Detection and Classification with Advanced Deep Learning Models: A Comparative Study
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Shashi Shekhar
+Email: shekhar@umn.edu
+Paper Title: Towards Kriging-informed Conditional Diffusion for Regional Sea-Level Data Downscaling
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Xinyuan Song
+Email: xsong30@emory.edu
+Paper Title: Deep Learning and Machine Learning -- Object Detection and Semantic Segmentation: From Theory to Applications
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Rohan Saha
+Email: rsaha@ualberta.ca
+Paper Title: Exploring Curriculum Learning for Vision-Language Tasks: A Study on Small-Scale Multimodal Training
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: P Nagabhushan
+Email: pnagabhushan@hotmail.com
+Paper Title: An Improved Chicken Swarm Optimization Algorithm for Handwritten Document Image Enhancement
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Shaoting Zhang
+Email: zhangshaoting@sensetime.com
+Paper Title: MedDiff-FM: A Diffusion-based Foundation Model for Versatile Medical Image Applications
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yalda Mohsenzadeh
+Email: ymohsenz@uwo.ca
+Paper Title: Modeling Visual Memorability Assessment with Autoencoders Reveals Characteristics of Memorable Images
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Enzo Benoit-jeannin
+Email: enzo.benoit-jeannin@mail.mcgill.ca
+Paper Title: Unsupervised Domain Adaptation Approaches for Chessboard Recognition
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Goh Xin Ru Karin
+Email: 22ygohx918d@alumni.ri.edu.sg
+Paper Title: Stool Recognition for Colorectal Cancer Detection through Deep Learning
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Sean Mccarthy
+Email: sean.mccarthy@dolby.com
+Paper Title: Standardizing Generative Face Video Compression using Supplemental Enhancement Information
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Chaodong Xiao
+Email: chaodong.xiao@connect.polyu.hk
+Paper Title: Spatial-Mamba: Effective Visual State Space Models via Structure-aware State Fusion
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Víctor M. Batlle
+Email: vmbatlle@unizar.es
+Paper Title: EndoMetric: Near-Light Monocular Metric Scale Estimation in Endoscopy
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Istvan Gyongy
+Email: igyongy2@exseed.ed.ac.uk
+Paper Title: Quanta Video Restoration
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Nhung Nguyen
+Email: nhung.nt@vinuni.edu.vn
+Paper Title: D-SarcNet: A Dual-stream Deep Learning Framework for Automatic Analysis of Sarcomere Structures in Fluorescently Labeled hiPSC-CMs
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Mai Tran
+Email: mai.tt@vinuni.edu.vn
+Paper Title: D-SarcNet: A Dual-stream Deep Learning Framework for Automatic Analysis of Sarcomere Structures in Fluorescently Labeled hiPSC-CMs
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jihyo Kim
+Email: jihyo.kim@ds.seoultech.ac.kr
+Paper Title: Reflexive Guidance: Improving OoDD in Vision-Language Models via Self-Guided Image-Adaptive Concept Generation
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Marie Roald
+Email: marie.roald@nb.no
+Paper Title: Visual Navigation of Digital Libraries: Retrieval and Classification of Images in the National Library of Norway's Digitised Book Collection
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yi Liu
+Email: liuyi0089@gmail.com
+Paper Title: Part-Whole Relational Fusion Towards Multi-Modal Scene Understanding
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yijun Li
+Email: lic87876@gmail.com
+Paper Title: A Hybrid Defense Strategy for Boosting Adversarial Robustness in Vision-Language Models
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Edgar Heinert
+Email: edgar.heinert@uni-osnabrueck.de
+Paper Title: On the Influence of Shape, Texture and Color for Learning Semantic Segmentation
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Tianxiao Zhang
+Email: tianxiao@ku.edu
+Paper Title: Improving Vision Transformers by Overlapping Heads in Multi-Head Self-Attention
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Matthias Schreier
+Email: matthias.schreier@continental.com
+Paper Title: Deep Generic Dynamic Object Detection Based on Dynamic Grid Maps
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Mareike Lehmann
+Email: mareike.lehmann@helmholtz-munich.de
+Paper Title: MultiOrg: A Multi-rater Organoid-detection Dataset
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Nefeli Andreou
+Email: nefeliandreou@outlook.com
+Paper Title: LEAD: Latent Realignment for Human Motion Diffusion
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Arezoo Zakeri
+Email: arezoo.zakeri@manchester.ac.uk
+Paper Title: Integrating Deep Learning with Fundus and Optical Coherence Tomography for Cardiovascular Disease Prediction
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Christine Decaestecker
+Email: christine.decaestecker@ulb.be
+Paper Title: Impact of imperfect annotations on CNN training and performance for instance segmentation and classification in digital pathology
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yin Xie
+Email: yinxie@deepglint.com
+Paper Title: ViCToR: Improving Visual Comprehension via Token Reconstruction for Pretraining LMMs
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yanzhen Yu
+Email: yanzhen.yu@ximalaya.com
+Paper Title: Takin-ADA: Emotion Controllable Audio-Driven Animation with Canonical and Landmark Loss Optimization
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Ioannis Romanelis
+Email: iroman@ece.upatras.gr
+Paper Title: PReP: Efficient context-based shape retrieval for missing parts
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Ahmad Obeid
+Email: ahmad.obeid@ku.ac.ae
+Paper Title: Advancing Histopathology with Deep Learning Under Data Scarcity: A Decade in Review
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Said Boumaraf
+Email: said.boumaraf@ku.ac.ae
+Paper Title: Advancing Histopathology with Deep Learning Under Data Scarcity: A Decade in Review
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Lang Li
+Email: lli28@nd.edu
+Paper Title: MultiChartQA: Benchmarking Vision-Language Models on Multi-Chart Problems
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jack Noble
+Email: jack.noble@vanderbilt.edu
+Paper Title: DaRePlane: Direction-aware Representations for Dynamic Scene Reconstruction
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Nghia Hieu Nguyen
+Email: nhnghia.sdh231@hcmut.edu.vn
+Paper Title: ViConsFormer: Constituting Meaningful Phrases of Scene Texts using Transformer-based Method in Vietnamese Text-based Visual Question Answering
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Chun Pong Lau
+Email: cplau27@cityu.edu.hk
+Paper Title: MMAD-Purify: A Precision-Optimized Framework for Efficient and Scalable Multi-Modal Attacks
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Per Sidén
+Email: psiden@qti.qualcomm.com
+Paper Title: On Partial Prototype Collapse in the DINO Family of Self-Supervised Methods
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Kris Kitani
+Email: kmkitani@andrew.cmu.edu
+Paper Title: Human Action Anticipation: A Survey
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Tomas Geffner
+Email: tgeffner@nvidia.com
+Paper Title: Stochastic Flow Matching for Resolving Small-Scale Physics
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Günay Doğan
+Email: gunay.dogan@nist.gov
+Paper Title: Probabilistic U-Net with Kendall Shape Spaces for Geometry-Aware Segmentations of Images
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Xi Feng
+Email: fengxi@ustc.edu
+Paper Title: Can MLLMs Understand the Deep Implication Behind Chinese Images?
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Xiaodan Xing
+Email: xiaodan.xing@imperial.ac.uk
+Paper Title: Deep Generative Models Unveil Patterns in Medical Images Through Vision-Language Conditioning
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Aleksandr Gordeev
+Email: asegordeev@gmail.com
+Paper Title: Saliency-Guided DETR for Moment Retrieval and Highlight Detection
+First Sent: 2025-12-08
+Last Sent: 2025-12-08
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jianchao Ci
+Email: jianchao.ci@wur.nl
+Paper Title: SSL-NBV: A Self-Supervised-Learning-Based Next-Best-View algorithm for Efficient 3D Plant Reconstruction by a Robot
+First Sent: 2025-12-08
+Last Sent: 2025-12-08
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jente Vandersanden
+Email: jvanders@mpi-inf.mpg.de
+Paper Title: Edge-preserving noise for diffusion models
+First Sent: 2025-12-08
+Last Sent: 2025-12-08
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Giovanny A. M. Arboleda
+Email: giovannyresearcher@gmail.com
+Paper Title: A Real Benchmark Swell Noise Dataset for Performing Seismic Data Denoising via Deep Learning
+First Sent: 2025-12-08
+Last Sent: 2025-12-08
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: André Bulcão
+Email: bulcao@petrobras.com.br
+Paper Title: A Real Benchmark Swell Noise Dataset for Performing Seismic Data Denoising via Deep Learning
+First Sent: 2025-12-08
+Last Sent: 2025-12-08
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Xinyi Zhang
+Email: xinyi.zhang@uzh.ch
+Paper Title: Quo Vadis RankList-based System in Face Recognition?
+First Sent: 2025-12-08
+Last Sent: 2025-12-08
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Faouzi Adjed
+Email: faouzi.adjed@irt-systemx.fr
+Paper Title: Explaining an image classifier with a generative model conditioned by uncertainty
+First Sent: 2025-12-08
+Last Sent: 2025-12-08
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yu Mao
+Email: yumao7-c@my.cityu.edu.hk
+Paper Title: SHAP-CAT: A interpretable multi-modal framework enhancing WSI classification via virtual staining and shapley-value-based multimodal fusion
+First Sent: 2025-12-08
+Last Sent: 2025-12-08
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Mayu Otani
+Email: otani_mayu@cyberagent.co.jp
+Paper Title: Harnessing the Latent Diffusion Model for Training-Free Image Style Transfer
+First Sent: 2025-12-08
+Last Sent: 2025-12-08
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jaeyoon Jung
+Email: jyjung@maum.ai
+Paper Title: CANVAS: Commonsense-Aware Navigation System for Intuitive Human-Robot Interaction
+First Sent: 2025-12-08
+Last Sent: 2025-12-08
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Hideya Ochiai
+Email: ochiai@g.ecc.u-tokyo.ac.jp
+Paper Title: Logic-Free Building Automation: Learning the Control of Room Facilities with Wall Switches and Ceiling Camera
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Cen Zhang
+Email: cenzhang117649@sohu-inc.com
+Paper Title: GUNet: A Graph Convolutional Network United Diffusion Model for Stable and Diversity Pose Generation
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Tae Ha Park
+Email: thpark@naraspace.com
+Paper Title: Bridging the Domain Gap for Flight-Ready Spaceborne Vision
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Guandao Yang
+Email: guandao@stanford.edu
+Paper Title: Robust Symmetry Detection via Riemannian Langevin Dynamics
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Joo-ho Lee
+Email: leejooho@is.ritsumei.ac.jp
+Paper Title: PainDiffusion: Learning to Express Pain
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Tan T. Nguyen
+Email: n.tan@wustl.edu
+Paper Title: A Review of Mechanistic Models of Event Comprehension
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Allie Luo
+Email: luo3@ualberta.ca
+Paper Title: Robot Manipulation in Salient Vision through Referring Image Segmentation and Geometric Constraints
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Wenliang Dai
+Email: wdai@nvidia.com
+Paper Title: NVLM: Open Frontier-Class Multimodal LLMs
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Stephan Tilgner
+Email: tilgner@uni-wuppertal.de
+Paper Title: Uncertainty and Prediction Quality Estimation for Semantic Segmentation via Graph Neural Networks
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Bowen Dong
+Email: bowen.dong@connect.polyu.hk
+Paper Title: LPT++: Efficient Training on Mixture of Long-tailed Experts
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Hidetsugu Uchida
+Email: u.hidetsugu@fujitsu.com
+Paper Title: A Human-Centered Risk Evaluation of Biometric Systems Using Conjoint Analysis
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Alberto Testolin
+Email: alberto.testolin@unipd.it
+Paper Title: Estimating the distribution of numerosity and non-numerical visual magnitudes in natural scenes using computer vision
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Hang Dai
+Email: hang.dai@glasgow.ac.uk
+Paper Title: Learning Semi-Supervised Medical Image Segmentation from Spatial Registration
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Catherine Pelachaud
+Email: catherine.pelachaud@isir.upmc.fr
+Paper Title: 2D or not 2D: How Does the Dimensionality of Gesture Representation Affect 3D Co-Speech Gesture Generation?
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Sharu Theresa Jose
+Email: s.t.jose@bham.ac.uk
+Paper Title: VAE-QWGAN: Addressing Mode Collapse in Quantum GANs via Autoencoding Priors
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jorge Bernal
+Email: jorge.bernal@autonoma.cat
+Paper Title: Enhancing Image Classification in Small and Unbalanced Datasets through Synthetic Data Augmentation
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Roni Blushtein-livnon
+Email: livnon@bgu.ac.il
+Paper Title: Performance of Human Annotators in Object Detection and Segmentation of Remotely Sensed Data
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Mohamed Abdel-nasser
+Email: mohamed.abdelnasser@urv.cat
+Paper Title: FGR-Net:Interpretable fundus imagegradeability classification based on deepreconstruction learning
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Gonzalo Garrido-lopez
+Email: gonzalo.garrido.lopez@upm.es
+Paper Title: VideoRun2D: Cost-Effective Markerless Motion Capture for Sprint Biomechanics
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Luis F. Gomez
+Email: luisf.gomez@uam.es
+Paper Title: VideoRun2D: Cost-Effective Markerless Motion Capture for Sprint Biomechanics
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Ramin Hasani
+Email: hasani@mit.edu
+Paper Title: Human Insights Driven Latent Space for Different Driving Perspectives: A Unified Encoder for Efficient Multi-Task Inference
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Alexander Koch
+Email: alexander.koch@charite.de
+Paper Title: Cross-modality image synthesis from TOF-MRA to CTA using diffusion-based models
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Amr Abdelraouf
+Email: amr.abdelraouf@toyota.com
+Paper Title: Video Token Sparsification for Efficient Multimodal LLMs in Autonomous Driving
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yixiao Fang
+Email: yixiaof2@illinois.edu
+Paper Title: Towards Real-Time Generation of Delay-Compensated Video Feeds for Outdoor Mobile Robot Teleoperation
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Raul Ramos-pollan
+Email: raul.ramos@udea.edu.co
+Paper Title: Rapid Adaptation of Earth Observation Foundation Models for Segmentation
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Uria Franko
+Email: uriafranko@gmail.com
+Paper Title: Tracking Virtual Meetings in the Wild: Re-identification in Multi-Participant Virtual Meetings
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Darshan Venkatrayappa
+Email: darsh.venkat@gmail.com
+Paper Title: Abnormal Event Detection In Videos Using Deep Embedding
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Zan Gao
+Email: zangaonsh4522@gmail.com
+Paper Title: MFCLIP: Multi-modal Fine-grained CLIP for Generalizable Diffusion Face Forgery Detection
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Qian Xie
+Email: q.xie2@leeds.ac.uk
+Paper Title: EditBoard: Towards a Comprehensive Evaluation Benchmark for Text-Based Video Editing Models
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Hezheng Lin
+Email: linhezheng@kuaishou.com
+Paper Title: Dreaming User Multimodal Representation Guided by The Platonic Representation Hypothesis for Micro-Video Recommendation
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: D. Saraswathi
+Email: saraswathi.d@vit.ac.in
+Paper Title: Revolutionizing Glioma Segmentation & Grading Using 3D MRI - Guided Hybrid Deep Learning Models
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Luca Carlone
+Email: lcarlone@mit.edu
+Paper Title: Uncertainty Quantification for Visual Object Pose Estimation
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Shuang Chen
+Email: shuang.chen@durham.ac.uk
+Paper Title: CaFlow: Enhancing Long-Term Action Quality Assessment with Causal Counterfactual Flow
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Umberto Michieli
+Email: u.michieli@samsung.com
+Paper Title: Continual Error Correction on Low-Resource Devices
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Daniel Moyer
+Email: daniel.moyer@vanderbilt.edu
+Paper Title: Enhanced Landmark Detection Model in Pelvic Fluoroscopy using 2D/3D Registration Loss
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Sébastien Lefèvre
+Email: sebastien.lefevre@irisa.fr
+Paper Title: EoS-FM: Can an Ensemble of Specialist Models act as a Generalist Feature Extractor?
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Wataru Ohyama
+Email: w.ohyama@mail.dendai.ac.jp
+Paper Title: CanKD: Cross-Attention-based Non-local operation for Feature-based Knowledge Distillation
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Alexander Lacoste
+Email: alexandre.lacoste@servicenow.com
+Paper Title: GEO-Bench-2: From Performance to Capability, Rethinking Evaluation in Geospatial AI
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Ruili Wang
+Email: ruili.wang@massey.ac.nz
+Paper Title: UniUltra: Interactive Parameter-Efficient SAM2 for Universal Ultrasound Segmentation
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yolo Y. Tang
+Email: yunlong.tang@rochester.edu
+Paper Title: When to Think and When to Look: Uncertainty-Guided Lookback
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jason J. Corso
+Email: jjcorso@umich.edu
+Paper Title: When to Think and When to Look: Uncertainty-Guided Lookback
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Gady Agam
+Email: agam@iit.edu
+Paper Title: MaskMed: Decoupled Mask and Class Prediction for Medical Image Segmentation
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Sifan Zhou
+Email: sifanjay@gmail.com
+Paper Title: CompTrack: Information Bottleneck-Guided Low-Rank Dynamic Token Compression for Point Cloud Tracking
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Urjitkumar Patel
+Email: urjitkumar.patel@spglobal.com
+Paper Title: AVATAAR: Agentic Video Answering via Temporal Adaptive Alignment and Reasoning
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Ngai Wong
+Email: nwong@eee.hku.hk
+Paper Title: NTK-Guided Implicit Neural Teaching
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Rüdiger Daub
+Email: ruediger.daub@igcv.fraunhofer.de
+Paper Title: A Dataset and Baseline for Deep Learning-Based Visual Quality Inspection in Remanufacturing
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Fabian Gigengack
+Email: fabian.gigengack@de.bosch.com
+Paper Title: ShelfOcc: Native 3D Supervision beyond LiDAR for Vision-Based Occupancy Estimation
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jianfei Yang
+Email: jianfei.yang@ntu.edu.sg
+Paper Title: Zero-Shot Open-Vocabulary Human Motion Grounding with Test-Time Training
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Hyungshin Kim
+Email: hyungshin@cnu.ac.kr
+Paper Title: IPTQ-ViT: Post-Training Quantization of Non-linear Functions for Integer-only Vision Transformers
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yilin Di
+Email: yilin.di@tum.de
+Paper Title: Text2Loc++: Generalizing 3D Point Cloud Localization from Natural Language
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Tobias Meisen
+Email: meisen@uni-wuppertal.de
+Paper Title: Graph Query Networks for Object Detection with Automotive Radar
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Marufa Kamal
+Email: marufa.kamal1@g.bracu.ac.bd
+Paper Title: Physics-Based Benchmarking Metrics for Multimodal Synthetic Images
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yuvraj Singh Rathore
+Email: y.rathore@samsung.com
+Paper Title: Insert In Style: A Zero-Shot Generative Framework for Harmonious Cross-Domain Object Composition
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Soowoong Kim
+Email: soowoong.kim@etr.re.kr
+Paper Title: ELiC: Efficient LiDAR Geometry Compression via Cross-Bit-depth Feature Propagation and Bag-of-Encoders
+First Sent: 2025-12-12
+Last Sent: 2025-12-12
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Gun Bang
+Email: gbang@etr.re.kr
+Paper Title: ELiC: Efficient LiDAR Geometry Compression via Cross-Bit-depth Feature Propagation and Bag-of-Encoders
+First Sent: 2025-12-12
+Last Sent: 2025-12-12
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yancheng Bai
+Email: yancheng.byc@alibaba-inc.com
+Paper Title: Semantic Context Matters: Improving Conditioning for Autoregressive Models
+First Sent: 2025-12-12
+Last Sent: 2025-12-12
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Ryan Xu
+Email: ryansxu.00@gmail.com
+Paper Title: Semantic Context Matters: Improving Conditioning for Autoregressive Models
+First Sent: 2025-12-12
+Last Sent: 2025-12-12
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Lucy Amanda Marshall
+Email: lucy.marshall@sydney.edu.au
+Paper Title: Flood-LDM: Generalizable Latent Diffusion Models for rapid and accurate zero-shot High-Resolution Flood Mapping
+First Sent: 2025-12-12
+Last Sent: 2025-12-12
+Send Count: 1
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Sachith Seneviratne
+Email: sachith.seneviratne@unimelb.edu.au
+Paper Title: Flood-LDM: Generalizable Latent Diffusion Models for rapid and accurate zero-shot High-Resolution Flood Mapping
+First Sent: 2025-12-12
+Last Sent: 2025-12-12
+Send Count: 1
+
+
+================================================================================
+CATEGORY 3: FAILED (Bounce/Invalid address)
+================================================================================
+Total: 28
+
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Yushan Han
+Email: yushanh1@math.ucla
+Paper Title: Shallow Signed Distance Functions for Kinematic Collision Bodies
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Sat, 06 Dec 2025 20:24:08 -0800 (PST)
+    Snippet: Address not found Your message wasn&#39;t delivered to yushanh1@math.ucla because the domain math.ucla couldn&#39;t be found. Check for typos or unnecessary spaces and try again. LEARN MORE The...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jérôme Gilles
+Email: jerome.gilles@dga.defense.gouv.fr
+Paper Title: METRIC: a complete methodology for performances evaluation of automatic target Detection, Recognition and Tracking algorithms in infrared imagery
+First Sent: 2025-12-06
+Last Sent: 2025-12-06
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Sat, 06 Dec 2025 20:25:38 -0800 (PST)
+    Snippet: Address not found Your message wasn&#39;t delivered to jerome.gilles@dga.defense.gouv.fr because the domain dga.defense.gouv.fr couldn&#39;t be found. Check for typos or unnecessary spaces and try...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Xi Liu
+Email: xi9@clemson.edu
+Paper Title: 3DGS-Enhancer: Enhancing Unbounded 3D Gaussian Splatting with View-consistent 2D Diffusion Priors
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Sun, 07 Dec 2025 09:08:26 -0800 (PST)
+    Snippet: Message blocked Your message to xi9@clemson.edu has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https://...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Dingyi Zhuang
+Email: dingyi@mit.edu
+Paper Title: Sparkle: Mastering Basic Spatial Capabilities in Vision Language Models Elicits Generalization to Spatial Reasoning
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Sun, 07 Dec 2025 09:08:52 -0800 (PST)
+    Snippet: Message blocked Your message to dingyi@mit.edu has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https://...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Brian D. Nord
+Email: nord@fnal.gov
+Paper Title: Domain-Adaptive Neural Posterior Estimation for Strong Gravitational Lens Analysis
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Sun, 07 Dec 2025 09:09:08 -0800 (PST)
+    Snippet: Message blocked Your message to nord@fnal.gov has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https://...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Unnati Singh
+Email: singhunnati717@gmail.com
+Paper Title: Massimo: Public Queue Monitoring and Management using Mass-Spring Model
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Sun, 07 Dec 2025 09:09:33 -0800 (PST)
+    Snippet: Message blocked Your message to singhunnati717@gmail.com has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Xuede Li
+Email: lixuede@meituan.com
+Paper Title: Focus on BEV: Self-calibrated Cycle View Transformation for Monocular Birds-Eye-View Segmentation
+First Sent: 2025-12-07
+Last Sent: 2025-12-07
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Sun, 07 Dec 2025 09:09:53 -0800 (PST)
+    Snippet: Message blocked Your message to lixuede@meituan.com has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Lemeng Wu
+Email: lmwu@cs.utexas.edu
+Paper Title: InverseMeetInsert: Robust Real Image Editing via Geometric Accumulation Inversion in Guided Diffusion Models
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Wed, 10 Dec 2025 07:00:08 -0800 (PST)
+    Snippet: Address not found Your message wasn&#39;t delivered to lmwu@cs.utexas.edu because the address couldn&#39;t be found, or is unable to receive mail. The response from the remote server was: 550 5.1.1 .....
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Chonghao Cheng
+Email: chonghaocheng@student.uts.edu.au
+Paper Title: Navigation with VLM framework: Towards Going to Any Language
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Wed, 10 Dec 2025 07:01:26 -0800 (PST)
+    Snippet: Address not found Your message wasn&#39;t delivered to chonghaocheng@student.uts.edu.au because the address couldn&#39;t be found, or is unable to receive mail. LEARN MORE This link will take you to a...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Alessandro Simoni
+Email: a.simoni@unimore.it
+Paper Title: Depth-based Privileged Information for Boosting 3D Human Pose Estimation on RGB
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Wed, 10 Dec 2025 07:04:46 -0800 (PST)
+    Snippet: Address not found Your message wasn&#39;t delivered to a.simoni@unimore.it because the address couldn&#39;t be found, or is unable to receive mail. LEARN MORE The response was: 550 5.1.1 The email...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Christos Tzelepis
+Email: c.tzelepis@qmul.ac.uk
+Paper Title: MM2Latent: Text-to-facial image generation and editing in GANs with multimodal assistance
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Wed, 10 Dec 2025 07:05:36 -0800 (PST)
+    Snippet: Message blocked Your message to c.tzelepis@qmul.ac.uk has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jae-ho Lee
+Email: jh.lee@khu.ac.kr
+Paper Title: Versatile Incremental Learning: Towards Class and Domain-Agnostic Incremental Learning
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Wed, 10 Dec 2025 07:05:54 -0800 (PST)
+    Snippet: Message blocked Your message to jh.lee@khu.ac.kr has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https://...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Sakhinana Sagar Srinivas
+Email: sagar.sakhinana@tcs.com
+Paper Title: Sparks of Artificial General Intelligence(AGI) in Semiconductor Material Science: Early Explorations into the Next Frontier of Generative AI-Assisted Electron Micrograph Analysis
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Wed, 10 Dec 2025 07:06:18 -0800 (PST)
+    Snippet: Message blocked Your message to sagar.sakhinana@tcs.com has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Naoya Chiba
+Email: chiba@nchiba.net
+Paper Title: 3DFacePolicy: Audio-Driven 3D Facial Animation Based on Action Control
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Wed, 10 Dec 2025 07:06:31 -0800 (PST)
+    Snippet: Message blocked Your message to chiba@nchiba.net has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https://...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Kaleb Kassaw
+Email: kaleb.kassaw@duke.edu
+Paper Title: Are Deep Learning Models Robust to Partial Object Occlusion in Visual Recognition Tasks?
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Wed, 10 Dec 2025 07:07:01 -0800 (PST)
+    Snippet: Message blocked Your message to kaleb.kassaw@duke.edu has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Junjie Luo
+Email: luo330@purdue.edu
+Paper Title: Depth from Coupled Optical Differentiation
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Wed, 10 Dec 2025 07:07:15 -0800 (PST)
+    Snippet: Message blocked Your message to luo330@purdue.edu has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https:/...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Joey Hejna
+Email: jhejna@stanford.edu
+Paper Title: MotIF: Motion Instruction Fine-tuning
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Wed, 10 Dec 2025 07:07:31 -0800 (PST)
+    Snippet: Message blocked Your message to jhejna@stanford.edu has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Roberto Casula
+Email: roberto.casula@unica.it
+Paper Title: Exploring 3D Face Reconstruction and Fusion Methods for Face Verification: A Case-Study in Video Surveillance
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Wed, 10 Dec 2025 07:08:00 -0800 (PST)
+    Snippet: Message blocked Your message to roberto.casula@unica.it has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Huy Nguyen
+Email: bihuyz@gmail.com
+Paper Title: Deep-Wide Learning Assistance for Insect Pest Classification
+First Sent: 2025-12-10
+Last Sent: 2025-12-10
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Wed, 10 Dec 2025 07:08:13 -0800 (PST)
+    Snippet: Message blocked Your message to bihuyz@gmail.com has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https://...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Kaikwan Lau
+Email: kai-kwan.lau@uwaterloo.ca
+Paper Title: Efficient Score Pre-computation for Diffusion Models via Cross-Matrix Krylov Projection
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Thu, 11 Dec 2025 16:01:13 -0800 (PST)
+    Snippet: Message blocked Your message to kai-kwan.lau@uwaterloo.ca has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Tae In Ahn
+Email: tiahn@snu.ac.kr
+Paper Title: Data-driven Prediction of Species-Specific Plant Responses to Spectral-Shifting Films from Leaf Phenotypic and Photosynthetic Traits
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Thu, 11 Dec 2025 16:01:24 -0800 (PST)
+    Snippet: Message blocked Your message to tiahn@snu.ac.kr has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https://...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Andrew J. Hung
+Email: andrew.hung@cshs.org
+Paper Title: Generating Natural-Language Surgical Feedback: From Structured Representation to Domain-Grounded Evaluation
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Thu, 11 Dec 2025 16:01:41 -0800 (PST)
+    Snippet: Message blocked Your message to andrew.hung@cshs.org has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to http...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Duo Li
+Email: duo001@e.ntu.edu.sg
+Paper Title: A Comprehensive Study on Visual Token Redundancy for Discrete Diffusion-based Multimodal Large Language Models
+First Sent: 2025-12-11
+Last Sent: 2025-12-11
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Thu, 11 Dec 2025 16:02:09 -0800 (PST)
+    Snippet: Message blocked Your message to duo001@e.ntu.edu.sg has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jidong J. Yang
+Email: jidong.yang@uga.edu
+Paper Title: Multi-view Phase-aware Pedestrian-Vehicle Incident Reasoning Framework with Vision-Language Models
+First Sent: 2025-12-12
+Last Sent: 2025-12-12
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Fri, 12 Dec 2025 09:24:13 -0800 (PST)
+    Snippet: Message blocked Your message to Jidong.Yang@uga.edu has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Ziyao Zeng
+Email: ziyao.zeng@yale.edu
+Paper Title: Coffee: Controllable Diffusion Fine-tuning
+First Sent: 2025-12-12
+Last Sent: 2025-12-12
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Fri, 12 Dec 2025 09:24:37 -0800 (PST)
+    Snippet: Message blocked Your message to ziyao.zeng@yale.edu has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Jingcheng Ni
+Email: ni@brown.edu
+Paper Title: Coffee: Controllable Diffusion Fine-tuning
+First Sent: 2025-12-12
+Last Sent: 2025-12-12
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Fri, 12 Dec 2025 09:24:44 -0800 (PST)
+    Snippet: Message blocked Your message to ni@brown.edu has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https://...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Alex Wong
+Email: alex.wong@yale.edu
+Paper Title: Coffee: Controllable Diffusion Fine-tuning
+First Sent: 2025-12-12
+Last Sent: 2025-12-12
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Fri, 12 Dec 2025 09:25:06 -0800 (PST)
+    Snippet: Message blocked Your message to alex.wong@yale.edu has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go to https:...
+
+────────────────────────────────────────────────────────────────────────────────
+Name: Weijia Fan
+Email: weijia.fan@partner.kit.edu
+Paper Title: BCE3S: Binary Cross-Entropy Based Tripartite Synergistic Learning for Long-tailed Recognition
+First Sent: 2025-12-12
+Last Sent: 2025-12-12
+Send Count: 1
+
+Bounce Messages Found: 1
+
+  Bounce 1:
+    Subject: Delivery Status Notification (Failure)
+    From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>
+    Date: Fri, 12 Dec 2025 09:25:17 -0800 (PST)
+    Snippet: Message blocked Your message to weijia.fan@partner.kit.edu has been blocked. See technical details below for more information. LEARN MORE The response was: Message rejected. For more information, go t...
